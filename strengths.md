@@ -4,7 +4,7 @@
 
 |                           |Arno|Jens|Jay |Joey|
 |---                        |--- |--- |--- |--- |
-|software                   | 5  | 2  |    | 2  |
+|software                   | 5  | 2  |    | 5  |
 |hardware                   | 3  | 5  |    | 1  |
 |-- 3d modeling             | 4  | 3  |    | 1  |
 |-- shape                   | 3  | 3  |    | 3  |

@@ -1,7 +1,5 @@
-#include "mbed.h"
-
-// Comment to compile as tile
 #define CONTROLLER
+#include "mbed.h"
 
 #ifdef CONTROLLER
 #include "controller.h"

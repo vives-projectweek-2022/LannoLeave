@@ -7,6 +7,10 @@ namespace LannooLeaf {
 
     private:
       DigitalInOut* select[4];
+      I2CSlave* bus;
+
+    private:
+      uint8_t select_state = 0x00;
 
     public:
       Tile(void);
@@ -14,6 +18,9 @@ namespace LannooLeaf {
 
     public:
       void update(void);
+
+    private:
+      void update_select_state(void);
     
   };
 

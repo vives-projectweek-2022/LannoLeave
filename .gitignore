@@ -3,4 +3,4 @@ __pycache__
 BUILD
 mbed-os
 
-Software/blink/build
+Software/Protocol_pico/build/

@@ -2,32 +2,11 @@
 
 namespace LannoLeaf {
   
-  void Leaf::update(void) {
-    // TODO: I2C slave
-  }
+  Leaf::Leaf(uint8_t address) { this->address = address; }
+  
+  Leaf::~Leaf() { }
 
-  static void i2c_slave_handler(i2c_inst_t *i2c, i2c_slave_event_t event) {
-    switch (event) {
-
-    // master writing data
-    case I2C_SLAVE_RECEIVE:
-      printf("%x\r\n", i2c_read_byte(i2c));
-      break;
-
-    // Master requesting data
-    case I2C_SLAVE_REQUEST:
-        
-      break;
-
-    case I2C_SLAVE_FINISH:
-      break;
-
-    default:
-      break;
-    }
-}
-
-  void Leaf::init(void) {
+  void Leaf::initialize(void) {
     gpio_init((uint)SelectPin::ONE);
     gpio_init((uint)SelectPin::TWO);
     gpio_init((uint)SelectPin::THREE);
@@ -53,17 +32,30 @@ namespace LannoLeaf {
     i2c_slave_init(i2c0, address, &i2c_slave_handler);
   }
 
+  void Leaf::update(void) {
+    // TODO: add code
+  }
+
   bool Leaf::reserved_addr(uint8_t addr) {
     return (addr & 0x78) == 0 || (addr & 0x78) == 0x78;
   }
 
-  Leaf::Leaf(uint8_t address) {
-    this->address = address;
-    init();
-  }
-  
-  Leaf::~Leaf() {
-  
-  }
+  static void i2c_slave_handler(i2c_inst_t *i2c, i2c_slave_event_t event) {
+    switch (event) {
+      // Master writing data
+      case I2C_SLAVE_RECEIVE:
+        // TODO: Handle command received from master
+        break;
 
+      // Master requesting data
+      case I2C_SLAVE_REQUEST:
+        // TODO: Handle sending data to master
+        break;
+
+      // Master Stop / Restart signal
+      case I2C_SLAVE_FINISH:
+        // TODO: Add code
+        break;
+    }
+  }
 } 

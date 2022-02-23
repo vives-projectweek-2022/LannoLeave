@@ -16,6 +16,8 @@ pico_sdk_init()
 add_executable(${PROJECT_NAME} 
     main.cpp
     src/leaf.cpp
+    src/controller.cpp
+    src/libs/i2c_slave.c
 )
 
 # Create map/bin/hex/uf2 files
@@ -25,6 +27,7 @@ pico_add_extra_outputs(${PROJECT_NAME})
 target_link_libraries(${PROJECT_NAME} 
     pico_stdlib
     hardware_i2c
+    hardware_irq
 )
 
 # Enable usb output, disable uart output

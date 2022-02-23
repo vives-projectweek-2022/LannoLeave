@@ -46,7 +46,7 @@ I2C0
 ## Select pins
 
 - pin 24, 25, 26, 27
-- Graaf tree om nodes op te slaan
+- Graph tree om nodes op te slaan
   - Node list neighbors
   - Agjecentsy List
   - Agacentcy matric

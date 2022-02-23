@@ -33,23 +33,13 @@ Build using Build button.
 ## SDK documentation
 
 - [Pi-pico-c-sdk](https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf)
-  - chapter 4.2.
 
-# Pins to use on pico
+# Protocol
 
-## I²C
-I2C0
-
-- SDA pin 21
-- SCL ping 22
-
-## Select pins
-
-- pin 24, 25, 26, 27
+## Datastucture
 - Graph tree om nodes op te slaan
   - Node list neighbors
-  - Agjecentsy List
-  - Agacentcy matric
-
+  - Adjacency List
+  - Adjacency matric
   
 <img src="img/ADJ_Matrix.png">

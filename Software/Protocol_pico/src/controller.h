@@ -12,40 +12,28 @@
 
 namespace LannoLeaf {
 
-  struct LeafData {
-    u_int8_t i2c_address;
-  };
-
-  class Controller {
+  class Controller : public Leaf {
 
     public:
-      Controller();
+      Controller(uint8_t address);
       ~Controller();
 
     public:
-      void scan_i2c_devices(void);
-    
-    public:
-      std::vector<uint8_t> connected_devices;
-      uint8_t response_buffer[8] = { 0x00 };
+      virtual void initialize(void) override;
+      virtual void update(void);
 
-    public:
-      void send_slave_message(uint8_t slave_address, commands cmd);
-
-    private:
-      void init(void);
+    protected:
       bool reserved_addr(uint8_t addr);
 
     public:
-      enum SelectPin {
-        ONE=4,
-        TWO,
-        THREE,
-        FOUR,
-        FIVE=9
-      };
+      void scan_i2c_devices(void);
+      void send_slave_message(uint8_t slave_address, commands cmd);
+    
+    // TODO: Make this private when no longer needed for debugging
+    public:
+      std::vector<uint8_t> connected_devices;
+      uint8_t response_buffer[8] = {0};    
   
   };
-  
   
 }

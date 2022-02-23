@@ -2,14 +2,11 @@
 
 namespace LannoLeaf {
 
-  Controller::Controller() {
-    init();
-  }
+  Controller::Controller(uint8_t address) : Leaf(address) { }
   
-  Controller::~Controller() {
-  }
+  Controller::~Controller() { }
 
-  void Controller::init(void) {
+  void Controller::initialize(void) {
     gpio_init((uint)SelectPin::ONE);
     gpio_init((uint)SelectPin::TWO);
     gpio_init((uint)SelectPin::THREE);
@@ -33,47 +30,44 @@ namespace LannoLeaf {
     i2c_init(i2c_default, 100 * 1000);
   }
 
-  void Controller::scan_i2c_devices(void) {
-    uint8_t dummy_data = 0xA6;
-    int ret;
-
-    for (uint8_t add = 0; add < (1 << 7); ++add) {
-      if (!reserved_addr(add)) {
-        ret = i2c_write_blocking(i2c0, add, &dummy_data, 1, false);
-        if (ret > 0) {
-          connected_devices.push_back(add);
-        }
-      }
-    }
+  void Controller::update(void) {
+    // TODO: add code
   }
 
-  bool Controller::reserved_addr(uint8_t addr) {
-    return (addr & 0x78) == 0 || (addr & 0x78) == 0x78;
+  void Controller::scan_i2c_devices(void) {
+    uint8_t dummy_data;
+
+    for (uint8_t add = 0; add < (1 << 7); ++add) {
+      if (!reserved_addr(add) && i2c_write_blocking(i2c0, add, &dummy_data, 1, false) > 0) {
+        connected_devices.push_back(add);
+      }
+    }
   }
 
   void Controller::send_slave_message(uint8_t slave_address, commands cmd) {
     uint8_t data = cmd;
     i2c_write_blocking(i2c_default, slave_address, &data, 1, false);
 
-    // size_t response_leght = 1;
+    size_t response_leght = 1;
 
-    // // TODO: Set the right response lenght
-    // switch (cmd) {
-    //   case slave_detect_message:
-    //     response_leght = 1;
-    //     break;
+    // TODO: Set the right response lenght to receive data from slave
+    // TODO: Mayby do this a other way?
+    switch (cmd) {
+      case slave_detect_message:
+        response_leght = 1;
+        break;
     
-    //   case slave_set_sel_pin:
-    //     response_leght = 1;
-    //     break;
+      case slave_set_sel_pin:
+        response_leght = 1;
+        break;
 
-    //   case slave_set_color:
-    //     response_leght = 1;
-    //     break;
+      case slave_set_color:
+        response_leght = 1;
+        break;
 
-    // }
+    }
 
-    // i2c_read_blocking(i2c_default, slave_address, response_buffer, 1 + response_leght, false);
+    i2c_read_blocking(i2c_default, slave_address, response_buffer, response_leght, false);
   }
 
 }

@@ -29,3 +29,20 @@ Or use vs code plugin set compiler to arm-none-eabi, click on CMake: [Debug] and
 Build using Build button.
 
 ![img](./img/VSCode_CMake.png)
+
+## SDK documentation
+
+- [Pi-pico-c-sdk](https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf)
+  - chapter 4.2.
+
+# Pins to use on pico
+
+## I²C
+I2C0
+
+- SDA pin 21
+- SCL ping 22
+
+## Select pins
+
+- pin 24, 25, 26, 27

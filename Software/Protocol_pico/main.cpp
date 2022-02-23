@@ -1,24 +1,16 @@
 #include <stdio.h>
+#include <stdint.h>
 #include "pico/stdlib.h"
+#include "src/leaf.h"
+
+#define ADDRESS 0x01
+
+LannoLeaf::Leaf leaf((uint8_t) ADDRESS);
 
 int main() {
-
-  const uint led_pin = 25;
-
-  // Initialize LED pin
-  gpio_init(led_pin);
-  gpio_set_dir(led_pin, GPIO_OUT);
-
-  // Initialize chosen serial port
   stdio_init_all();
 
-  // Loop forever
   while (true) {
-    // Blink LED
-    printf("Blinking!\r\n");
-    gpio_put(led_pin, true);
-    sleep_ms(1000);
-    gpio_put(led_pin, false);
-    sleep_ms(1000);
+    leaf.update();
   }
 }

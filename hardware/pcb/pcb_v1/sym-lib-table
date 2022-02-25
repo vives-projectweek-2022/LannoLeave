@@ -1,4 +1,5 @@
 (sym_lib_table
   (lib (name "MCU_RaspberryPi_and_Boards")(type "Legacy")(uri "C:/Users/jensv/Desktop/RP-Pico Libraries/MCU_RaspberryPi_and_Boards.lib")(options "")(descr ""))
   (lib (name "ws2812b")(type "Legacy")(uri "C:/VIVES/projectweek/2de jaar/LannoLeave/hardware/pcb/WS2812B Libraries/ws2812b.lib")(options "")(descr ""))
+  (lib (name "MC34166")(type "KiCad")(uri "C:/VIVES/projectweek/2de jaar/LannoLeave/hardware/pcb/Libraries/MC34166 Libraries/MC34166.kicad_sym")(options "")(descr ""))
 )

@@ -26,6 +26,7 @@ typedef enum i2c_slave_event_t
     I2C_SLAVE_RECEIVE, /**< Data from master is available for reading. Slave must read from Rx FIFO. */
     I2C_SLAVE_REQUEST, /**< Master is requesting data. Slave must write into Tx FIFO. */
     I2C_SLAVE_FINISH, /**< Master has sent a Stop or Restart signal. Slave may prepare for the next transfer. */
+    I2C_GEN_CALL
 } i2c_slave_event_t;
 
 /**

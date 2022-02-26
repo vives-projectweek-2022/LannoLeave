@@ -42,4 +42,8 @@ Build using Build button.
   - Adjacency List
   - Adjacency matric
   
+## reserved addresses
+- 0x00 t.e.m. 0x07
+- 0x79 t.e.m 0x7f
+
 <img src="img/ADJ_Matrix.png">

@@ -8,12 +8,15 @@
 
 #define DEBUG
 #define CONTROLLER
-#define I2CADDRESS 0x34
+#define UNCONFIGUREDADDRESS 0x08
+#define GENCALLADR 0x00
+
+using namespace LannoLeaf;
 
 #ifdef CONTROLLER
-  LannoLeaf::Controller controller;
+  LannoLeaf::Controller controller((uint8_t) UNCONFIGUREDADDRESS, i2c0);
 #else
-  LannoLeaf::Leaf leaf((uint8_t) I2CADDRESS);  
+  LannoLeaf::Leaf leaf((uint8_t) UNCONFIGUREDADDRESS, i2c0);  
 #endif
 
 #ifdef DEBUG
@@ -32,21 +35,13 @@ int main() {
     set_alive_led();
     sleep_ms(5000);
     printf("Starting platform\r\n");
-    
-    #ifdef CONTROLLER
-      printf("Scanniing for i2c devices\r\n");
-      controller.scan_i2c_devices();
+  #endif
 
-      if (!controller.connected_devices.empty()) {
-        for (uint8_t add : controller.connected_devices) {
-          printf("0x%x ", add);
-        }
-      } else {
-        printf("No Devices connected \r\n");
-      }
-
-      printf("\r\n");
-    #endif
+  #ifdef CONTROLLER
+    controller.initialize();
+    controller.search_topology();
+  #else
+    leaf.initialize();
   #endif
 
   while (true) {

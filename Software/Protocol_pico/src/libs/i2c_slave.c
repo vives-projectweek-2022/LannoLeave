@@ -52,6 +52,11 @@ static void __not_in_flash_func(i2c_slave_irq_handler)(i2c_slave_t *slave) {
         slave->transfer_in_progress = true;
         slave->handler(i2c, I2C_SLAVE_REQUEST);
     }
+    if (intr_stat & I2C_IC_INTR_STAT_R_GEN_CALL_BITS) {
+        hw->clr_gen_call;
+        slave->transfer_in_progress = true;
+        slave->handler(i2c, I2C_GEN_CALL);
+    }
 }
 
 static void __not_in_flash_func(i2c0_slave_irq_handler)() {
@@ -78,7 +83,7 @@ void i2c_slave_init(i2c_inst_t *i2c, uint8_t address, i2c_slave_handler_t handle
 
     i2c_hw_t *hw = i2c_get_hw(i2c);
     // unmask necessary interrupts
-    hw->intr_mask = I2C_IC_INTR_MASK_M_RX_FULL_BITS | I2C_IC_INTR_MASK_M_RD_REQ_BITS | I2C_IC_RAW_INTR_STAT_TX_ABRT_BITS | I2C_IC_INTR_MASK_M_STOP_DET_BITS | I2C_IC_INTR_MASK_M_START_DET_BITS;
+    hw->intr_mask = I2C_IC_INTR_MASK_M_GEN_CALL_BITS | I2C_IC_INTR_MASK_M_RX_FULL_BITS | I2C_IC_INTR_MASK_M_RD_REQ_BITS | I2C_IC_RAW_INTR_STAT_TX_ABRT_BITS | I2C_IC_INTR_MASK_M_STOP_DET_BITS | I2C_IC_INTR_MASK_M_START_DET_BITS;
 
     // enable interrupt for current core
     uint num = I2C0_IRQ + i2c_index;

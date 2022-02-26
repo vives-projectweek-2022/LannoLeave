@@ -17,6 +17,7 @@ add_executable(${PROJECT_NAME}
     main.cpp
     src/leaf.cpp
     src/controller.cpp
+    src/graph.cpp
     src/libs/i2c_slave.c
 )
 

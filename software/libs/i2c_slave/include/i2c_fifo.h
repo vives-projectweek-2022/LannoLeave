@@ -7,7 +7,7 @@
 #ifndef _I2C_FIFO_H_
 #define _I2C_FIFO_H_
 
-#include "hardware/i2c.h"
+#include <hardware/i2c.h>
 
 #ifdef __cplusplus
 extern "C" {

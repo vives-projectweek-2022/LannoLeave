@@ -1,0 +1,40 @@
+\hypertarget{VirtualStrip_8hpp_source}{}\doxysection{Virtual\+Strip.\+hpp}
+\label{VirtualStrip_8hpp_source}\index{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/software/libs/PicoLed/include/VirtualStrip.hpp@{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/software/libs/PicoLed/include/VirtualStrip.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef VIRTUALSTRIP\_H}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define VIRTUALSTRIP\_H}}
+\DoxyCodeLine{3 }
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include <memory>}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include "{}PicoLedTarget.hpp"{}}}
+\DoxyCodeLine{6 }
+\DoxyCodeLine{7 \textcolor{keyword}{using} std::shared\_ptr;}
+\DoxyCodeLine{8 }
+\DoxyCodeLine{9 \textcolor{keyword}{namespace }PicoLed \{}
+\DoxyCodeLine{10 }
+\DoxyCodeLine{11 \textcolor{keyword}{class }\mbox{\hyperlink{classPicoLed_1_1VirtualStrip}{VirtualStrip}}: \textcolor{keyword}{public} \mbox{\hyperlink{classPicoLed_1_1PicoLedTarget}{PicoLedTarget}} \{}
+\DoxyCodeLine{12 }
+\DoxyCodeLine{13     \textcolor{keyword}{public}:}
+\DoxyCodeLine{14         \mbox{\hyperlink{classPicoLed_1_1VirtualStrip}{VirtualStrip}}(shared\_ptr<PicoLedTarget> target, uint start, uint end);}
+\DoxyCodeLine{15         \mbox{\hyperlink{classPicoLed_1_1VirtualStrip}{\string~VirtualStrip}}();}
+\DoxyCodeLine{16 }
+\DoxyCodeLine{17         uint8\_t getBrightness();}
+\DoxyCodeLine{18         \textcolor{keywordtype}{void} setBrightness(uint8\_t brightness);}
+\DoxyCodeLine{19         uint32\_t getData(uint index);}
+\DoxyCodeLine{20         \textcolor{keywordtype}{void} setData(uint index, uint32\_t value);}
+\DoxyCodeLine{21 }
+\DoxyCodeLine{22         \textcolor{keywordtype}{void} show();}
+\DoxyCodeLine{23 }
+\DoxyCodeLine{24     \textcolor{keyword}{protected}:}
+\DoxyCodeLine{25         shared\_ptr<PicoLedTarget> target;}
+\DoxyCodeLine{26         uint start;}
+\DoxyCodeLine{27         uint end;}
+\DoxyCodeLine{28 }
+\DoxyCodeLine{29         uint getRealIndex(uint index);}
+\DoxyCodeLine{30 \};}
+\DoxyCodeLine{31 }
+\DoxyCodeLine{32 \}}
+\DoxyCodeLine{33 }
+\DoxyCodeLine{34 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

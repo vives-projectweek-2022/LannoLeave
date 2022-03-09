@@ -1,0 +1,54 @@
+\hypertarget{helper__funcs__var_8h_source}{}\doxysection{helper\+\_\+funcs\+\_\+var.\+h}
+\label{helper__funcs__var_8h_source}\index{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/software/helpers/helpers/include/helper\_funcs\_var.h@{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/software/helpers/helpers/include/helper\_funcs\_var.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{2 }
+\DoxyCodeLine{3 \textcolor{preprocessor}{\#include <stdint.h>}}
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include <initializer\_list>}}
+\DoxyCodeLine{5 }
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#define UNCONFIGUREDADDRESS 0x08}}
+\DoxyCodeLine{7 \textcolor{preprocessor}{\#define GENCALLADR 0x00}}
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#define BAUDRATE 100000}}
+\DoxyCodeLine{9 }
+\DoxyCodeLine{10 \textcolor{preprocessor}{\#ifdef DEBUG}}
+\DoxyCodeLine{11 }
+\DoxyCodeLine{12 \textcolor{preprocessor}{\#define PRINT(x) printf(x)}}
+\DoxyCodeLine{13 \textcolor{preprocessor}{\#define PRINT\_A(x, a) printf(x, a)}}
+\DoxyCodeLine{14 \textcolor{preprocessor}{\#define SLEEP\_TIME 20}}
+\DoxyCodeLine{15 }
+\DoxyCodeLine{16 \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{17 }
+\DoxyCodeLine{18 \textcolor{preprocessor}{\#define PRINT(x)}}
+\DoxyCodeLine{19 \textcolor{preprocessor}{\#define PRINT\_A(x, a)}}
+\DoxyCodeLine{20 \textcolor{preprocessor}{\#define SLEEP\_TIME 1}}
+\DoxyCodeLine{21 }
+\DoxyCodeLine{22 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{23 }
+\DoxyCodeLine{24 \textcolor{keyword}{namespace }LannoLeaf \{}
+\DoxyCodeLine{25 }
+\DoxyCodeLine{26   \textcolor{keyword}{typedef} \textcolor{keyword}{enum} side \{}
+\DoxyCodeLine{27     invalid, a, b, c, d, e,}
+\DoxyCodeLine{28   \} side;}
+\DoxyCodeLine{29 }
+\DoxyCodeLine{30   \textcolor{keyword}{typedef} \textcolor{keyword}{enum} select\_pins \{}
+\DoxyCodeLine{31     A=16,}
+\DoxyCodeLine{32     B,}
+\DoxyCodeLine{33     C,}
+\DoxyCodeLine{34     D,}
+\DoxyCodeLine{35     E}
+\DoxyCodeLine{36   \} select\_pins;}
+\DoxyCodeLine{37 }
+\DoxyCodeLine{38   \textcolor{keyword}{static} std::initializer\_list all\_select\_pins = \{ A, B, C, D, E \};}
+\DoxyCodeLine{39 }
+\DoxyCodeLine{40   \textcolor{keywordtype}{bool} reserved\_addr(uint8\_t addr);}
+\DoxyCodeLine{41 }
+\DoxyCodeLine{42   side sel\_pin\_to\_side(select\_pins pin);}
+\DoxyCodeLine{43 }
+\DoxyCodeLine{44   side sel\_pin\_state\_to\_side(uint8\_t state);}
+\DoxyCodeLine{45 }
+\DoxyCodeLine{46   \textcolor{keywordtype}{char} side\_to\_char(side side);}
+\DoxyCodeLine{47 }
+\DoxyCodeLine{48 \}}
+
+\end{DoxyCode}

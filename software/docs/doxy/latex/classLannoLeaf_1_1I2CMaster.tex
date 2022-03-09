@@ -1,0 +1,78 @@
+\hypertarget{classLannoLeaf_1_1I2CMaster}{}\doxysection{Lanno\+Leaf\+::I2\+CMaster Class Reference}
+\label{classLannoLeaf_1_1I2CMaster}\index{LannoLeaf::I2CMaster@{LannoLeaf::I2CMaster}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classLannoLeaf_1_1I2CMaster_a0a84ae3bed0626bfde141c088da4ebeb}{send\+\_\+slave\+\_\+message}} (uint8\+\_\+t slave\+\_\+address, \mbox{\hyperlink{structLannoLeaf_1_1message}{message}} msg)
+\begin{DoxyCompactList}\small\item\em Send a message to slave device. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classLannoLeaf_1_1I2CMaster_ae169516af7d26651852c9d3bc037db19}{get\+\_\+slave\+\_\+data}} (uint8\+\_\+t slave\+\_\+address, size\+\_\+t lenght)
+\begin{DoxyCompactList}\small\item\em Request data from slave device. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1I2CMaster_a6912457bf000aa90882b1dd59fc38478}\label{classLannoLeaf_1_1I2CMaster_a6912457bf000aa90882b1dd59fc38478}} 
+void {\bfseries get\+\_\+slave\+\_\+data\+\_\+no\+\_\+mem\+\_\+reset} (uint8\+\_\+t slave\+\_\+address, size\+\_\+t lenght)
+\begin{DoxyCompactList}\small\item\em Same as get\+\_\+slave\+\_\+data but does not send slave\+\_\+mem\+\_\+reset message. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classLannoLeaf_1_1I2CMaster_acd9c2f41f8bd7098814fc54ef992d7a8}{set\+\_\+i2c\+\_\+inst}} (i2c\+\_\+inst\+\_\+t $\ast$i2c)
+\begin{DoxyCompactList}\small\item\em Sets the i2c\+\_\+instance for master to use. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1I2CMaster_a38f739cd8e143eed3966fe56def4a785}\label{classLannoLeaf_1_1I2CMaster_a38f739cd8e143eed3966fe56def4a785}} 
+void {\bfseries reset\+\_\+mem} (void)
+\begin{DoxyCompactList}\small\item\em Resets all readonly memory to 0x00. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1I2CMaster_a501aadf94817e272bbe6b3ad1fa13ec9}\label{classLannoLeaf_1_1I2CMaster_a501aadf94817e272bbe6b3ad1fa13ec9}} 
+const uint8\+\_\+t $\ast$ {\bfseries memory} = \+\_\+memory
+\begin{DoxyCompactList}\small\item\em Readonly memory of i2c\+\_\+master. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classLannoLeaf_1_1I2CMaster_ae169516af7d26651852c9d3bc037db19}\label{classLannoLeaf_1_1I2CMaster_ae169516af7d26651852c9d3bc037db19}} 
+\index{LannoLeaf::I2CMaster@{LannoLeaf::I2CMaster}!get\_slave\_data@{get\_slave\_data}}
+\index{get\_slave\_data@{get\_slave\_data}!LannoLeaf::I2CMaster@{LannoLeaf::I2CMaster}}
+\doxysubsubsection{\texorpdfstring{get\_slave\_data()}{get\_slave\_data()}}
+{\footnotesize\ttfamily void Lanno\+Leaf\+::\+I2\+CMaster\+::get\+\_\+slave\+\_\+data (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{slave\+\_\+address,  }\item[{size\+\_\+t}]{lenght }\end{DoxyParamCaption})}
+
+
+
+Request data from slave device. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em slave\+\_\+address} & 7-\/bit address of slave to request data from \\
+\hline
+{\em lenght} & Amount of bytes to request \\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+All received bytes are stored in memory attribute 
+\end{DoxyNote}
+\mbox{\Hypertarget{classLannoLeaf_1_1I2CMaster_a0a84ae3bed0626bfde141c088da4ebeb}\label{classLannoLeaf_1_1I2CMaster_a0a84ae3bed0626bfde141c088da4ebeb}} 
+\index{LannoLeaf::I2CMaster@{LannoLeaf::I2CMaster}!send\_slave\_message@{send\_slave\_message}}
+\index{send\_slave\_message@{send\_slave\_message}!LannoLeaf::I2CMaster@{LannoLeaf::I2CMaster}}
+\doxysubsubsection{\texorpdfstring{send\_slave\_message()}{send\_slave\_message()}}
+{\footnotesize\ttfamily void Lanno\+Leaf\+::\+I2\+CMaster\+::send\+\_\+slave\+\_\+message (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{slave\+\_\+address,  }\item[{\mbox{\hyperlink{structLannoLeaf_1_1message}{message}}}]{msg }\end{DoxyParamCaption})}
+
+
+
+Send a message to slave device. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em slave\+\_\+address} & 7-\/bit address of slave to send to \\
+\hline
+{\em msg} & Message to send to slave message struct defined in \mbox{\hyperlink{i2c__master_8h_source}{i2c\+\_\+master.\+h}} \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classLannoLeaf_1_1I2CMaster_acd9c2f41f8bd7098814fc54ef992d7a8}\label{classLannoLeaf_1_1I2CMaster_acd9c2f41f8bd7098814fc54ef992d7a8}} 
+\index{LannoLeaf::I2CMaster@{LannoLeaf::I2CMaster}!set\_i2c\_inst@{set\_i2c\_inst}}
+\index{set\_i2c\_inst@{set\_i2c\_inst}!LannoLeaf::I2CMaster@{LannoLeaf::I2CMaster}}
+\doxysubsubsection{\texorpdfstring{set\_i2c\_inst()}{set\_i2c\_inst()}}
+{\footnotesize\ttfamily void Lanno\+Leaf\+::\+I2\+CMaster\+::set\+\_\+i2c\+\_\+inst (\begin{DoxyParamCaption}\item[{i2c\+\_\+inst\+\_\+t $\ast$}]{i2c }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Sets the i2c\+\_\+instance for master to use. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i2c} & i2c\+\_\+instance \\
+\hline
+\end{DoxyParams}

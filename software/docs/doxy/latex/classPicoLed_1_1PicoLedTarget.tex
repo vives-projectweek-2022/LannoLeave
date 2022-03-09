@@ -1,0 +1,62 @@
+\hypertarget{classPicoLed_1_1PicoLedTarget}{}\doxysection{Pico\+Led\+::Pico\+Led\+Target Class Reference}
+\label{classPicoLed_1_1PicoLedTarget}\index{PicoLed::PicoLedTarget@{PicoLed::PicoLedTarget}}
+Inheritance diagram for Pico\+Led\+::Pico\+Led\+Target\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classPicoLed_1_1PicoLedTarget}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_ab8030914e69526fb60b317088098816a}\label{classPicoLed_1_1PicoLedTarget_ab8030914e69526fb60b317088098816a}} 
+{\bfseries Pico\+Led\+Target} (uint num\+Leds, Data\+Byte b1, Data\+Byte b2, Data\+Byte b3, Data\+Byte b4)
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_a57e30781fb6f59e71b5e8aeaf2721035}\label{classPicoLed_1_1PicoLedTarget_a57e30781fb6f59e71b5e8aeaf2721035}} 
+virtual uint {\bfseries get\+Num\+Leds} ()
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_a79ef8a6eedf05b0a84999f0a640815c0}\label{classPicoLed_1_1PicoLedTarget_a79ef8a6eedf05b0a84999f0a640815c0}} 
+virtual uint8\+\_\+t {\bfseries get\+Brightness} ()
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_a2744a0c44fa729c42e2cbf0c6385c93d}\label{classPicoLed_1_1PicoLedTarget_a2744a0c44fa729c42e2cbf0c6385c93d}} 
+virtual void {\bfseries set\+Brightness} (uint8\+\_\+t brightness)
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_a7e686d794d425a333b8b0477c6d68856}\label{classPicoLed_1_1PicoLedTarget_a7e686d794d425a333b8b0477c6d68856}} 
+virtual uint32\+\_\+t {\bfseries get\+Data} (uint index)
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_a770a6a32cf18bac3c7faa1ee34a80a55}\label{classPicoLed_1_1PicoLedTarget_a770a6a32cf18bac3c7faa1ee34a80a55}} 
+virtual void {\bfseries set\+Data} (uint index, uint32\+\_\+t value)
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_a5120b13319d97c38c0221c13198e16cf}\label{classPicoLed_1_1PicoLedTarget_a5120b13319d97c38c0221c13198e16cf}} 
+virtual void {\bfseries show} ()
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_a9a956bc7c97293fc1c275db91c358d9d}\label{classPicoLed_1_1PicoLedTarget_a9a956bc7c97293fc1c275db91c358d9d}} 
+\mbox{\hyperlink{structPicoLed_1_1Color}{Color}} {\bfseries get\+Pixel\+Color} (uint index)
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_aa1a73011c7cd57af710fb20b9bb08e93}\label{classPicoLed_1_1PicoLedTarget_aa1a73011c7cd57af710fb20b9bb08e93}} 
+void {\bfseries set\+Pixel\+Color} (uint index, \mbox{\hyperlink{structPicoLed_1_1Color}{Color}} color)
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_acaf723d90d5525e7149e9f34c8c6c8f9}\label{classPicoLed_1_1PicoLedTarget_acaf723d90d5525e7149e9f34c8c6c8f9}} 
+void {\bfseries fill} (\mbox{\hyperlink{structPicoLed_1_1Color}{Color}} color, uint first, uint count)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_a3eddbb2740086c218cd8a18b8052aae8}\label{classPicoLed_1_1PicoLedTarget_a3eddbb2740086c218cd8a18b8052aae8}} 
+uint32\+\_\+t {\bfseries get\+Pixel\+Data} (\mbox{\hyperlink{structPicoLed_1_1Color}{Color}} color)
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_a364855cef82ec417f1caadc567c9fc04}\label{classPicoLed_1_1PicoLedTarget_a364855cef82ec417f1caadc567c9fc04}} 
+uint32\+\_\+t {\bfseries scale\+Pixel\+Data} (uint32\+\_\+t data, uint16\+\_\+t scale)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_a9cfb3f4e9f8a9a9bb45a9217e129b7c9}\label{classPicoLed_1_1PicoLedTarget_a9cfb3f4e9f8a9a9bb45a9217e129b7c9}} 
+uint {\bfseries num\+Leds}
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_aa313a35170a424f19614376775ac0aec}\label{classPicoLed_1_1PicoLedTarget_aa313a35170a424f19614376775ac0aec}} 
+Data\+Byte {\bfseries bytes} \mbox{[}4\mbox{]}
+\item 
+\mbox{\Hypertarget{classPicoLed_1_1PicoLedTarget_af3c360a2e8e46d55c59ba339631f532c}\label{classPicoLed_1_1PicoLedTarget_af3c360a2e8e46d55c59ba339631f532c}} 
+uint8\+\_\+t {\bfseries brightness}
+\end{DoxyCompactItemize}

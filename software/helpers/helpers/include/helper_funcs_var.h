@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <initializer_list>
 
+#define I2C_CONTOLLER_PLACEHOLDER_ADDRESS 0xFF
 #define UNCONFIGUREDADDRESS 0x08
 #define GENCALLADR 0x00
 #define BAUDRATE 100000

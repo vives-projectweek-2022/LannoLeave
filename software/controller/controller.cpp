@@ -1,12 +1,9 @@
 #include <controller.h>
 
-#define I2C_CONTOLLER_PLACEHOLDER_ADDRESS 0xFF
-
 namespace LannoLeaf {
 
-  Controller::Controller(i2c_inst_t * i2c_leaf_inst, i2c_inst_t * i2c_led_inst) { 
+  Controller::Controller(i2c_inst_t * i2c_leaf_inst) { 
     leaf_master.set_i2c_inst(i2c_leaf_inst);
-    led_master.set_i2c_inst(i2c_led_inst);
     initialize();
   }
 
@@ -135,6 +132,19 @@ namespace LannoLeaf {
 
     device_discovery();
     topology_discovery();
+  }
+
+  void Controller::handel_packet(packet pkt) {
+    std::map<bl_commands, std::function<void(packet)>>::iterator itr = packet_handlers.find((bl_commands) pkt.command);
+    if (itr != packet_handlers.end()) packet_handlers[(bl_commands)pkt.command](pkt);
+  }
+
+  void Controller::add_packet_handel(bl_commands cmd, std::function<void(packet)> func) {
+    std::map<bl_commands, std::function<void(packet)>>::iterator itr = packet_handlers.find(cmd);
+
+    if (itr == packet_handlers.end()) {
+      packet_handlers[cmd] = func;
+    }
   }
 
   uint8_t Controller::assign_new_address(void) {

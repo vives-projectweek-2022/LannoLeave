@@ -1,20 +1,24 @@
 #pragma once
 
+#include <map>
 #include <vector>
 #include <stdint.h>
 #include <functional>
-#include <map>
+
 #include <pico/stdlib.h>
 #include <hardware/i2c.h>
 #include <hardware/gpio.h>
-#include <i2c_master.h>
+
 #include <i2c_fifo.h>
-#include <commands.h>
+#include <i2c_master.h>
+
 #include <graph.h>
+#include <commands.h>
+
 #include <PicoLed.hpp>
 
 #define LED_PIN 15
-#define LED_LENGTH 12
+#define LED_LENGTH 6
 
 namespace LannoLeaf {
 
@@ -28,7 +32,7 @@ namespace LannoLeaf {
   class Controller {
 
     public:
-      Controller(i2c_inst_t * i2c_leaf_inst, i2c_inst_t * i2c_led_inst);
+      Controller(i2c_inst_t * i2c_leaf_inst);
       ~Controller();
 
     public:
@@ -41,6 +45,10 @@ namespace LannoLeaf {
       /** \brief Resets all slaves and reruns discovery/topology discovery algorithm*/
       void reset(void);
       
+      void handel_packet(packet pkt);
+      
+      void add_packet_handel(bl_commands cmd, std::function<void(packet)> func);
+
     private:
       void initialize(void);
 
@@ -61,10 +69,10 @@ namespace LannoLeaf {
 
     public:
       I2CMaster leaf_master;
-      I2CMaster led_master;
 
     private:
       std::vector<uint8_t> visited;
+      std::map<bl_commands, std::function<void(packet)>> packet_handlers;
   
   };
   

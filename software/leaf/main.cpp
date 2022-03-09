@@ -67,6 +67,22 @@ void add_handlers(void) {
     contx -> mem[0] = (contx -> mem_address / 2);
     contx -> mem_address = 0;
   });
+
+  leaf.add_command_handel(slave_set_led, [&](context* contx, msg_buff* msg){
+    leaf.ledstrip.setPixelColor(msg -> buffer[0], PicoLed::RGBW(msg -> buffer[1], msg -> buffer[2], msg -> buffer[3], msg -> buffer[4]));
+    leaf.ledstrip.show();
+  });
+
+  leaf.add_command_handel(slave_set_all_led, [&](context* contx, msg_buff* msg){
+    printf("Received set all led message\r\n");
+    leaf.ledstrip.fill(PicoLed::RGBW(msg -> buffer[1], msg -> buffer[2], msg -> buffer[3], msg -> buffer[4]));
+    leaf.ledstrip.show();
+  });
+
+  leaf.add_command_handel(slave_set_brightness, [&](context* contx, msg_buff* msg){
+    leaf.ledstrip.setBrightness(msg -> buffer[0]);
+    leaf.ledstrip.show();
+  });
 }
 
 int main() {

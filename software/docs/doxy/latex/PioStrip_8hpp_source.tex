@@ -1,0 +1,32 @@
+\hypertarget{PioStrip_8hpp_source}{}\doxysection{Pio\+Strip.\+hpp}
+\label{PioStrip_8hpp_source}\index{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/software/libs/PicoLed/include/PioStrip.hpp@{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/software/libs/PicoLed/include/PioStrip.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef PIOSTRIP\_H}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define PIOSTRIP\_H}}
+\DoxyCodeLine{3 }
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include "{}hardware/pio.h"{}}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include "{}PicoLedTarget.hpp"{}}}
+\DoxyCodeLine{6 }
+\DoxyCodeLine{7 \textcolor{keyword}{namespace }PicoLed \{}
+\DoxyCodeLine{8 }
+\DoxyCodeLine{9 \textcolor{keyword}{class }\mbox{\hyperlink{classPicoLed_1_1PioStrip}{PioStrip}}: \textcolor{keyword}{public} \mbox{\hyperlink{classPicoLed_1_1PicoLedTarget}{PicoLedTarget}} \{}
+\DoxyCodeLine{10     \textcolor{keyword}{public}:}
+\DoxyCodeLine{11         \mbox{\hyperlink{classPicoLed_1_1PioStrip}{PioStrip}}(PIO pioBlock, uint stateMachine, uint dataPin, uint numLeds, DataByte b1, DataByte b2, DataByte b3, DataByte b4);}
+\DoxyCodeLine{12         \textcolor{keyword}{virtual} \mbox{\hyperlink{classPicoLed_1_1PioStrip}{\string~PioStrip}}();}
+\DoxyCodeLine{13 }
+\DoxyCodeLine{14         uint32\_t getData(uint index);}
+\DoxyCodeLine{15         \textcolor{keywordtype}{void} setData(uint index, uint32\_t value);}
+\DoxyCodeLine{16         \textcolor{keywordtype}{void} show();}
+\DoxyCodeLine{17     \textcolor{keyword}{protected}:}
+\DoxyCodeLine{18         PIO pioBlock;}
+\DoxyCodeLine{19         uint stateMachine;}
+\DoxyCodeLine{20         uint dataPin;}
+\DoxyCodeLine{21         uint32\_t *data;}
+\DoxyCodeLine{22 \};}
+\DoxyCodeLine{23 }
+\DoxyCodeLine{24 \};}
+\DoxyCodeLine{25 }
+\DoxyCodeLine{26 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

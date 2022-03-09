@@ -1,1 +1,2 @@
 add_subdirectory(i2c_slave)
+add_subdirectory(PicoLed)

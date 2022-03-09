@@ -14,6 +14,7 @@ target_link_libraries(leaf
   hardware_irq
   i2c_slave
   helper
+  Pico_led
 )
 
 target_include_directories(leaf

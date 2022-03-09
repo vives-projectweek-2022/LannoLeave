@@ -14,6 +14,11 @@
 #include <commands.h>
 #include <helper_funcs_var.h>
 
+#include <PicoLed.hpp>
+
+#define LED_PIN 15
+#define LED_LENGTH 12
+
 namespace LannoLeaf {
 
   /** \brief Storage struct where master writes to*/
@@ -71,6 +76,9 @@ namespace LannoLeaf {
 
       /** \returns true if slave has been configured with a new i²c address, fase if not */
       inline bool& configured(void) { return _configured; }
+
+    public:
+      PicoLed::PicoLedController ledstrip = PicoLed::addLeds<PicoLed::WS2812B>(pio0, 0, LED_PIN, LED_LENGTH, PicoLed::FORMAT_GRB);
 
     private:
       void initialize(void);

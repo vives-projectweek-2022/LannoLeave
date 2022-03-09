@@ -4,8 +4,9 @@
 
 namespace LannoLeaf {
 
-  Controller::Controller(i2c_inst_t * i2c_leaf_inst) { 
+  Controller::Controller(i2c_inst_t * i2c_leaf_inst, i2c_inst_t * i2c_led_inst) { 
     leaf_master.set_i2c_inst(i2c_leaf_inst);
+    led_master.set_i2c_inst(i2c_led_inst);
     initialize();
   }
 

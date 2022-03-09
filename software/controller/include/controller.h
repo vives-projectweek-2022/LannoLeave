@@ -4,23 +4,31 @@
 #include <stdint.h>
 #include <functional>
 #include <map>
-
 #include <pico/stdlib.h>
 #include <hardware/i2c.h>
 #include <hardware/gpio.h>
-
 #include <i2c_master.h>
 #include <i2c_fifo.h>
-
 #include <commands.h>
 #include <graph.h>
+#include <PicoLed.hpp>
+
+#define LED_PIN 15
+#define LED_LENGTH 12
 
 namespace LannoLeaf {
+
+  struct uart_packet {
+    uint8_t i2c_address;
+    uint8_t Sub_address;
+    uint8_t command;
+    uint8_t data[3];
+  };
 
   class Controller {
 
     public:
-      Controller(i2c_inst_t * i2c_leaf_inst);
+      Controller(i2c_inst_t * i2c_leaf_inst, i2c_inst_t * i2c_led_inst);
       ~Controller();
 
     public:
@@ -32,7 +40,7 @@ namespace LannoLeaf {
 
       /** \brief Resets all slaves and reruns discovery/topology discovery algorithm*/
       void reset(void);
-
+      
     private:
       void initialize(void);
 
@@ -47,7 +55,13 @@ namespace LannoLeaf {
 
     public:
       Graph graph;
+
+    public:
+      PicoLed::PicoLedController ledstrip = PicoLed::addLeds<PicoLed::WS2812B>(pio0, 0, LED_PIN, LED_LENGTH, PicoLed::FORMAT_GRB);
+
+    public:
       I2CMaster leaf_master;
+      I2CMaster led_master;
 
     private:
       std::vector<uint8_t> visited;

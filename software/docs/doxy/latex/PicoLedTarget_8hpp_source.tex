@@ -1,0 +1,60 @@
+\hypertarget{PicoLedTarget_8hpp_source}{}\doxysection{Pico\+Led\+Target.\+hpp}
+\label{PicoLedTarget_8hpp_source}\index{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/software/libs/PicoLed/include/PicoLedTarget.hpp@{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/software/libs/PicoLed/include/PicoLedTarget.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef PICOLEDTARGET\_H}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define PICOLEDTARGET\_H}}
+\DoxyCodeLine{3 }
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include <cmath>}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include <algorithm>}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include "{}pico/types.h"{}}}
+\DoxyCodeLine{7 }
+\DoxyCodeLine{8 \textcolor{keyword}{namespace }PicoLed \{}
+\DoxyCodeLine{9 }
+\DoxyCodeLine{10 \textcolor{keyword}{enum} DataByte \{}
+\DoxyCodeLine{11     NONE=0,}
+\DoxyCodeLine{12     RED=1,}
+\DoxyCodeLine{13     GREEN=2,}
+\DoxyCodeLine{14     BLUE=3,}
+\DoxyCodeLine{15     WHITE=4}
+\DoxyCodeLine{16 \};}
+\DoxyCodeLine{17 \textcolor{keyword}{enum} DataFormat \{}
+\DoxyCodeLine{18     FORMAT\_RGB=0,}
+\DoxyCodeLine{19     FORMAT\_GRB=1,}
+\DoxyCodeLine{20     FORMAT\_WRGB=2}
+\DoxyCodeLine{21 \};}
+\DoxyCodeLine{22 \textcolor{keyword}{struct }\mbox{\hyperlink{structPicoLed_1_1Color}{Color}} \{}
+\DoxyCodeLine{23     uint8\_t red;}
+\DoxyCodeLine{24     uint8\_t green;}
+\DoxyCodeLine{25     uint8\_t blue;}
+\DoxyCodeLine{26     uint8\_t white;}
+\DoxyCodeLine{27 \};}
+\DoxyCodeLine{28 }
+\DoxyCodeLine{29 \textcolor{keyword}{class }\mbox{\hyperlink{classPicoLed_1_1PicoLedTarget}{PicoLedTarget}} \{}
+\DoxyCodeLine{30     \textcolor{keyword}{public}:}
+\DoxyCodeLine{31         \mbox{\hyperlink{classPicoLed_1_1PicoLedTarget}{PicoLedTarget}}(uint numLeds, DataByte b1, DataByte b2, DataByte b3, DataByte b4);}
+\DoxyCodeLine{32         \mbox{\hyperlink{classPicoLed_1_1PicoLedTarget}{\string~PicoLedTarget}}();}
+\DoxyCodeLine{33 }
+\DoxyCodeLine{34         \textcolor{keyword}{virtual} uint getNumLeds();}
+\DoxyCodeLine{35         \textcolor{keyword}{virtual} uint8\_t getBrightness();}
+\DoxyCodeLine{36         \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} setBrightness(uint8\_t brightness);}
+\DoxyCodeLine{37         \textcolor{keyword}{virtual} uint32\_t getData(uint index);}
+\DoxyCodeLine{38         \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} setData(uint index, uint32\_t value);}
+\DoxyCodeLine{39         \textcolor{keyword}{virtual} \textcolor{keywordtype}{void} show();}
+\DoxyCodeLine{40         \mbox{\hyperlink{structPicoLed_1_1Color}{Color}} getPixelColor(uint index);}
+\DoxyCodeLine{41         \textcolor{keywordtype}{void} setPixelColor(uint index, \mbox{\hyperlink{structPicoLed_1_1Color}{Color}} color);}
+\DoxyCodeLine{42         \textcolor{keywordtype}{void} fill(\mbox{\hyperlink{structPicoLed_1_1Color}{Color}} color, uint first, uint count);}
+\DoxyCodeLine{43     \textcolor{keyword}{protected}:}
+\DoxyCodeLine{44         uint32\_t getPixelData(\mbox{\hyperlink{structPicoLed_1_1Color}{Color}} color);}
+\DoxyCodeLine{45         uint32\_t scalePixelData(uint32\_t data, uint16\_t scale);}
+\DoxyCodeLine{46 }
+\DoxyCodeLine{47         uint numLeds;}
+\DoxyCodeLine{48         DataByte bytes[4];}
+\DoxyCodeLine{49         uint8\_t brightness;}
+\DoxyCodeLine{50 \};}
+\DoxyCodeLine{51 }
+\DoxyCodeLine{52 \};}
+\DoxyCodeLine{53 }
+\DoxyCodeLine{54 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

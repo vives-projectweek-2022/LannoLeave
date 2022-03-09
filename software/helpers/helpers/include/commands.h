@@ -16,4 +16,12 @@ namespace LannoLeaf {
 
   } commands;
 
+  typedef enum bl_commands {
+
+    start_read,
+    set_led,
+    set_brightness
+
+  } bl_commands;
+
 }

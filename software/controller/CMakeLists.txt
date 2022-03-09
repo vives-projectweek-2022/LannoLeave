@@ -20,6 +20,7 @@ target_link_libraries(controller
   i2c_slave
   helper
   graph
+  Pico_led
 )
 
 target_compile_definitions(controller PRIVATE

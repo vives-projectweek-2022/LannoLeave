@@ -2,13 +2,15 @@
 #include <stdint.h>
 
 #include <pico/stdlib.h>
+
 #include <commands.h>
 #include <helper_funcs_var.h>
 #include <controller.h>
+#include <PicoLed.hpp>
 
 using namespace LannoLeaf;
 
-Controller controller(i2c0);
+Controller controller(i2c0, i2c1);
 
 void set_alive_led(void) {
   #ifdef DEBUG
@@ -29,14 +31,24 @@ int main() {
   controller.topology_discovery();
 
   while (true) {
+    // Uart packets
+    // 1. Start byte
+    // 2. Length
+    // 3. Address
+    // 4. Sub address
+    // 5. Command
+    // 6. extra data (RGB, Brightness, etc.)
+
     if (uint8_t lenght = uart_is_readable(uart0)) {
       uint8_t buffer[10];
       uart_read_blocking(uart0, buffer, lenght);
       
-      if (buffer[0] == 0x61) {
-        uart_write_blocking(uart0, (const uint8_t *)controller.graph.to_string().c_str(), controller.graph.to_string().size());
-      } else if (buffer[0] == 0x01) {
-        controller.reset();
+      if (buffer[0] == start_read) {
+        uart_read_blocking(uart0, buffer, 1);
+        uart_read_blocking(uart0, buffer, buffer[0]);
+
+        
+
       }
     }
   }

@@ -25,8 +25,8 @@ namespace LannoLeaf {
 
   /** \brief  Storage stuct where master reads from*/
   struct context {
-    uint8_t mem[5];
-    uint8_t mem_address;
+    uint8_t mem[11];
+    uint8_t mem_address = 0;
   };
 
   static context _context;

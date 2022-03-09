@@ -37,4 +37,14 @@ namespace LannoLeaf {
     sleep_ms(SLEEP_TIME);
   }
 
+  void I2CMaster::get_slave_data_no_mem_reset(uint8_t slave_address, size_t lenght) {
+    uint8_t temp;
+    for (size_t i = 0; i < lenght; i++) {
+      i2c_read_blocking(i2c, slave_address, & temp, 1, false);
+      _memory[i] = temp;
+    }
+
+    sleep_ms(SLEEP_TIME);
+  }
+
 }

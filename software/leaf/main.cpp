@@ -19,10 +19,7 @@ void set_alive_led(void) {
   #endif
 }
 
-int main() {
-  stdio_init_all();
-  set_alive_led();
-
+void add_handlers(void) {
   leaf.add_command_handel(slave_set_i2c_address, [&](context* contx, msg_buff* msg){
     if (leaf.address() == 0x08) {
       leaf.address(msg -> buffer[0]);
@@ -53,9 +50,30 @@ int main() {
   });
 
   leaf.add_command_handel(slave_reset, [&](context* contx, msg_buff* msg){
-    printf("Resetting\n");
     leaf.reset();
   });
+
+  leaf.add_command_handel(slave_is_neighbor, [&](context* contx, msg_buff* msg){
+    if (leaf.sel_pin_status()) {
+      contx -> mem_address++;
+      contx -> mem[contx -> mem_address] = msg -> buffer[0];
+      
+      contx -> mem_address++;
+      contx -> mem[contx -> mem_address] = leaf.sel_pin_status();
+    } 
+  });
+
+  leaf.add_command_handel(slave_neighbor_size, [&](context* contx, msg_buff* msg){
+    contx -> mem[0] = (contx -> mem_address / 2);
+    contx -> mem_address = 0;
+  });
+}
+
+int main() {
+  stdio_init_all();
+  set_alive_led();
+
+  add_handlers();
 
   while (true) {
     while (!leaf.configured()) {

@@ -10,7 +10,9 @@ namespace LannoLeaf {
     slave_set_sel_pin,
     slave_get_sel_pin,
     slave_set_color,
-    slave_reset
+    slave_reset,
+    slave_is_neighbor,
+    slave_neighbor_size
 
   } commands;
 

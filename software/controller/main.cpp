@@ -25,21 +25,8 @@ int main() {
 
   sleep_ms(500);
 
-  #ifdef DEBUG
-  auto t1 = get_absolute_time();
-  #endif
-
-  PRINT("Starting device discovery\r\n");
   controller.device_discovery();
-  
-  PRINT("Starting topo discovery\r\n");
   controller.topology_discovery();
-  
-  #ifdef DEBUG
-  auto t2 = get_absolute_time();
-  #endif
-
-  PRINT_A("Algorithms took: %lld µs\r\n", absolute_time_diff_us(t1, t2));
 
   while (true) {
     if (uint8_t lenght = uart_is_readable(uart0)) {

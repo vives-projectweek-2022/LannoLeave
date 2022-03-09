@@ -31,24 +31,25 @@ namespace LannoLeaf {
        * \note All received bytes are stored in memory attribute*/
       void get_slave_data(uint8_t slave_address, size_t lenght);
 
-    public:
-      /** \brief Access i2c master readonly memory
-       * \param index index of memory to access max 4 
-       * \return uint8_t located at index in memory*/
-      inline uint8_t& memory(int index) { return _memory[index]; } 
+      /** \brief Same as get_slave_data but does not send slave_mem_reset message*/
+      void get_slave_data_no_mem_reset(uint8_t slave_address, size_t lenght);
 
     public:
       /** \brief Sets the i2c_instance for master to use
        * \param i2c i2c_instance */
       inline void set_i2c_inst(i2c_inst_t* i2c) { this -> i2c = i2c; }
 
-      /** \brief Resets all readonly memory to 0 */
-      inline void reset_mem(void) { for (int i = 0; i < 5; i++) _memory[i] = 0; }
+      /** \brief Resets all readonly memory to 0x00 */
+      inline void reset_mem(void) { for (int i = 0; i < 5; i++) _memory[i] = 0x00; }
 
+
+    public:
+      /** \brief Readonly memory of i2c_master*/
+      const uint8_t* memory = _memory;
 
     private:
       i2c_inst_t* i2c;
-      uint8_t _memory[5];
+      uint8_t _memory[10];
   };
 
 }

@@ -11,13 +11,13 @@
 
 #define PRINT(x) printf(x)
 #define PRINT_A(x, a) printf(x, a)
-#define SLEEP_TIME 100
+#define SLEEP_TIME 20
 
 #else
 
 #define PRINT(x)
 #define PRINT_A(x, a)
-#define SLEEP_TIME 2
+#define SLEEP_TIME 1
 
 #endif
 

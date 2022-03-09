@@ -74,7 +74,7 @@ namespace LannoLeaf {
 
   static void i2c_slave_handler(i2c_inst_t * i2c, i2c_slave_event_t event) {
     switch (event) {
-    case I2C_SLAVE_RECEIVE: {      
+    case I2C_SLAVE_RECEIVE: { 
       uint8_t receive_buffer[2];
 
       i2c_read_raw_blocking(i2c, receive_buffer, 2);
@@ -86,11 +86,9 @@ namespace LannoLeaf {
     }
 
     case I2C_SLAVE_REQUEST: {
-      while (!i2c_get_write_available(i2c));
-
-      i2c_write_byte(i2c, _context.mem[_context.mem_address]);
-      
-      _context.mem_address++;
+        while (!i2c_get_write_available(i2c)) tight_loop_contents();
+        i2c_write_byte(i2c, _context.mem[_context.mem_address]);
+        _context.mem_address++;
       break;
     }
 

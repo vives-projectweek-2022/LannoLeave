@@ -10,6 +10,7 @@
 #include <hardware/gpio.h>
 
 #include <i2c_master.h>
+#include <i2c_fifo.h>
 
 #include <commands.h>
 #include <graph.h>
@@ -34,10 +35,15 @@ namespace LannoLeaf {
 
     private:
       void initialize(void);
-      void assign_new_address(void);
 
     private:  
+      /** \returns Next unused i2c address*/
       uint8_t get_next_available_address(void);
+
+      /** \brief Assings new address to device if present
+       * \returns Assigned address on succes, UNCONFIGUREDADDRESS on fail*/
+      uint8_t assign_new_address(void);
+
 
     public:
       Graph graph;

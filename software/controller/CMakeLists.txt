@@ -17,6 +17,7 @@ target_link_libraries(controller
   pico_stdlib
   hardware_i2c
   i2c_master
+  i2c_slave
   helper
   graph
 )

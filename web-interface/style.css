@@ -22,6 +22,10 @@ body {
     opacity: 97%;
 }
 
+#banner {
+    padding: 10px;
+}
+
 #footer {
     font-weight: lighter;
     flex: 1;
@@ -124,6 +128,18 @@ body {
   
   .rad-input:checked~.rad-text {
     color: #ddd;
+  }
+
+  #RGB {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      cursor:crosshair;
+      border-radius: 5px;
+      width: 75px;
+      height: 75px;
+      border: solid;
+      border-color: #555;
+    
   }
 
 /* for leaf selection https://www.w3schools.com/howto/howto_custom_select.asp */

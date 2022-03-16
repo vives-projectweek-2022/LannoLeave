@@ -45,9 +45,9 @@ namespace LannoLeaf {
       /** \brief Resets all slaves and reruns discovery/topology discovery algorithm*/
       void reset(void);
       
-      void handel_packet(packet pkt);
+      void handel_packet(bl_commands pkt);
       
-      void add_packet_handel(bl_commands cmd, std::function<void(packet)> func);
+      void add_packet_handel(bl_commands cmd, std::function<void(void)> func);
 
     private:
       void initialize(void);
@@ -72,7 +72,7 @@ namespace LannoLeaf {
 
     private:
       std::vector<uint8_t> visited;
-      std::map<bl_commands, std::function<void(packet)>> packet_handlers;
+      std::map<bl_commands, std::function<void(void)>> packet_handlers;
   
   };
   

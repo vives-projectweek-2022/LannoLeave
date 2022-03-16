@@ -14,23 +14,29 @@ namespace LannoLeaf {
     slave_neighbor_size,
     slave_set_led,
     slave_set_all_led,
-    slave_set_brightness
 
   } commands;
 
   typedef enum bl_commands {
 
-    set_led,
-    set_all_led,
-    set_brightness
+    send_adj_list,
+
+    set_leaf_led,
+
+    set_leaf_all,
+    set_unit_all,
+    set_all_all,
+
+    clear_leaf,
+    clear_unit,
+    clear_all,
+
+    set_random
 
   } bl_commands;
 
   struct packet {
-    uint8_t i2c_address;
-    uint8_t led_num;
-    uint8_t command;
-    uint8_t data[4];
+    
   };
 
 }

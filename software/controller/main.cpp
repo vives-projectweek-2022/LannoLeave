@@ -76,11 +76,8 @@ int main() {
 
   add_packet_handlers();
 
-  controller.leaf_master.send_slave_message(0x09, {
-    slave_set_all_led,
-    4,
-    {0xff, 0xff, 0xff, 0xff}
-  });
+  controller.ledstrip.fillRainbow(0, 255 / LED_LENGTH);
+  controller.ledstrip.show();
 
   while (true) {
     if (uart_is_readable(uart0)) {

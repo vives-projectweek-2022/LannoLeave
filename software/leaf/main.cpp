@@ -75,7 +75,7 @@ void add_handlers(void) {
 
   leaf.add_command_handel(slave_set_all_led, [&](context* contx, msg_buff* msg){
     printf("Received set all led message\r\n");
-    leaf.ledstrip.fill(PicoLed::RGBW(msg -> buffer[1], msg -> buffer[2], msg -> buffer[3], msg -> buffer[4]));
+    leaf.ledstrip.fill(PicoLed::RGBW(msg -> buffer[0], msg -> buffer[1], msg -> buffer[2], msg -> buffer[3]));
     leaf.ledstrip.show();
   });
 

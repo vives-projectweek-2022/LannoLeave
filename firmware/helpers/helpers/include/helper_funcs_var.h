@@ -33,7 +33,7 @@ namespace LannoLeaf {
     B,
     C,
     D,
-    E
+    E,
   } select_pins;
 
   static std::initializer_list all_select_pins = { A, B, C, D, E };

@@ -13,6 +13,14 @@ using namespace LannoLeaf;
 
 Controller controller(i2c0);
 
+volatile bool check = false;
+
+bool repeating_timer_callback(struct repeating_timer *t) {
+  printf("Timer\r\n");
+  check = true;
+  return true;
+}
+
 void set_alive_led(void) {
   #ifdef DEBUG
   const uint led_pin = 25;
@@ -76,10 +84,31 @@ int main() {
 
   add_packet_handlers();
 
-  controller.ledstrip.fillRainbow(0, 255 / LED_LENGTH);
-  controller.ledstrip.show();
+  struct repeating_timer timer;
+
+  add_repeating_timer_ms(1000, repeating_timer_callback, NULL, &timer);
 
   while (true) {
+    if (check) {
+      for (std::map <uint8_t, Node*>::iterator itr = controller.graph.map.begin(); itr != controller.graph.map.end(); itr++) {
+        if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) continue;
+        controller.leaf_master.send_slave_message(itr -> second -> i2c_address, {
+          slave_ping,
+          0,
+          { }
+        });
+
+        controller.leaf_master.get_slave_data(itr -> second -> i2c_address, 2);
+
+        if (controller.leaf_master.memory[0] != 0xA5 && controller.leaf_master.memory[1] != 0x5A) {
+          printf("Resetting \r\n");
+          controller.reset();
+        }
+      }
+
+      check = false;
+    }
+
     if (uart_is_readable(uart0)) {
       uint8_t buffer[7];
       uart_read_blocking(uart0, buffer, 1);

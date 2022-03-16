@@ -16,7 +16,6 @@ Controller controller(i2c0);
 volatile bool check = false;
 
 bool repeating_timer_callback(struct repeating_timer *t) {
-  printf("Timer\r\n");
   check = true;
   return true;
 }
@@ -31,7 +30,6 @@ void set_alive_led(void) {
 }
 
 void add_packet_handlers(void) {
-
   controller.add_packet_handel(send_adj_list, [&](){
     uart_write_blocking(uart0, (const uint8_t *) controller.graph.to_string().c_str(), controller.graph.to_string().size());
   });

@@ -8,6 +8,7 @@
 #include <pico/stdlib.h>
 #include <hardware/i2c.h>
 #include <hardware/gpio.h>
+#include <hardware/spi.h>
 
 #include <i2c_fifo.h>
 #include <i2c_master.h>
@@ -18,7 +19,7 @@
 #include <PicoLed.hpp>
 
 #define LED_PIN 15
-#define LED_LENGTH 6
+#define LED_LENGTH 60
 
 namespace LannoLeaf {
 

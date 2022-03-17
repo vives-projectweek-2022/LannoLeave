@@ -31,22 +31,11 @@ void set_alive_led(void) {
 
 void add_packet_handlers(void) {
   controller.add_packet_handel(send_adj_list, [&](){
-    uart_write_blocking(uart0, (const uint8_t *) controller.graph.to_string().c_str(), controller.graph.to_string().size());
+
   });
 
   controller.add_packet_handel(set_leaf_led, [&](){
-    uint8_t buffer[6];
-    uart_read_blocking(uart0, buffer, 6);
-
-    if (buffer[0] == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
-      controller.ledstrip.setPixelColor(buffer[1], PicoLed::RGBW(buffer[2], buffer[3], buffer[4], buffer[5]));
-    } else {
-      controller.leaf_master.send_slave_message(buffer[0], {
-        slave_set_led,
-        5,
-        { buffer[1], buffer[2], buffer[3], buffer[4], buffer[5] }
-      });
-    }
+    
   });
 
   controller.add_packet_handel(set_leaf_all, [&](){
@@ -54,18 +43,7 @@ void add_packet_handlers(void) {
   });
 
   controller.add_packet_handel(set_unit_all, [&](){
-    uint8_t buffer[5];
-    uart_read_blocking(uart0, buffer, 5);
 
-    if (buffer[0] == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
-      controller.ledstrip.fill(PicoLed::RGBW(buffer[1], buffer[2], buffer[3], buffer[4]));
-    } else {
-      controller.leaf_master.send_slave_message(buffer[0], {
-        slave_set_all_led,
-        4,
-        { buffer[1], buffer[2], buffer[3], buffer[4] }
-      });
-    }
   });
 
   controller.add_packet_handel(set_all_all, [&](){
@@ -105,6 +83,16 @@ int main() {
 
   add_repeating_timer_ms(1000, repeating_timer_callback, NULL, &timer);
 
+  controller.ledstrip.fill(PicoLed::RGBW(0xff, 0xff, 0xff, 0xff));
+  controller.ledstrip.show();
+
+  // controller.ledstrip.fillRainbow(0x12, 0x13);
+  // controller.ledstrip.show();
+
+  uint8_t position = 0;
+  uint8_t sleep_time = 100;
+  uint8_t orange = 0;
+
   while (true) {
     if (check) {
       for (std::map <uint8_t, Node*>::iterator itr = controller.graph.map.begin(); itr != controller.graph.map.end(); itr++) {
@@ -126,12 +114,27 @@ int main() {
       check = false;
     }
 
-    if (uart_is_readable(uart0)) {
-      printf("Reading message \r\n");
-      uint8_t cmd;
-      uart_read_blocking(uart0, &cmd, 1);
+    uint8_t cmd;
+    controller.handel_packet((bl_commands) cmd);
 
-      controller.handel_packet((bl_commands) cmd);
+    position++;
+
+    if (orange == 0) {
+      controller.ledstrip.setPixelColor(position, PicoLed::RGB(0xff, 0, 0));
+    } else if (orange == 1) {
+      controller.ledstrip.setPixelColor(position, PicoLed::RGB(0, 0xff, 0));
+    } else {
+      controller.ledstrip.setPixelColor(position, PicoLed::RGB(0, 0, 0xff));
+    }   
+    
+    controller.ledstrip.show();
+
+    if (position == LED_LENGTH) {
+      position = 0;
+      orange++;
+      if (orange == 3) orange = 0;
     }
+
+    sleep_ms(20);
   }
 }

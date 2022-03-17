@@ -2,8 +2,6 @@
 
 namespace LannoLeaf {
 
-  // SPI
-
   Controller::Controller(i2c_inst_t * i2c_leaf_inst) { 
     leaf_master.set_i2c_inst(i2c_leaf_inst);
     initialize();
@@ -27,12 +25,21 @@ namespace LannoLeaf {
 
     i2c_init(i2c0, BAUDRATE);
 
-    uart_init(uart0, 9600);
-
     gpio_set_function(12, GPIO_FUNC_UART);
     gpio_set_function(13, GPIO_FUNC_UART);
 
     graph.add_node(I2C_CONTOLLER_PLACEHOLDER_ADDRESS);
+
+    spi_init(spi0, SPIFREQUENCY);
+
+    gpio_set_function(6, GPIO_FUNC_SPI);
+    gpio_set_function(7, GPIO_FUNC_SPI);
+    gpio_set_function(8, GPIO_FUNC_SPI);
+
+    spi_set_slave(spi0, true);
+
+    gpio_init(9);
+    gpio_set_dir(9, GPIO_IN);
   }
 
   void Controller::device_discovery(void) {

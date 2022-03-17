@@ -134,13 +134,18 @@ namespace LannoLeaf {
     topology_discovery();
   }
 
-  void Controller::handel_packet(packet pkt) {
-    std::map<bl_commands, std::function<void(packet)>>::iterator itr = packet_handlers.find((bl_commands) pkt.command);
-    if (itr != packet_handlers.end()) packet_handlers[(bl_commands)pkt.command](pkt);
+  void Controller::handel_packet(bl_commands cmd) {
+    std::map<bl_commands, std::function<void(void)>>::iterator itr = packet_handlers.find((bl_commands) cmd);
+    if (itr != packet_handlers.end()){
+      printf("Handler found\r\n");
+      packet_handlers[(bl_commands)cmd]();
+    } else {
+      printf("Not handler found !!\r\n");
+    }
   }
 
-  void Controller::add_packet_handel(bl_commands cmd, std::function<void(packet)> func) {
-    std::map<bl_commands, std::function<void(packet)>>::iterator itr = packet_handlers.find(cmd);
+  void Controller::add_packet_handel(bl_commands cmd, std::function<void(void)> func) {
+    std::map<bl_commands, std::function<void(void)>>::iterator itr = packet_handlers.find((bl_commands) cmd);
 
     if (itr == packet_handlers.end()) {
       packet_handlers[cmd] = func;

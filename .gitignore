@@ -4,3 +4,5 @@ BUILD
 mbed-os
 
 build
+
+firmware/docs/doxy

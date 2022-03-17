@@ -1,0 +1,22 @@
+version: "3"
+services:
+  node_api:
+    hostname: node_api
+    image: node
+    container_name: node_api
+    domainname: pi.hole
+    # environment:
+    #   - VIRTUAL_HOST=pi.hole
+    networks:
+      - lannoo_leaf
+    ports:
+      - 80:80/tcp
+    restart: unless-stopped
+    # volumes:
+    #   - ./data/etc-dnsmasq.d:/etc/dnsmasq.d
+    #   - ./data/etc-pihole:/etc/pihole
+networks:
+  lannoo_leaf:
+    driver: bridge
+    ipam:
+      driver: default

@@ -30,6 +30,9 @@ cmake --build .
 
 ```
 
+## Documentation
+Doxygen documentation will be generated on build, and will be put inside docs folder as doxy.
+
 ## SDK documentation
 
 - [Pi-pico-c-sdk](https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf)

@@ -16,7 +16,7 @@
 |---|---|---|---|---|---|---|
 | U1 | 1 | Raspberry Pi Pico  | 2.54mm (2x20) | Farnell | [3643332](https://be.farnell.com/raspberry-pi/raspberry-pi-pico/raspberry-pi-32bit-arm-cortex/dp/3643332) | 3,27 € (1+) |
 | U2 | 1 | TL2575-05 (ADJ) | TO-263-5 | Farnell | [2534162](https://be.farnell.com/on-semiconductor/lm2596dsadjg/dc-dc-conv-buck-3a-150khz-to-263/dp/2534162) | 2,65 € (10+) |
-| D1 - D16 | 16 | WS2812B addressable LEDS | 5050 | TME | [1003273](https://www.tme.eu/be/nl/details/ws2812b-v5/led-diodes-smd-gekleurd/worldsemi/) | 0,1267 € (250+) |
+| D1 - D16 | 16 | WS2812B addressable LEDS | 5050 | TME | [WS2812B-V5](https://www.tme.eu/be/nl/details/ws2812b-v5/led-diodes-smd-gekleurd/worldsemi/) | 0,1267 € (250+) |
 | C1 - C16 | 16 | 100nF | 0805 | Farnell | [2320821](https://be.farnell.com/multicomp/mc0805b104k101ct/cap-0-1-f-100v-10-x7r-0805/dp/2320821) | 0,048 € (250+) |
 | C17 | 1 | 100µF | 10x10mm | Farnell | [1834213](https://be.farnell.com/vishay/mal214097001e3/cap-100-f-35v-radial-smd/dp/1834213) | 1,65 € (10+) |
 | C18 | 1 | 220µF | 10x10mm | Farnell | [2535792](https://be.farnell.com/rubycon/35trv220m10x10-5/cap-220-f-35v-smd/dp/2535792) | 0,611 € (10+) |

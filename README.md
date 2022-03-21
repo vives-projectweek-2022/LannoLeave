@@ -13,7 +13,7 @@ Every GitHub repository should be accompanied by a complete README.md file
 * How to set up the dev environment
 * License and author info
 
->van kickoff presentatie
+>[van kickoff presentatie](https://vives-projectweek-2022.github.io/project-introductions/project-description.html#8)
 
 ## Project overview
 

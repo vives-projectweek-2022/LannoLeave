@@ -4,7 +4,14 @@ Project Week 2022 Lannoo Leave
 
 ## Readme requirements「Tijdelijk: deleten na tijdje」
 
-![afbeelding](https://user-images.githubusercontent.com/71697142/159238386-852f3cc5-7a83-46b0-a8cf-607786799dfe.png)
+Every GitHub repository should be accompanied by a complete README.md file
+
+* What your project does
+* How to install it
+* Example usage
+* Screenshots
+* How to set up the dev environment
+* License and author info
 
 >van kickoff presentatie
 

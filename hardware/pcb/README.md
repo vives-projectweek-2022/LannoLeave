@@ -47,3 +47,21 @@ Totale prijs componenten leaf: `13,56 €`
 Totale prijs componenten controller: `14,79 €`
 
 Totale prijs componenten verbindingsstuk: `0,10508 €`
+
+## BOM (Bill of Materials) Aliexpress
+
+| Designator | Quantity | Description | Footprint | Distributor | Ordercode | Price |
+|---|---|---|---|---|---|---|
+
+* https://nl.aliexpress.com/item/4000262366205.html?gatewayAdapt=glo2nld&spm=a2g0o.cart.0.0.5f573c00WdXbel&mp=1
+    * variant: 5p
+* https://www.aliexpress.com/item/4000047784474.html?spm=a2g0o.cart.0.0.5f573c00WdXbel&mp=1
+
+* https://www.aliexpress.com/item/32964553793.html?spm=a2g0o.cart.0.0.5f573c00WdXbel&mp=1
+    * variant: 1uF
+    * variant: 2nF
+    * variant: 100nF
+* https://www.aliexpress.com/item/1005002653014067.html?spm=a2g0o.cart.0.0.5f573c00WdXbel&mp=1
+    * variant: 200pcs, white pcb
+* https://www.aliexpress.com/item/4000557721022.html?spm=a2g0o.cart.0.0.5f573c00WdXbel&mp=1
+    * variant: LM2596S-ADJ

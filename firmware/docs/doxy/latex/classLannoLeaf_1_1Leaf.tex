@@ -1,0 +1,107 @@
+\hypertarget{classLannoLeaf_1_1Leaf}{}\doxysection{Lanno\+Leaf\+::Leaf Class Reference}
+\label{classLannoLeaf_1_1Leaf}\index{LannoLeaf::Leaf@{LannoLeaf::Leaf}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Leaf_a0f91f8328ee2f7c16a8429c71ef8eb4b}\label{classLannoLeaf_1_1Leaf_a0f91f8328ee2f7c16a8429c71ef8eb4b}} 
+{\bfseries Leaf} (uint8\+\_\+t \mbox{\hyperlink{classLannoLeaf_1_1Leaf_a78e41c7ffb2c9b60f77bf45b41c27159}{address}}, i2c\+\_\+inst\+\_\+t $\ast$i2c)
+\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Leaf_af54bbdfddcbad2df188ad8bbad9712ed}\label{classLannoLeaf_1_1Leaf_af54bbdfddcbad2df188ad8bbad9712ed}} 
+void {\bfseries update} (void)
+\begin{DoxyCompactList}\small\item\em Updates the select pin status and handels data. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Leaf_a3bccb8bcf4100cc09c1601e57dac58c9}\label{classLannoLeaf_1_1Leaf_a3bccb8bcf4100cc09c1601e57dac58c9}} 
+void {\bfseries slave\+\_\+init} (void)
+\begin{DoxyCompactList}\small\item\em Initializes slave and start listening on the i²c bus. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classLannoLeaf_1_1Leaf_a78e41c7ffb2c9b60f77bf45b41c27159}{address}} (uint8\+\_\+t address)
+\begin{DoxyCompactList}\small\item\em Assing a new i²c address to slave. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classLannoLeaf_1_1Leaf_a1faffa8853956a3df90cdd792a8d85f9}{add\+\_\+command\+\_\+handel}} (uint8\+\_\+t command, std\+::function$<$ void(\mbox{\hyperlink{structLannoLeaf_1_1context}{context}} $\ast$, \mbox{\hyperlink{structLannoLeaf_1_1msg__buff}{msg\+\_\+buff}} $\ast$)$>$ handler)
+\begin{DoxyCompactList}\small\item\em Adds a command handler for i²c slave. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Leaf_a46f4411ce8f9231dfb9dd39da99da92b}\label{classLannoLeaf_1_1Leaf_a46f4411ce8f9231dfb9dd39da99da92b}} 
+void {\bfseries reset} (void)
+\begin{DoxyCompactList}\small\item\em Resets slave to default configuration. \end{DoxyCompactList}\item 
+uint8\+\_\+t \& \mbox{\hyperlink{classLannoLeaf_1_1Leaf_ab42f77fa9ea026c8b9864a3938382878}{address}} (void)
+\item 
+uint8\+\_\+t \& \mbox{\hyperlink{classLannoLeaf_1_1Leaf_a30888a56f9f0fd2b9d9a4e7e551c7ddd}{sel\+\_\+pin\+\_\+status}} (void)
+\item 
+bool \& \mbox{\hyperlink{classLannoLeaf_1_1Leaf_ae79356ad779818edcd97c78ab18841b8}{slave\+\_\+initialized}} (void)
+\item 
+bool \& \mbox{\hyperlink{classLannoLeaf_1_1Leaf_a0a911248bd3abf30f8edb181e400bca8}{configured}} (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Leaf_ac9a8215271ebc8e34169e86cd7fa3b68}\label{classLannoLeaf_1_1Leaf_ac9a8215271ebc8e34169e86cd7fa3b68}} 
+Pico\+Led\+::\+Pico\+Led\+Controller {\bfseries ledstrip} = Pico\+Led\+::add\+Leds$<$Pico\+Led\+::\+WS2812B$>$(pio0, 0, LED\+\_\+\+PIN, LED\+\_\+\+LENGTH, Pico\+Led\+::\+FORMAT\+\_\+\+GRB)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classLannoLeaf_1_1Leaf_a1faffa8853956a3df90cdd792a8d85f9}\label{classLannoLeaf_1_1Leaf_a1faffa8853956a3df90cdd792a8d85f9}} 
+\index{LannoLeaf::Leaf@{LannoLeaf::Leaf}!add\_command\_handel@{add\_command\_handel}}
+\index{add\_command\_handel@{add\_command\_handel}!LannoLeaf::Leaf@{LannoLeaf::Leaf}}
+\doxysubsubsection{\texorpdfstring{add\_command\_handel()}{add\_command\_handel()}}
+{\footnotesize\ttfamily void Lanno\+Leaf\+::\+Leaf\+::add\+\_\+command\+\_\+handel (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{command,  }\item[{std\+::function$<$ void(\mbox{\hyperlink{structLannoLeaf_1_1context}{context}} $\ast$, \mbox{\hyperlink{structLannoLeaf_1_1msg__buff}{msg\+\_\+buff}} $\ast$)$>$}]{handler }\end{DoxyParamCaption})}
+
+
+
+Adds a command handler for i²c slave. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em command} & Command wich slave needs to handel defined in command.\+h \\
+\hline
+{\em handler} & Function to execute \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classLannoLeaf_1_1Leaf_a78e41c7ffb2c9b60f77bf45b41c27159}\label{classLannoLeaf_1_1Leaf_a78e41c7ffb2c9b60f77bf45b41c27159}} 
+\index{LannoLeaf::Leaf@{LannoLeaf::Leaf}!address@{address}}
+\index{address@{address}!LannoLeaf::Leaf@{LannoLeaf::Leaf}}
+\doxysubsubsection{\texorpdfstring{address()}{address()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Lanno\+Leaf\+::\+Leaf\+::address (\begin{DoxyParamCaption}\item[{uint8\+\_\+t}]{address }\end{DoxyParamCaption})}
+
+
+
+Assing a new i²c address to slave. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em address} & The new i²c slave address ~\newline
+ \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classLannoLeaf_1_1Leaf_ab42f77fa9ea026c8b9864a3938382878}\label{classLannoLeaf_1_1Leaf_ab42f77fa9ea026c8b9864a3938382878}} 
+\index{LannoLeaf::Leaf@{LannoLeaf::Leaf}!address@{address}}
+\index{address@{address}!LannoLeaf::Leaf@{LannoLeaf::Leaf}}
+\doxysubsubsection{\texorpdfstring{address()}{address()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily uint8\+\_\+t \& Lanno\+Leaf\+::\+Leaf\+::address (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+Slave i²c address 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classLannoLeaf_1_1Leaf_a0a911248bd3abf30f8edb181e400bca8}\label{classLannoLeaf_1_1Leaf_a0a911248bd3abf30f8edb181e400bca8}} 
+\index{LannoLeaf::Leaf@{LannoLeaf::Leaf}!configured@{configured}}
+\index{configured@{configured}!LannoLeaf::Leaf@{LannoLeaf::Leaf}}
+\doxysubsubsection{\texorpdfstring{configured()}{configured()}}
+{\footnotesize\ttfamily bool \& Lanno\+Leaf\+::\+Leaf\+::configured (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+true if slave has been configured with a new i²c address, fase if not 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classLannoLeaf_1_1Leaf_a30888a56f9f0fd2b9d9a4e7e551c7ddd}\label{classLannoLeaf_1_1Leaf_a30888a56f9f0fd2b9d9a4e7e551c7ddd}} 
+\index{LannoLeaf::Leaf@{LannoLeaf::Leaf}!sel\_pin\_status@{sel\_pin\_status}}
+\index{sel\_pin\_status@{sel\_pin\_status}!LannoLeaf::Leaf@{LannoLeaf::Leaf}}
+\doxysubsubsection{\texorpdfstring{sel\_pin\_status()}{sel\_pin\_status()}}
+{\footnotesize\ttfamily uint8\+\_\+t \& Lanno\+Leaf\+::\+Leaf\+::sel\+\_\+pin\+\_\+status (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+Slave select pin status as uint8\+\_\+t 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classLannoLeaf_1_1Leaf_ae79356ad779818edcd97c78ab18841b8}\label{classLannoLeaf_1_1Leaf_ae79356ad779818edcd97c78ab18841b8}} 
+\index{LannoLeaf::Leaf@{LannoLeaf::Leaf}!slave\_initialized@{slave\_initialized}}
+\index{slave\_initialized@{slave\_initialized}!LannoLeaf::Leaf@{LannoLeaf::Leaf}}
+\doxysubsubsection{\texorpdfstring{slave\_initialized()}{slave\_initialized()}}
+{\footnotesize\ttfamily bool \& Lanno\+Leaf\+::\+Leaf\+::slave\+\_\+initialized (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\begin{DoxyReturn}{Returns}
+true if slave is initialized, fase is not 
+\end{DoxyReturn}

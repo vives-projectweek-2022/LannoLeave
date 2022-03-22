@@ -1,0 +1,96 @@
+\hypertarget{leaf_8h_source}{}\doxysection{leaf.\+h}
+\label{leaf_8h_source}\index{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/firmware/leaf/include/leaf.h@{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/firmware/leaf/include/leaf.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{2 }
+\DoxyCodeLine{3 \textcolor{preprocessor}{\#include <stdio.h>}}
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include <stdint.h>}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include <map>}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include <functional>}}
+\DoxyCodeLine{7 }
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#include <pico/stdlib.h>}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#include <hardware/i2c.h>}}
+\DoxyCodeLine{10 \textcolor{preprocessor}{\#include <hardware/gpio.h>}}
+\DoxyCodeLine{11 \textcolor{preprocessor}{\#include <i2c\_slave.h>}}
+\DoxyCodeLine{12 \textcolor{preprocessor}{\#include <i2c\_fifo.h>}}
+\DoxyCodeLine{13 }
+\DoxyCodeLine{14 \textcolor{preprocessor}{\#include <commands.h>}}
+\DoxyCodeLine{15 \textcolor{preprocessor}{\#include <helper\_funcs\_var.h>}}
+\DoxyCodeLine{16 }
+\DoxyCodeLine{17 \textcolor{preprocessor}{\#include <PicoLed.hpp>}}
+\DoxyCodeLine{18 }
+\DoxyCodeLine{19 \textcolor{preprocessor}{\#define LED\_PIN 15}}
+\DoxyCodeLine{20 \textcolor{preprocessor}{\#define LED\_LENGTH 12}}
+\DoxyCodeLine{21 }
+\DoxyCodeLine{22 \textcolor{keyword}{namespace }LannoLeaf \{}
+\DoxyCodeLine{23 }
+\DoxyCodeLine{25   \textcolor{keyword}{struct }\mbox{\hyperlink{structLannoLeaf_1_1msg__buff}{msg\_buff}} \{}
+\DoxyCodeLine{26     \textcolor{keywordtype}{bool} writen = \textcolor{keyword}{false};}
+\DoxyCodeLine{27     uint8\_t command = 0x00;}
+\DoxyCodeLine{28     uint8\_t buffer[5] = \{0\};}
+\DoxyCodeLine{29   \};}
+\DoxyCodeLine{30 }
+\DoxyCodeLine{32   \textcolor{keyword}{struct }\mbox{\hyperlink{structLannoLeaf_1_1context}{context}} \{}
+\DoxyCodeLine{33     uint8\_t mem[11];}
+\DoxyCodeLine{34     uint8\_t mem\_address = 0;}
+\DoxyCodeLine{35   \};}
+\DoxyCodeLine{36 }
+\DoxyCodeLine{37   \textcolor{keyword}{static} \mbox{\hyperlink{structLannoLeaf_1_1context}{context}} \_context;}
+\DoxyCodeLine{38   \textcolor{keyword}{static} \mbox{\hyperlink{structLannoLeaf_1_1msg__buff}{msg\_buff}} msg\_buf;}
+\DoxyCodeLine{39 }
+\DoxyCodeLine{40   \textcolor{keyword}{class }\mbox{\hyperlink{classLannoLeaf_1_1Leaf}{Leaf}} \{}
+\DoxyCodeLine{41 }
+\DoxyCodeLine{42     \textcolor{keyword}{public}:}
+\DoxyCodeLine{43       \mbox{\hyperlink{classLannoLeaf_1_1Leaf}{Leaf}}(uint8\_t \mbox{\hyperlink{classLannoLeaf_1_1Leaf_ab42f77fa9ea026c8b9864a3938382878}{address}}, i2c\_inst\_t * i2c);}
+\DoxyCodeLine{44       \mbox{\hyperlink{classLannoLeaf_1_1Leaf}{\string~Leaf}}();}
+\DoxyCodeLine{45   }
+\DoxyCodeLine{46     \textcolor{keyword}{public}:}
+\DoxyCodeLine{48       \textcolor{keyword}{inline} \textcolor{keywordtype}{void} \mbox{\hyperlink{classLannoLeaf_1_1Leaf_af54bbdfddcbad2df188ad8bbad9712ed}{update}}(\textcolor{keywordtype}{void}) \{ update\_sel\_status(); handle\_data(); \} }
+\DoxyCodeLine{49       }
+\DoxyCodeLine{50     \textcolor{keyword}{public}:}
+\DoxyCodeLine{52       \textcolor{keywordtype}{void} \mbox{\hyperlink{classLannoLeaf_1_1Leaf_a3bccb8bcf4100cc09c1601e57dac58c9}{slave\_init}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{53 }
+\DoxyCodeLine{56       \textcolor{keywordtype}{void} \mbox{\hyperlink{classLannoLeaf_1_1Leaf_ab42f77fa9ea026c8b9864a3938382878}{address}}(uint8\_t \mbox{\hyperlink{classLannoLeaf_1_1Leaf_ab42f77fa9ea026c8b9864a3938382878}{address}});}
+\DoxyCodeLine{57 }
+\DoxyCodeLine{61       \textcolor{keywordtype}{void} \mbox{\hyperlink{classLannoLeaf_1_1Leaf_a1faffa8853956a3df90cdd792a8d85f9}{add\_command\_handel}}(uint8\_t command, std::function<\textcolor{keywordtype}{void}(\mbox{\hyperlink{structLannoLeaf_1_1context}{context}}*, \mbox{\hyperlink{structLannoLeaf_1_1msg__buff}{msg\_buff}}*)> handler);}
+\DoxyCodeLine{62 }
+\DoxyCodeLine{64       \textcolor{keywordtype}{void} \mbox{\hyperlink{classLannoLeaf_1_1Leaf_a46f4411ce8f9231dfb9dd39da99da92b}{reset}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{65 }
+\DoxyCodeLine{66     \textcolor{keyword}{public}:}
+\DoxyCodeLine{68       \textcolor{keyword}{inline} uint8\_t\& \mbox{\hyperlink{classLannoLeaf_1_1Leaf_ab42f77fa9ea026c8b9864a3938382878}{address}}(\textcolor{keywordtype}{void}) \{ \textcolor{keywordflow}{return} \_address; \}}
+\DoxyCodeLine{69 }
+\DoxyCodeLine{71       \textcolor{keyword}{inline} uint8\_t\& \mbox{\hyperlink{classLannoLeaf_1_1Leaf_a30888a56f9f0fd2b9d9a4e7e551c7ddd}{sel\_pin\_status}}(\textcolor{keywordtype}{void}) \{ \textcolor{keywordflow}{return} \_sel\_pin\_status; \}}
+\DoxyCodeLine{72 }
+\DoxyCodeLine{73     \textcolor{keyword}{public}:}
+\DoxyCodeLine{75       \textcolor{keyword}{inline} \textcolor{keywordtype}{bool}\& \mbox{\hyperlink{classLannoLeaf_1_1Leaf_ae79356ad779818edcd97c78ab18841b8}{slave\_initialized}}(\textcolor{keywordtype}{void}) \{ \textcolor{keywordflow}{return} \_slave\_initialized; \}}
+\DoxyCodeLine{76 }
+\DoxyCodeLine{78       \textcolor{keyword}{inline} \textcolor{keywordtype}{bool}\& \mbox{\hyperlink{classLannoLeaf_1_1Leaf_a0a911248bd3abf30f8edb181e400bca8}{configured}}(\textcolor{keywordtype}{void}) \{ \textcolor{keywordflow}{return} \_configured; \}}
+\DoxyCodeLine{79 }
+\DoxyCodeLine{80     \textcolor{keyword}{public}:}
+\DoxyCodeLine{81       PicoLed::PicoLedController ledstrip = PicoLed::addLeds<PicoLed::WS2812B>(pio0, 0, LED\_PIN, LED\_LENGTH, PicoLed::FORMAT\_GRB);}
+\DoxyCodeLine{82 }
+\DoxyCodeLine{83     \textcolor{keyword}{private}:}
+\DoxyCodeLine{84       \textcolor{keywordtype}{void} initialize(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{85       \textcolor{keywordtype}{void} handle\_data(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{86       \textcolor{keywordtype}{void} update\_sel\_status(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{87 }
+\DoxyCodeLine{88     \textcolor{keyword}{private}:}
+\DoxyCodeLine{89       uint8\_t \_sel\_pin\_status = 0x00;}
+\DoxyCodeLine{90 }
+\DoxyCodeLine{91     \textcolor{keyword}{private}:}
+\DoxyCodeLine{92       \textcolor{keywordtype}{bool} \_slave\_initialized = \textcolor{keyword}{false};}
+\DoxyCodeLine{93       \textcolor{keywordtype}{bool} \_configured = \textcolor{keyword}{false};}
+\DoxyCodeLine{94 }
+\DoxyCodeLine{95     \textcolor{keyword}{private}:}
+\DoxyCodeLine{96       i2c\_inst\_t * i2c;}
+\DoxyCodeLine{97       uint8\_t \_address;}
+\DoxyCodeLine{98       std::map<uint8\_t, std::function<void(\mbox{\hyperlink{structLannoLeaf_1_1context}{context}}*, \mbox{\hyperlink{structLannoLeaf_1_1msg__buff}{msg\_buff}}*)>> handlers;}
+\DoxyCodeLine{99 }
+\DoxyCodeLine{100   \};}
+\DoxyCodeLine{101 }
+\DoxyCodeLine{102   \textcolor{keyword}{static} \textcolor{keywordtype}{void} i2c\_slave\_handler(i2c\_inst\_t *i2c, i2c\_slave\_event\_t event);}
+\DoxyCodeLine{103 }
+\DoxyCodeLine{104 \}}
+
+\end{DoxyCode}

@@ -3,11 +3,14 @@
 namespace LannoLeaf {
 
   Controller::Controller(i2c_inst_t * i2c_leaf_inst) { 
+    command_handler = new Spi_command_handler(0, 3, 2, 1);
     leaf_master.set_i2c_inst(i2c_leaf_inst);
     initialize();
   }
 
-  Controller::~Controller() {}
+  Controller::~Controller() { 
+    delete command_handler;
+  }
 
   void Controller::initialize(void) {
     for (select_pins pin : all_select_pins) {
@@ -15,31 +18,17 @@ namespace LannoLeaf {
       gpio_set_dir(pin, GPIO_OUT);
     }
 
-    gpio_init(PICO_DEFAULT_I2C_SDA_PIN);
-    gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
-    gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
+    gpio_init(8);
+    gpio_set_function(8, GPIO_FUNC_I2C);
+    gpio_pull_up(8);
 
-    gpio_init(PICO_DEFAULT_I2C_SCL_PIN);
-    gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
-    gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+    gpio_init(9);
+    gpio_set_function(9, GPIO_FUNC_I2C);
+    gpio_pull_up(9);
 
     i2c_init(i2c0, BAUDRATE);
 
-    gpio_set_function(12, GPIO_FUNC_UART);
-    gpio_set_function(13, GPIO_FUNC_UART);
-
     graph.add_node(I2C_CONTOLLER_PLACEHOLDER_ADDRESS);
-
-    spi_init(spi0, SPIFREQUENCY);
-
-    gpio_set_function(6, GPIO_FUNC_SPI);
-    gpio_set_function(7, GPIO_FUNC_SPI);
-    gpio_set_function(8, GPIO_FUNC_SPI);
-
-    spi_set_slave(spi0, true);
-
-    gpio_init(9);
-    gpio_set_dir(9, GPIO_IN);
   }
 
   void Controller::device_discovery(void) {
@@ -143,18 +132,18 @@ namespace LannoLeaf {
     topology_discovery();
   }
 
-  void Controller::handel_packet(bl_commands cmd) {
-    std::map<bl_commands, std::function<void(void)>>::iterator itr = packet_handlers.find((bl_commands) cmd);
+  void Controller::handel_packet(m_commands cmd) {
+    std::map<m_commands, std::function<void(void)>>::iterator itr = packet_handlers.find((m_commands) cmd);
     if (itr != packet_handlers.end()){
       printf("Handler found\r\n");
-      packet_handlers[(bl_commands)cmd]();
+      packet_handlers[(m_commands)cmd]();
     } else {
       printf("Not handler found !!\r\n");
     }
   }
 
-  void Controller::add_packet_handel(bl_commands cmd, std::function<void(void)> func) {
-    std::map<bl_commands, std::function<void(void)>>::iterator itr = packet_handlers.find((bl_commands) cmd);
+  void Controller::add_packet_handel(m_commands cmd, std::function<void(void)> func) {
+    std::map<m_commands, std::function<void(void)>>::iterator itr = packet_handlers.find((m_commands) cmd);
 
     if (itr == packet_handlers.end()) {
       packet_handlers[cmd] = func;
@@ -179,6 +168,7 @@ namespace LannoLeaf {
     leaf_master.get_slave_data(next_address, 2);
 
     if (leaf_master.memory[0] == 0xA5 && leaf_master.memory[1] == 0x5A) {
+      printf("Assinged new device\n");
       leaf_master.reset_mem();
       graph.add_node(next_address);
       return next_address;

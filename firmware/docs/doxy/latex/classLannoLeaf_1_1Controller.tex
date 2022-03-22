@@ -1,0 +1,38 @@
+\hypertarget{classLannoLeaf_1_1Controller}{}\doxysection{Lanno\+Leaf\+::Controller Class Reference}
+\label{classLannoLeaf_1_1Controller}\index{LannoLeaf::Controller@{LannoLeaf::Controller}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Controller_acdb42f26b36eb89938bf56295dcee601}\label{classLannoLeaf_1_1Controller_acdb42f26b36eb89938bf56295dcee601}} 
+{\bfseries Controller} (i2c\+\_\+inst\+\_\+t $\ast$i2c\+\_\+leaf\+\_\+inst)
+\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Controller_a8a374c2df76fdaf2e6511159d220384b}\label{classLannoLeaf_1_1Controller_a8a374c2df76fdaf2e6511159d220384b}} 
+void {\bfseries device\+\_\+discovery} (void)
+\begin{DoxyCompactList}\small\item\em Starts device discorvery algorithm. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Controller_a2d383a77c1ef656707caf45001780ff0}\label{classLannoLeaf_1_1Controller_a2d383a77c1ef656707caf45001780ff0}} 
+void {\bfseries topology\+\_\+discovery} (void)
+\begin{DoxyCompactList}\small\item\em Starts topology discovery algorithm. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Controller_ae05bfebd2d947c04106ed4fbd6e161f3}\label{classLannoLeaf_1_1Controller_ae05bfebd2d947c04106ed4fbd6e161f3}} 
+void {\bfseries reset} (void)
+\begin{DoxyCompactList}\small\item\em Resets all slaves and reruns discovery/topology discovery algorithm. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Controller_a237670530a1f1d5086831dbb3dbfceda}\label{classLannoLeaf_1_1Controller_a237670530a1f1d5086831dbb3dbfceda}} 
+void {\bfseries handel\+\_\+packet} (m\+\_\+commands pkt)
+\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Controller_a562100e1cb942fc4305a6ea840ea25fa}\label{classLannoLeaf_1_1Controller_a562100e1cb942fc4305a6ea840ea25fa}} 
+void {\bfseries add\+\_\+packet\+\_\+handel} (m\+\_\+commands cmd, std\+::function$<$ void(void)$>$ func)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Controller_a68afabeec3478f64e33ab0ba11f37e76}\label{classLannoLeaf_1_1Controller_a68afabeec3478f64e33ab0ba11f37e76}} 
+\mbox{\hyperlink{classLannoLeaf_1_1Graph}{Graph}} {\bfseries graph}
+\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Controller_ae11df6955bf857a7dea325ef7f1cb7e7}\label{classLannoLeaf_1_1Controller_ae11df6955bf857a7dea325ef7f1cb7e7}} 
+Pico\+Led\+::\+Pico\+Led\+Controller {\bfseries ledstrip} = Pico\+Led\+::add\+Leds$<$Pico\+Led\+::\+WS2812B$>$(pio0, 0, LED\+\_\+\+PIN, LED\+\_\+\+LENGTH, Pico\+Led\+::\+FORMAT\+\_\+\+GRB)
+\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Controller_ac0f16a672db399b5c0c3f27abd47207b}\label{classLannoLeaf_1_1Controller_ac0f16a672db399b5c0c3f27abd47207b}} 
+\mbox{\hyperlink{classLannoLeaf_1_1I2CMaster}{I2\+CMaster}} {\bfseries leaf\+\_\+master}
+\item 
+\mbox{\Hypertarget{classLannoLeaf_1_1Controller_a9d514051fbbce29b12238bc3cec52ca8}\label{classLannoLeaf_1_1Controller_a9d514051fbbce29b12238bc3cec52ca8}} 
+\mbox{\hyperlink{classLannoLeaf_1_1Spi__command__handler}{Spi\+\_\+command\+\_\+handler}} $\ast$ {\bfseries command\+\_\+handler}
+\end{DoxyCompactItemize}

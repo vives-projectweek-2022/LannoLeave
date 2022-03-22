@@ -1,0 +1,74 @@
+\hypertarget{controller_8h_source}{}\doxysection{controller.\+h}
+\label{controller_8h_source}\index{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/firmware/controller/include/controller.h@{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/firmware/controller/include/controller.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{2 }
+\DoxyCodeLine{3 \textcolor{preprocessor}{\#include <map>}}
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include <stdint.h>}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include <functional>}}
+\DoxyCodeLine{7 }
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#include <pico/stdlib.h>}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#include <hardware/i2c.h>}}
+\DoxyCodeLine{10 \textcolor{preprocessor}{\#include <hardware/gpio.h>}}
+\DoxyCodeLine{11 }
+\DoxyCodeLine{12 \textcolor{preprocessor}{\#include <i2c\_fifo.h>}}
+\DoxyCodeLine{13 \textcolor{preprocessor}{\#include <i2c\_master.h>}}
+\DoxyCodeLine{14 \textcolor{preprocessor}{\#include <spi\_command\_handler.h>}}
+\DoxyCodeLine{15 }
+\DoxyCodeLine{16 \textcolor{preprocessor}{\#include <graph.h>}}
+\DoxyCodeLine{17 \textcolor{preprocessor}{\#include <commands.h>}}
+\DoxyCodeLine{18 }
+\DoxyCodeLine{19 \textcolor{preprocessor}{\#include <PicoLed.hpp>}}
+\DoxyCodeLine{20 }
+\DoxyCodeLine{21 \textcolor{preprocessor}{\#define LED\_PIN 15}}
+\DoxyCodeLine{22 \textcolor{preprocessor}{\#define LED\_LENGTH 8}}
+\DoxyCodeLine{23 }
+\DoxyCodeLine{24 \textcolor{keyword}{namespace }LannoLeaf \{}
+\DoxyCodeLine{25 }
+\DoxyCodeLine{26   \textcolor{keyword}{class }\mbox{\hyperlink{classLannoLeaf_1_1Controller}{Controller}} \{}
+\DoxyCodeLine{27 }
+\DoxyCodeLine{28     \textcolor{keyword}{public}:}
+\DoxyCodeLine{29       \mbox{\hyperlink{classLannoLeaf_1_1Controller}{Controller}}(i2c\_inst\_t * i2c\_leaf\_inst);}
+\DoxyCodeLine{30       \mbox{\hyperlink{classLannoLeaf_1_1Controller}{\string~Controller}}();}
+\DoxyCodeLine{31 }
+\DoxyCodeLine{32     \textcolor{keyword}{public}:}
+\DoxyCodeLine{34       \textcolor{keywordtype}{void} \mbox{\hyperlink{classLannoLeaf_1_1Controller_a8a374c2df76fdaf2e6511159d220384b}{device\_discovery}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{35 }
+\DoxyCodeLine{37       \textcolor{keywordtype}{void} \mbox{\hyperlink{classLannoLeaf_1_1Controller_a2d383a77c1ef656707caf45001780ff0}{topology\_discovery}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{38 }
+\DoxyCodeLine{40       \textcolor{keywordtype}{void} \mbox{\hyperlink{classLannoLeaf_1_1Controller_ae05bfebd2d947c04106ed4fbd6e161f3}{reset}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{41       }
+\DoxyCodeLine{42       \textcolor{keywordtype}{void} handel\_packet(m\_commands pkt);}
+\DoxyCodeLine{43       }
+\DoxyCodeLine{44       \textcolor{keywordtype}{void} add\_packet\_handel(m\_commands cmd, std::function<\textcolor{keywordtype}{void}(\textcolor{keywordtype}{void})> func);}
+\DoxyCodeLine{45 }
+\DoxyCodeLine{46     \textcolor{keyword}{private}:}
+\DoxyCodeLine{47       \textcolor{keywordtype}{void} initialize(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{48 }
+\DoxyCodeLine{49     \textcolor{keyword}{private}:  }
+\DoxyCodeLine{51       uint8\_t get\_next\_available\_address(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{52 }
+\DoxyCodeLine{55       uint8\_t assign\_new\_address(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{56 }
+\DoxyCodeLine{57 }
+\DoxyCodeLine{58     \textcolor{keyword}{public}:}
+\DoxyCodeLine{59       \mbox{\hyperlink{classLannoLeaf_1_1Graph}{Graph}} graph;}
+\DoxyCodeLine{60 }
+\DoxyCodeLine{61     \textcolor{keyword}{public}:}
+\DoxyCodeLine{62       PicoLed::PicoLedController ledstrip = PicoLed::addLeds<PicoLed::WS2812B>(pio0, 0, LED\_PIN, LED\_LENGTH, PicoLed::FORMAT\_GRB);}
+\DoxyCodeLine{63 }
+\DoxyCodeLine{64     \textcolor{keyword}{public}:}
+\DoxyCodeLine{65       \mbox{\hyperlink{classLannoLeaf_1_1I2CMaster}{I2CMaster}} leaf\_master;}
+\DoxyCodeLine{66       \mbox{\hyperlink{classLannoLeaf_1_1Spi__command__handler}{Spi\_command\_handler}} *command\_handler;}
+\DoxyCodeLine{67 }
+\DoxyCodeLine{68     \textcolor{keyword}{private}:}
+\DoxyCodeLine{69       std::vector<uint8\_t> visited;}
+\DoxyCodeLine{70       std::map<m\_commands, std::function<void(\textcolor{keywordtype}{void})>> packet\_handlers;}
+\DoxyCodeLine{71   }
+\DoxyCodeLine{72   \};}
+\DoxyCodeLine{73   }
+\DoxyCodeLine{74 \}}
+
+\end{DoxyCode}

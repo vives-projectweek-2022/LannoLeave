@@ -31,11 +31,11 @@ void set_alive_led(void) {
 
 void add_packet_handlers(void) {
   controller.add_packet_handel(send_adj_list, [&](){
-
+    // TODO: Implement
   });
 
   controller.add_packet_handel(set_leaf_led, [&](){
-    
+    // TODO: Implement  
   });
 
   controller.add_packet_handel(set_leaf_all, [&](){
@@ -43,11 +43,27 @@ void add_packet_handlers(void) {
   });
 
   controller.add_packet_handel(set_unit_all, [&](){
+    // TODO: handel addressing
 
+    uint8_t buffer[6];
+    controller.command_handler->read_data(buffer, 6);
+    printf("RGBW: %i, %i, %i, %i\n", buffer[2], buffer[3], buffer[4], buffer[5]);
+    controller.ledstrip.fill(PicoLed::RGBW(buffer[2], buffer[3], buffer[4], buffer[5]));
+    controller.ledstrip.show();
   });
 
   controller.add_packet_handel(set_all_all, [&](){
-    // TODO: Implement
+    uint8_t buffer[4];
+    controller.command_handler->read_data(buffer, 4);
+
+    controller.leaf_master.send_slave_message(GENCALLADR, {
+      slave_set_all_led,
+      4,
+      { buffer[0], buffer[1], buffer[2], buffer[3] }
+    });
+
+    controller.ledstrip.fill(PicoLed::RGBW(buffer[0], buffer[1], buffer[2], buffer[3]));
+    controller.ledstrip.show();
   });
 
   controller.add_packet_handel(clear_leaf, [&](){
@@ -72,7 +88,7 @@ int main() {
   stdio_init_all();
   set_alive_led();
 
-  sleep_ms(500);
+  sleep_ms(2000);
 
   controller.device_discovery();
   controller.topology_discovery();
@@ -83,15 +99,8 @@ int main() {
 
   add_repeating_timer_ms(1000, repeating_timer_callback, NULL, &timer);
 
-  controller.ledstrip.fill(PicoLed::RGBW(0xff, 0xff, 0xff, 0xff));
-  controller.ledstrip.show();
-
-  // controller.ledstrip.fillRainbow(0x12, 0x13);
-  // controller.ledstrip.show();
-
-  uint8_t position = 0;
-  uint8_t sleep_time = 100;
-  uint8_t orange = 0;
+  printf(controller.graph.to_string().c_str());
+  printf("\n");
 
   while (true) {
     if (check) {
@@ -114,27 +123,9 @@ int main() {
       check = false;
     }
 
-    uint8_t cmd;
-    controller.handel_packet((bl_commands) cmd);
-
-    position++;
-
-    if (orange == 0) {
-      controller.ledstrip.setPixelColor(position, PicoLed::RGB(0xff, 0, 0));
-    } else if (orange == 1) {
-      controller.ledstrip.setPixelColor(position, PicoLed::RGB(0, 0xff, 0));
-    } else {
-      controller.ledstrip.setPixelColor(position, PicoLed::RGB(0, 0, 0xff));
-    }   
-    
-    controller.ledstrip.show();
-
-    if (position == LED_LENGTH) {
-      position = 0;
-      orange++;
-      if (orange == 3) orange = 0;
+    if (uint8_t cmd = controller.command_handler->read_command()) {
+      printf("Handel packet\n");
+      controller.handel_packet((m_commands)cmd);
     }
-
-    sleep_ms(20);
   }
 }

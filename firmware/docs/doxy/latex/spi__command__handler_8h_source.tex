@@ -1,0 +1,31 @@
+\hypertarget{spi__command__handler_8h_source}{}\doxysection{spi\+\_\+command\+\_\+handler.\+h}
+\label{spi__command__handler_8h_source}\index{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/firmware/helpers/spi\_command\_handler/include/spi\_command\_handler.h@{/home/joey/Documents/School\_2021-\/2022-\/2/Projectweek/LannoLeave/firmware/helpers/spi\_command\_handler/include/spi\_command\_handler.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#pragma once}}
+\DoxyCodeLine{2 }
+\DoxyCodeLine{3 \textcolor{preprocessor}{\#include <stdint.h>}}
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include <stdio.h>}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include <hardware/spi.h>}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include <pico/stdlib.h>}}
+\DoxyCodeLine{7 }
+\DoxyCodeLine{8 \textcolor{keyword}{namespace }LannoLeaf \{}
+\DoxyCodeLine{9 }
+\DoxyCodeLine{10   \textcolor{keyword}{class }\mbox{\hyperlink{classLannoLeaf_1_1Spi__command__handler}{Spi\_command\_handler}} \{}
+\DoxyCodeLine{11 }
+\DoxyCodeLine{12     \textcolor{keyword}{public}:}
+\DoxyCodeLine{13       \mbox{\hyperlink{classLannoLeaf_1_1Spi__command__handler}{Spi\_command\_handler}}(uint8\_t mosi, uint8\_t miso, uint8\_t clk, uint8\_t cs);}
+\DoxyCodeLine{14       \mbox{\hyperlink{classLannoLeaf_1_1Spi__command__handler}{Spi\_command\_handler}}();}
+\DoxyCodeLine{15 }
+\DoxyCodeLine{16     \textcolor{keyword}{public}:}
+\DoxyCodeLine{17       uint8\_t read\_command(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{18 }
+\DoxyCodeLine{19     \textcolor{keyword}{public}:}
+\DoxyCodeLine{20       \textcolor{keywordtype}{void} read\_data(uint8\_t *data\_buffer, \textcolor{keywordtype}{size\_t} len);}
+\DoxyCodeLine{21       \textcolor{keywordtype}{void} write\_data(uint8\_t *data\_buffer, \textcolor{keywordtype}{size\_t} len);}
+\DoxyCodeLine{22 }
+\DoxyCodeLine{23   \};}
+\DoxyCodeLine{24 }
+\DoxyCodeLine{25 \}}
+
+\end{DoxyCode}

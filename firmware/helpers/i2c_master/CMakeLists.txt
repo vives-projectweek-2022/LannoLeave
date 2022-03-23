@@ -1,10 +1,10 @@
 add_library(i2c_master INTERFACE)
 
-target_include_directories(graph INTERFACE
+target_include_directories(i2c_master INTERFACE
   ./include
 )
 
-target_sources(graph INTERFACE
+target_sources(i2c_master INTERFACE
   i2c_master.cpp
 )
 

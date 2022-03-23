@@ -11,6 +11,7 @@
 
 #include <i2c_fifo.h>
 #include <i2c_master.h>
+#include <spi_command_handler.h>
 
 #include <graph.h>
 #include <commands.h>
@@ -18,16 +19,9 @@
 #include <PicoLed.hpp>
 
 #define LED_PIN 15
-#define LED_LENGTH 6
+#define LED_LENGTH 8
 
 namespace LannoLeaf {
-
-  struct uart_packet {
-    uint8_t i2c_address;
-    uint8_t Sub_address;
-    uint8_t command;
-    uint8_t data[3];
-  };
 
   class Controller {
 
@@ -45,9 +39,9 @@ namespace LannoLeaf {
       /** \brief Resets all slaves and reruns discovery/topology discovery algorithm*/
       void reset(void);
       
-      void handel_packet(packet pkt);
+      void handel_packet(m_commands pkt);
       
-      void add_packet_handel(bl_commands cmd, std::function<void(packet)> func);
+      void add_packet_handel(m_commands cmd, std::function<void(void)> func);
 
     private:
       void initialize(void);
@@ -69,10 +63,11 @@ namespace LannoLeaf {
 
     public:
       I2CMaster leaf_master;
+      Spi_command_handler *command_handler;
 
     private:
       std::vector<uint8_t> visited;
-      std::map<bl_commands, std::function<void(packet)>> packet_handlers;
+      std::map<m_commands, std::function<void(void)>> packet_handlers;
   
   };
   

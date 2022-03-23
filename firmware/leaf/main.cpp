@@ -88,7 +88,9 @@ int main() {
   while (true) {
     while (!leaf.configured()) {
       leaf.update();
-      if (leaf.sel_pin_status() && !leaf.slave_initialized()) leaf.slave_init();
+      if (leaf.sel_pin_status() && !leaf.slave_initialized()) {
+        leaf.slave_init();
+      } 
     }
 
     while (leaf.configured()) {

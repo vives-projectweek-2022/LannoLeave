@@ -8,7 +8,7 @@
     <link rel="icon" type="image/x-icon" href="img/icon.ico">
     <title>Lannooleaf</title>
 </head>
-<body>
+<body onload="onload()">
     
 <header id="header">
 <img src="img/banner.png" alt="" width= 300px id="banner">
@@ -19,13 +19,13 @@
 <h2>Mode:</h2>
 <ul>
   <label class="rad-label">
-    <input type="radio" class="rad-input" checked="checked" name="mode">
+    <input type="radio" class="selector" checked="checked" name="mode" id="mode_on">
     <div class="rad-design"></div>
     <div class="rad-text">On</div>
   </label>
 
   <label class="rad-label">
-    <input type="radio" class="rad-input" name="mode">
+    <input type="radio" class="selector" name="mode" id="mode_off">
     <div class="rad-design"></div>
     <div class="rad-text">Off</div>
   </label>
@@ -37,25 +37,25 @@
 <h2>Effects:</h2>
 <ul>
   <label class="rad-label">
-    <input type="radio" class="rad-input" checked="checked" name="effects">
+    <input type="radio" class="selector" checked="checked" name="effects" id="effect_none">
     <div class="rad-design"></div>
     <div class="rad-text">None</div>
   </label>
 
   <label class="rad-label">
-    <input type="radio" class="rad-input" name="effects">
+    <input type="radio" class="selector" name="effects" id="effect_1">
     <div class="rad-design"></div>
     <div class="rad-text">Effect 1</div>
   </label>
 
   <label class="rad-label">
-    <input type="radio" class="rad-input" name="effects">
+    <input type="radio" class="selector" name="effects" id="effect_2">
     <div class="rad-design"></div>
     <div class="rad-text">Effect 2</div>
   </label>
 
   <label class="rad-label">
-    <input type="radio" class="rad-input" name="effects">
+    <input type="radio" class="selector" name="effects" id="effect_3">
     <div class="rad-design"></div>
     <div class="rad-text">Effect 3</div>
   </label>
@@ -66,7 +66,8 @@
 <h2>Color picker:</h2>
 
 <p>Pick a color for your panel!</p>
-<p><input type="color" name="RGB" id="RGB"></p>
+<input type="color" value="4A4EFC" name="RGB" id="RGB">
+
 </div>
 
 </div>
@@ -74,4 +75,7 @@
 <footer id="footer">Lannooleaf, Vives</footer>
 
 </body>
+
+<script src="script.js"></script>
+
 </html>

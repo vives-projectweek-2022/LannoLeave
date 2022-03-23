@@ -32,16 +32,16 @@ Every GitHub repository should be accompanied by a complete README.md file
 
 ## Dev environment
 
-# Credits
+## Credits
 
-## Team Members
+### Team Members
 
 - [Arno Schoutteten](https://github.com/madness007)
 - [Jens Vanhove](https://github.com/JensVA)
 - [Joey De Smet](https://github.com/JoeyDeSmet)
 - [Jay D'Hulster](https://github.com/JayDHulster)
 
-## Mentors
+### Mentors
 
 - [Nico De Witte](https://github.com/BioBoost)
 - [Piet Cordemans](https://github.com/pcordemans)

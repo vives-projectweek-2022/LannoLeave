@@ -16,7 +16,6 @@ Controller controller(i2c0);
 volatile bool check = false;
 
 bool repeating_timer_callback(struct repeating_timer *t) {
-  printf("Timer\r\n");
   check = true;
   return true;
 }
@@ -31,24 +30,12 @@ void set_alive_led(void) {
 }
 
 void add_packet_handlers(void) {
-
   controller.add_packet_handel(send_adj_list, [&](){
-    uart_write_blocking(uart0, (const uint8_t *) controller.graph.to_string().c_str(), controller.graph.to_string().size());
+    // TODO: Implement
   });
 
   controller.add_packet_handel(set_leaf_led, [&](){
-    uint8_t buffer[6];
-    uart_read_blocking(uart0, buffer, 6);
-
-    if (buffer[0] == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
-      controller.ledstrip.setPixelColor(buffer[1], PicoLed::RGBW(buffer[2], buffer[3], buffer[4], buffer[5]));
-    } else {
-      controller.leaf_master.send_slave_message(buffer[0], {
-        slave_set_led,
-        5,
-        { buffer[1], buffer[2], buffer[3], buffer[4], buffer[5] }
-      });
-    }
+    // TODO: Implement  
   });
 
   controller.add_packet_handel(set_leaf_all, [&](){
@@ -56,22 +43,27 @@ void add_packet_handlers(void) {
   });
 
   controller.add_packet_handel(set_unit_all, [&](){
-    uint8_t buffer[5];
-    uart_read_blocking(uart0, buffer, 5);
+    // TODO: handel addressing
 
-    if (buffer[0] == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
-      controller.ledstrip.fill(PicoLed::RGBW(buffer[1], buffer[2], buffer[3], buffer[4]));
-    } else {
-      controller.leaf_master.send_slave_message(buffer[0], {
-        slave_set_all_led,
-        4,
-        { buffer[1], buffer[2], buffer[3], buffer[4] }
-      });
-    }
+    uint8_t buffer[6];
+    controller.command_handler->read_data(buffer, 6);
+    printf("RGBW: %i, %i, %i, %i\n", buffer[2], buffer[3], buffer[4], buffer[5]);
+    controller.ledstrip.fill(PicoLed::RGBW(buffer[2], buffer[3], buffer[4], buffer[5]));
+    controller.ledstrip.show();
   });
 
   controller.add_packet_handel(set_all_all, [&](){
-    // TODO: Implement
+    uint8_t buffer[4];
+    controller.command_handler->read_data(buffer, 4);
+
+    controller.leaf_master.send_slave_message(GENCALLADR, {
+      slave_set_all_led,
+      4,
+      { buffer[0], buffer[1], buffer[2], buffer[3] }
+    });
+
+    controller.ledstrip.fill(PicoLed::RGBW(buffer[0], buffer[1], buffer[2], buffer[3]));
+    controller.ledstrip.show();
   });
 
   controller.add_packet_handel(clear_leaf, [&](){
@@ -96,7 +88,7 @@ int main() {
   stdio_init_all();
   set_alive_led();
 
-  sleep_ms(500);
+  sleep_ms(2000);
 
   controller.device_discovery();
   controller.topology_discovery();
@@ -106,6 +98,9 @@ int main() {
   struct repeating_timer timer;
 
   add_repeating_timer_ms(1000, repeating_timer_callback, NULL, &timer);
+
+  printf(controller.graph.to_string().c_str());
+  printf("\n");
 
   while (true) {
     if (check) {
@@ -128,12 +123,10 @@ int main() {
       check = false;
     }
 
-    if (uart_is_readable(uart0)) {
-      printf("Reading message \r\n");
-      uint8_t cmd;
-      uart_read_blocking(uart0, &cmd, 1);
-
-      controller.handel_packet((bl_commands) cmd);
+    if (uint8_t cmd = controller.command_handler->read_command()) {
+      printf("Handel packet\n");
+      controller.handel_packet((m_commands)cmd);
     }
   }
 }
+

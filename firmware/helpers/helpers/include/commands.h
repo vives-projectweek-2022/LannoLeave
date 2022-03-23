@@ -17,9 +17,9 @@ namespace LannoLeaf {
 
   } commands;
 
-  typedef enum bl_commands {
+  typedef enum m_commands {
 
-    send_adj_list,
+    send_adj_list = 0x01,
 
     set_leaf_led,
 
@@ -33,7 +33,7 @@ namespace LannoLeaf {
 
     set_random
 
-  } bl_commands;
+  } m_commands;
 
   struct packet {
     

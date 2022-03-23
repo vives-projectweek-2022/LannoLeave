@@ -1,4 +1,5 @@
 #include <i2c_master.h>
+#include <stdio.h>
 
 namespace LannoLeaf {
 

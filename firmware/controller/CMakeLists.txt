@@ -22,6 +22,7 @@ target_link_libraries(controller
   graph
   Pico_led
   spi_command_handler
+  command_handler
 )
 
 target_compile_definitions(controller PRIVATE

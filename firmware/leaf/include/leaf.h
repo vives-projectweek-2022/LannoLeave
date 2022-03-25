@@ -13,26 +13,19 @@
 
 #include <commands.h>
 #include <helper_funcs_var.h>
+#include <command_handler.h>
 
 #include <PicoLed.hpp>
 
 namespace LannoLeaf {
 
-  /** \brief Storage struct where master writes to*/
-  struct msg_buff {
-    bool writen = false;
-    uint8_t command = 0x00;
-    uint8_t buffer[5] = {0};
-  };
+  static read_memory l_read_mem; 
+  static write_memory l_write_mem;
 
-  /** \brief  Storage stuct where master reads from*/
-  struct context {
-    uint8_t mem[11];
-    uint8_t mem_address = 0;
+  static context l_context = {
+    &l_read_mem,
+    &l_write_mem
   };
-
-  static context _context;
-  static msg_buff msg_buf;
 
   class Leaf {
 
@@ -41,8 +34,8 @@ namespace LannoLeaf {
       ~Leaf();
   
     public:
-      /** \brief Updates the select pin status and handels data */
-      inline void update(void) { update_sel_status(); handle_data(); } 
+      /** \brief Updates the select pin status and handels received commands */
+      void update(void);
       
     public:
       /** \brief Initializes slave and start listening on the i²c bus */
@@ -52,34 +45,29 @@ namespace LannoLeaf {
       * \param address The new i²c slave address  */
       void address(uint8_t address);
 
-      /** \brief Adds a command handler for i²c slave
-      * \param command Command wich slave needs to handel defined in command.h
-      * \param handler Function to execute */
-      void add_command_handel(uint8_t command, std::function<void(context*, msg_buff*)> handler);
-
       /** \brief Resets slave to default configuration*/
       void reset(void);
 
     public:
       /** \returns Slave i²c address */
-      inline uint8_t& address(void) { return _address; }
+      uint8_t& address(void) { return _address; }
 
       /** \returns Slave select pin status as uint8_t */
-      inline uint8_t& sel_pin_status(void) { return _sel_pin_status; }
+      uint8_t& sel_pin_status(void) { return _sel_pin_status; }
 
     public:
       /** \returns true if slave is initialized, fase is not*/
-      inline bool& slave_initialized(void) { return _slave_initialized; }
+      bool& slave_initialized(void) { return _slave_initialized; }
 
       /** \returns true if slave has been configured with a new i²c address, fase if not */
-      inline bool& configured(void) { return _configured; }
+      bool& configured(void) { return _configured; }
 
     public:
+      CommandHandler l_command_handler;
       PicoLed::PicoLedController ledstrip = PicoLed::addLeds<PicoLed::WS2812B>(pio0, 0, LED_PIN, LED_LENGTH, PicoLed::FORMAT_GRB);
 
     private:
       void initialize(void);
-      void handle_data(void);
       void update_sel_status(void);
 
     private:
@@ -92,8 +80,6 @@ namespace LannoLeaf {
     private:
       i2c_inst_t * i2c;
       uint8_t _address;
-      std::map<uint8_t, std::function<void(context*, msg_buff*)>> handlers;
-
   };
 
   static void i2c_slave_handler(i2c_inst_t *i2c, i2c_slave_event_t event);

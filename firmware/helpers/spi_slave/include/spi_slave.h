@@ -7,11 +7,11 @@
 
 namespace LannoLeaf {
 
-  class Spi_command_handler {
+  class Spi_slave {
 
     public:
-      Spi_command_handler(uint8_t mosi, uint8_t miso, uint8_t clk, uint8_t cs);
-      Spi_command_handler();
+      Spi_slave(uint8_t mosi, uint8_t miso, uint8_t clk, uint8_t cs);
+      Spi_slave();
 
     public:
       uint8_t read_command(void);

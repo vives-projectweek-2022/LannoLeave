@@ -2,11 +2,25 @@
 
 namespace LannoLeaf {
 
-  Leaf::Leaf(uint8_t address, i2c_inst_t * i2c):
+  Leaf::Leaf(uint8_t address, i2c_inst_t * i2c, uint sda_pin, uint scl_pin):
   l_command_handler(&l_context) {
     _address = address;
     this -> i2c = i2c;
-    initialize();
+    
+    for (select_pins pin : all_select_pins) {
+      gpio_init((uint)pin);
+      gpio_set_dir((uint)pin, GPIO_IN);
+    }
+
+    gpio_init(sda_pin);
+    gpio_set_function(sda_pin, GPIO_FUNC_I2C);
+    gpio_pull_up(sda_pin);
+
+    gpio_init(scl_pin);
+    gpio_set_function(scl_pin, GPIO_FUNC_I2C);
+    gpio_pull_up(scl_pin);
+
+    i2c_init(i2c, BAUDRATE);
   }
 
   Leaf::~Leaf() { }
@@ -33,23 +47,6 @@ namespace LannoLeaf {
     _slave_initialized = false;
     _address = UNCONFIGUREDADDRESS;
     i2c_slave_deinit(i2c);
-  }
-
-  void Leaf::initialize(void) {
-    for (select_pins pin : all_select_pins) {
-      gpio_init((uint)pin);
-      gpio_set_dir((uint)pin, GPIO_IN);
-    }
-
-    gpio_init(8);
-    gpio_set_function(8, GPIO_FUNC_I2C);
-    gpio_pull_up(8);
-
-    gpio_init(9);
-    gpio_set_function(9, GPIO_FUNC_I2C);
-    gpio_pull_up(9);
-
-    i2c_init(i2c, BAUDRATE);
   }
 
   void Leaf::update_sel_status(void) {

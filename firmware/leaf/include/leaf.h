@@ -1,21 +1,21 @@
 #pragma once
 
+#include <map>
 #include <stdio.h>
 #include <stdint.h>
-#include <map>
 #include <functional>
+
+#include <i2c_fifo.h>
+#include <i2c_slave.h>
+#include <PicoLed.hpp>
+
+#include <commands.h>
+#include <command_handler.h>
+#include <helper_funcs_var.h>
 
 #include <pico/stdlib.h>
 #include <hardware/i2c.h>
 #include <hardware/gpio.h>
-#include <i2c_slave.h>
-#include <i2c_fifo.h>
-
-#include <commands.h>
-#include <helper_funcs_var.h>
-#include <command_handler.h>
-
-#include <PicoLed.hpp>
 
 namespace LannoLeaf {
 
@@ -30,7 +30,7 @@ namespace LannoLeaf {
   class Leaf {
 
     public:
-      Leaf(uint8_t address, i2c_inst_t * i2c);
+      Leaf(uint8_t address, i2c_inst_t * i2c, uint sda_pin, uint scl_pin);
       ~Leaf();
   
     public:
@@ -67,7 +67,6 @@ namespace LannoLeaf {
       PicoLed::PicoLedController ledstrip = PicoLed::addLeds<PicoLed::WS2812B>(pio0, 0, LED_PIN, LED_LENGTH, PicoLed::FORMAT_GRB);
 
     private:
-      void initialize(void);
       void update_sel_status(void);
 
     private:

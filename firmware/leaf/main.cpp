@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include <pico/stdlib.h>
+#include <leaf.h>
 #include <commands.h>
 #include <helper_funcs_var.h>
-#include <leaf.h>
+
+#include <pico/stdlib.h>
 
 using namespace LannoLeaf;
 
-Leaf leaf((uint8_t) UNCONFIGUREDADDRESS, i2c0);
+Leaf leaf((uint8_t) UNCONFIGUREDADDRESS, i2c0, 8, 9);
 
 void set_alive_led(void) {
   const uint led_pin = 25;

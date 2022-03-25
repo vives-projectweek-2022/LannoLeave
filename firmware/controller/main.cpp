@@ -11,12 +11,23 @@
 
 using namespace LannoLeaf;
 
-Controller controller(i2c0);
-
-volatile bool check = false;
+Controller controller(i2c0, 8, 9);
 
 bool repeating_timer_callback(struct repeating_timer *t) {
-  check = true;
+  for (std::map <uint8_t, Node*>::iterator itr = controller.graph.map.begin(); itr != controller.graph.map.end(); itr++) {
+    if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) continue;
+    controller.leaf_master.send_slave_message(itr -> second -> i2c_address, {
+      slave_ping,
+      0,
+      { }
+    });
+
+    controller.leaf_master.get_slave_data(itr -> second -> i2c_address, 2);
+
+    if (controller.leaf_master.memory[0] != 0xA5 && controller.leaf_master.memory[1] != 0x5A) {
+      controller.reset();
+    }
+  }
   return true;
 }
 
@@ -27,31 +38,31 @@ void set_alive_led(void) {
   gpio_put(led_pin, true);
 }
 
-void add_packet_handlers(void) {
-  controller.add_packet_handel(send_adj_list, [&](){
+void add_handlers(void) {
+  controller.c_command_handler.add_handler(send_adj_list, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.add_packet_handel(set_leaf_led, [&](){
+  controller.c_command_handler.add_handler(set_leaf_led, [&](context* ctx){
     // TODO: Implement  
   });
 
-  controller.add_packet_handel(set_leaf_all, [&](){
+  controller.c_command_handler.add_handler(set_leaf_all, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.add_packet_handel(set_unit_all, [&](){
+  controller.c_command_handler.add_handler(set_unit_all, [&](context* ctx){
     // TODO: handel addressing
 
     uint8_t buffer[6];
-    controller.command_handler->read_data(buffer, 6);
+    controller.c_spi_slave.read_data(buffer, 6);
     controller.ledstrip.fill(PicoLed::RGB(buffer[2], buffer[3], buffer[4]));
     controller.ledstrip.show();
   });
 
-  controller.add_packet_handel(set_all_all, [&](){
+  controller.c_command_handler.add_handler(set_all_all, [&](context* ctx){
     uint8_t buffer[4];
-    controller.command_handler->read_data(buffer, 4);
+    controller.c_spi_slave.read_data(buffer, 4);
 
     controller.leaf_master.send_slave_message(GENCALLADR, {
       slave_set_all_led,
@@ -63,19 +74,19 @@ void add_packet_handlers(void) {
     controller.ledstrip.show();
   });
 
-  controller.add_packet_handel(clear_leaf, [&](){
+  controller.c_command_handler.add_handler(clear_leaf, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.add_packet_handel(clear_unit, [&](){
+  controller.c_command_handler.add_handler(clear_unit, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.add_packet_handel(clear_all, [&](){
+  controller.c_command_handler.add_handler(clear_all, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.add_packet_handel(set_random, [&](){
+  controller.c_command_handler.add_handler(set_random, [&](context* ctx){
     // TODO: Implement
   });
 
@@ -90,7 +101,7 @@ int main() {
   controller.device_discovery();
   controller.topology_discovery();
 
-  add_packet_handlers();
+  add_handlers();
 
   struct repeating_timer timer;
 
@@ -103,27 +114,7 @@ int main() {
   PRINT("\n");
 
   while (true) {
-    if (check) {
-      for (std::map <uint8_t, Node*>::iterator itr = controller.graph.map.begin(); itr != controller.graph.map.end(); itr++) {
-        if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) continue;
-        controller.leaf_master.send_slave_message(itr -> second -> i2c_address, {
-          slave_ping,
-          0,
-          { }
-        });
-
-        controller.leaf_master.get_slave_data(itr -> second -> i2c_address, 2);
-
-        if (controller.leaf_master.memory[0] != 0xA5 && controller.leaf_master.memory[1] != 0x5A) {
-          printf("Resetting \r\n");
-          controller.reset();
-        }
-      }
-
-      check = false;
-    }
-
-    if (uint8_t cmd = controller.command_handler->read_command()) controller.handel_packet((m_commands)cmd);
+    if (uint8_t cmd = controller.c_spi_slave.read_command()) controller.c_command_handler.handel_command(cmd);
   }
 }
 

@@ -21,7 +21,7 @@ target_link_libraries(controller
   helper
   graph
   Pico_led
-  spi_command_handler
+  spi_slave
   command_handler
 )
 

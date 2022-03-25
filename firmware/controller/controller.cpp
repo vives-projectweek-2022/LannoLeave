@@ -14,8 +14,8 @@ namespace LannoLeaf {
 
   void Controller::initialize(void) {
     for (select_pins pin : all_select_pins) {
-      gpio_init(pin);
-      gpio_set_dir(pin, GPIO_OUT);
+      gpio_init((uint)pin);
+      gpio_set_dir((uint)pin, GPIO_OUT);
     }
 
     gpio_init(8);
@@ -29,13 +29,14 @@ namespace LannoLeaf {
     i2c_init(i2c0, BAUDRATE);
 
     graph.add_node(I2C_CONTOLLER_PLACEHOLDER_ADDRESS);
+    graph.map.find(UNCONFIGUREDADDRESS) -> second -> pos = {0, 0};
   }
 
   void Controller::device_discovery(void) {
     std::function <void(Node*)> search = [&](Node* node) {
       this -> visited.push_back(node -> i2c_address);
       for (select_pins pin : all_select_pins) {
-        if (node -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put(pin, true);
+        if (node -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put((uint)pin, true);
         else this -> leaf_master.send_slave_message(node -> i2c_address, {
           slave_set_sel_pin,
           2,
@@ -47,10 +48,11 @@ namespace LannoLeaf {
         uint8_t next_assigned_address = this -> assign_new_address();
 
         if (node -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
-          gpio_put(pin, false);
+          gpio_put((uint)pin, false);
 
           if (next_assigned_address != UNCONFIGUREDADDRESS) {
             graph.add_edge(I2C_CONTOLLER_PLACEHOLDER_ADDRESS, sel_pin_to_side(pin), next_assigned_address);
+            graph.map.find(next_assigned_address) -> second -> pos = node -> pos + side_to_addition_coordinate(sel_pin_to_side(pin));
           }
         } else this -> leaf_master.send_slave_message(node -> i2c_address, {
           slave_set_sel_pin,
@@ -75,7 +77,7 @@ namespace LannoLeaf {
     for (itr = this -> graph.map.begin(); itr != this -> graph.map.end(); itr++) {
       for (select_pins pin : all_select_pins) {
 
-        if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put(pin, true);
+        if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put((uint)pin, true);
         else leaf_master.send_slave_message(itr -> second -> i2c_address, {
           slave_set_sel_pin,
           2,
@@ -88,7 +90,7 @@ namespace LannoLeaf {
           { itr -> second -> i2c_address }
         });
 
-        if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put(pin, false);
+        if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put((uint)pin, false);
         else leaf_master.send_slave_message(itr -> second -> i2c_address, {
           slave_set_sel_pin,
           2,

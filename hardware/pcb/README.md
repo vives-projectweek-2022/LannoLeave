@@ -21,12 +21,12 @@
 | C1 - C16, C18, C23| 18 | 100nF | 0805 | Farnell | [2320821](https://be.farnell.com/multicomp/mc0805b104k101ct/cap-0-1-f-100v-10-x7r-0805/dp/2320821) | 0,048 € (250+) |
 | C17, C22 | 2 | 1nF | 0805 | Farnell | [3019871](https://be.farnell.com/yageo/cc0805krx7r9bb102/cap-1000pf-50v-10-x7r-0805/dp/3019871) | 0,077 € (10+) |
 | C19, C24 | 2 | 1µF | 0805 | Farnell | [3013482](https://be.farnell.com/samsung-electro-mechanics/cl21b105kbfnnne/cap-1uf-50v-mlcc-0805/dp/3013482) | 0,052 € (5+) |
-| C20 | 1 | 100µF | 10x10,5mm | TME | [AEH1010101M050R](https://www.tme.eu/be/nl/details/aeh1010101m050r/smd-elektrolyt-condensatoren-125degc/kyocera-avx/) | 0,574 € (10+) |
-| C21 | 1 | 220µF | 10x10,5mm | Farnell | [2535792](https://be.farnell.com/rubycon/35trv220m10x10-5/cap-220-f-35v-smd/dp/2535792) | 0,611 € (10+) |
-| D17 | 1 | SS34 | DO-214AB (SMC) | TME | [2101195](https://www.tme.eu/be/nl/details/ss34-e3_57t/smd-schottky-diodes/vishay/) | 0,175 € (10+) |
+| C20 | 1 | 100µF | 6,3x7,7mm | Farnell | [2611381](https://be.farnell.com/multicomp/mcvvt035m101ea6l/cap-100-f-35v-smd/dp/2611381) | 0,156 € (1+) |
+| C21 | 1 | 220µF | 8x10,5mm | Farnell | [2611361](https://be.farnell.com/multicomp/mcvvt016m221fb3l/cap-220-f-16v-smd/dp/2611361) | 0,22 € (10+) |
+| D17 | 1 | SS34 | DO-214AC (SMA) | Farnell | [2101195](https://be.farnell.com/multicomp/ss34a/diode-rectifier-3a-40v-do-214ac/dp/2101195) | 0,293 € (10+) |
 | L1 | 1 | 33µH | 12x12x8mm | Farnell | [2288506](https://be.farnell.com/coilcraft/mss1278-333mld/inductor-33uh-3-1a-20-pwr-9-5mhz/dp/2288506) | 1,82 € (10+) |
 | R1 | 1 | 3,1k | 0805 | Farnell | [2502845](https://be.farnell.com/walsin/wf08w3091btl/res-3k09-0-1-100v-0805-thin-film/dp/2502845) | 0,112 € (10+) |
-| R2 | 1 | 1k | 0805 | Farnell | [2331796](https://be.farnell.com/te-connectivity/crgh0805j1k0/res-1k-5-0-33w-0805-thick-film/dp/2331796) | 0,007 € (10+) |
+| R2 | 1 | 1k | 0805 | Farnell | [2502859](https://be.farnell.com/walsin/wf08u1001btl/res-1k-0-1-100v-0805-thin-film/dp/2502859) | 0,103 € (10+) |
 | J1-J6 | 6 | Pin sockets (2x5) | 2.54mm | TME | [ZL262-10DG](https://www.tme.eu/be/nl/details/zl262-10dg/lijsten-en-pin-achtige-stopcontacten/connfly/ds1023-2-5s21/) | 0,08281 € (100+) |
 
 Volgende items zijn enkel voor de `controller` (leaf met speciale functionaliteit):
@@ -42,9 +42,9 @@ Volgend item is enkel voor de `verbindingsstukken` tussen de leafs:
 |---|---|---|---|---|---|---|
 | J1, J2 | 2 | Pin headers (2x5) | 2.54mm | TME | [ZL202-10G](https://www.tme.eu/be/nl/details/zl202-10g/lijsten-en-pin-achtige-stopcontacten/connfly/ds1021-2-5sf11-b/) | 0.05254 € (50+) |
 
-Totale prijs componenten leaf: `13,56 €`
+Totale prijs componenten leaf: `12,9722 €`
 
-Totale prijs componenten controller: `14,79 €`
+Totale prijs componenten controller: `14,1956 €`
 
 Totale prijs componenten verbindingsstuk: `0,10508 €`
 
@@ -59,7 +59,7 @@ Totale prijs componenten verbindingsstuk: `0,10508 €`
 
 * https://www.aliexpress.com/item/32964553793.html?spm=a2g0o.cart.0.0.5f573c00WdXbel&mp=1
     * variant: 1uF
-    * variant: 2nF
+    * variant: 1nF
     * variant: 100nF
 * https://www.aliexpress.com/item/1005002653014067.html?spm=a2g0o.cart.0.0.5f573c00WdXbel&mp=1
     * variant: 200pcs, white pcb

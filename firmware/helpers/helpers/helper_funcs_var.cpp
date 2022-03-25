@@ -1,4 +1,5 @@
 #include "include/helper_funcs_var.h"
+#include <graph.h>
 
 namespace LannoLeaf {
 
@@ -8,67 +9,101 @@ namespace LannoLeaf {
 
   side sel_pin_to_side(select_pins pin) {
     switch (pin) {
-    case A:
-      return a;
+    case select_pins::A:
+      return side::a;
 
-    case B:
-      return b;
+    case select_pins::B:
+      return side::b;
 
-    case C:
-      return c;
+    case select_pins::C:
+      return side::c;
 
-    case D:
-      return d;
+    case select_pins::D:
+      return side::d;
 
-    case E:
-      return e;
+    case select_pins::E:
+      return side::e;
+
+    case select_pins::F:
+      return side::f;
 
     default:
-      return invalid;
+      return side::invalid;
     }
   }
 
   side sel_pin_state_to_side(uint8_t state) {
     switch (state) {
-    case 0x01:
-      return a;
+    case 0b00000001:
+      return side::a;
 
-    case 0x02:
-      return b;
+    case 0b00000010:
+      return side::b;
 
-    case 0x04:
-      return c;
+    case 0b00000100:
+      return side::c;
 
-    case 0x08:
-      return d;
+    case 0b00001000:
+      return side::d;
 
-    case 0x10:
-      return e;
+    case 0b00010000:
+      return side::e;
+
+    case 0b00100000:
+      return side::f;
 
     default:
-      return invalid;
+      return side::invalid;
     }
   }
 
   char side_to_char(side side) {
     switch (side){
-    case a:
+    case side::a:
       return 'a';
 
-    case b:
+    case side::b:
       return 'b';
     
-    case c:
+    case side::c:
       return 'c';
 
-    case d:
+    case side::d:
       return 'd';
 
-    case e:
+    case side::e:
       return 'e';
+
+    case side::f:
+      return 'f';
 
     default:
       return 'X';
+    }
+  }
+
+  coordinate side_to_addition_coordinate(side side) {
+    switch (side){
+    case side::a:
+      return coordinate(0, 2);
+
+    case side::b:
+      return coordinate(1, 1);
+    
+    case side::c:
+      return coordinate(1, -1);
+
+    case side::d:
+      return coordinate(0, -2);
+
+    case side::e:
+      return coordinate(-1, -1);
+
+    case side::f:
+      return coordinate(-1, 1);
+
+    default:
+      return coordinate(0, 0);
     }
   }
 

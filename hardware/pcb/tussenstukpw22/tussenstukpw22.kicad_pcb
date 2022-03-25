@@ -81,9 +81,9 @@
       (subtractmaskfromsilk false)
       (outputformat 1)
       (mirror false)
-      (drillshape 1)
+      (drillshape 0)
       (scaleselection 1)
-      (outputdirectory "")
+      (outputdirectory "../../../../../../../Users/jensv/Desktop/bestelling/tussenstuk/")
     )
   )
 
@@ -240,10 +240,10 @@
   (segment (start 178.645 95.915) (end 178.65 95.91) (width 0.25) (layer "F.Cu") (net 4) (tstamp 55c8c0cf-9ec5-4d74-82b3-eef49d29e57b))
   (segment (start 168.785 100.995) (end 178.645 100.995) (width 0.25) (layer "F.Cu") (net 4) (tstamp c1a06c0c-2a4b-4b3a-aaee-4a67900c0bc1))
   (segment (start 178.645 100.995) (end 178.65 100.99) (width 0.25) (layer "F.Cu") (net 4) (tstamp d0010d72-9818-4bac-bc1e-8e14a4a509c3))
-  (segment (start 168.785 98.455) (end 178.645 98.455) (width 0.25) (layer "F.Cu") (net 5) (tstamp 2c2724ec-b2dc-4a08-bc83-f30b1c972e45))
+  (segment (start 178.645 98.455) (end 178.65 98.45) (width 0.25) (layer "F.Cu") (net 5) (tstamp 0422ebd8-34bc-424d-abf9-9428ed0c313e))
   (segment (start 166.245 98.455) (end 168.785 98.455) (width 0.25) (layer "F.Cu") (net 5) (tstamp 786fb31e-1e06-4065-a550-c696cdb61869))
-  (segment (start 178.645 98.455) (end 178.65 98.45) (width 0.25) (layer "F.Cu") (net 5) (tstamp b407f2a9-8a4b-4bef-a12c-39cd66ed3653))
   (segment (start 178.65 98.45) (end 181.19 98.45) (width 0.25) (layer "F.Cu") (net 5) (tstamp b8fae82f-5a90-43fb-86b1-cbb74201b067))
+  (segment (start 168.785 98.455) (end 178.645 98.455) (width 0.25) (layer "F.Cu") (net 5) (tstamp e6125bca-1263-496a-a78e-799901bde1dd))
 
   (zone (net 1) (net_name "GND") (layer "F.Cu") (tstamp fa32cf31-d190-4745-adc8-24fcbf20baf2) (hatch edge 0.508)
     (connect_pads (clearance 0.508))
@@ -252,8 +252,8 @@
     (polygon
       (pts
         (xy 184.5 107)
-        (xy 163.25 107)
-        (xy 163.25 90)
+        (xy 163 107)
+        (xy 163 90)
         (xy 184.5 90)
       )
     )

@@ -18,9 +18,6 @@
 
 #include <PicoLed.hpp>
 
-#define LED_PIN 15
-#define LED_LENGTH 8
-
 namespace LannoLeaf {
 
   class Controller {

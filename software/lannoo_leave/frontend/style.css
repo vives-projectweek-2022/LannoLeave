@@ -94,7 +94,7 @@ body {
     background: hsla(0, 0%, 80%, .14);
   }
   
-  .rad-input {
+  .selector {
 /*    position: absolute;*/
     left: 0;
     top: 0;
@@ -126,7 +126,7 @@ body {
     transition: .3s;
   }
   
-  .rad-input:checked+.rad-design::before {
+  .selector:checked+.rad-design::before {
     transform: scale(0);
   }
   
@@ -141,7 +141,7 @@ body {
     transition: .3s;
   }
   
-  .rad-input:checked~.rad-text {
+  .selector:checked~.rad-text {
     color: #ddd;
   }
 

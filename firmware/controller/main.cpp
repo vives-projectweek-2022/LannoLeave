@@ -21,12 +21,10 @@ bool repeating_timer_callback(struct repeating_timer *t) {
 }
 
 void set_alive_led(void) {
-  #ifdef DEBUG
   const uint led_pin = 25;
   gpio_init(led_pin);
   gpio_set_dir(led_pin, GPIO_OUT);
   gpio_put(led_pin, true);
-  #endif
 }
 
 void add_packet_handlers(void) {
@@ -47,8 +45,7 @@ void add_packet_handlers(void) {
 
     uint8_t buffer[6];
     controller.command_handler->read_data(buffer, 6);
-    printf("RGBW: %i, %i, %i, %i\n", buffer[2], buffer[3], buffer[4], buffer[5]);
-    controller.ledstrip.fill(PicoLed::RGBW(buffer[2], buffer[3], buffer[4], buffer[5]));
+    controller.ledstrip.fill(PicoLed::RGB(buffer[2], buffer[3], buffer[4]));
     controller.ledstrip.show();
   });
 
@@ -62,7 +59,7 @@ void add_packet_handlers(void) {
       { buffer[0], buffer[1], buffer[2], buffer[3] }
     });
 
-    controller.ledstrip.fill(PicoLed::RGBW(buffer[0], buffer[1], buffer[2], buffer[3]));
+    controller.ledstrip.fill(PicoLed::RGB(buffer[0], buffer[1], buffer[2]));
     controller.ledstrip.show();
   });
 
@@ -99,8 +96,11 @@ int main() {
 
   add_repeating_timer_ms(1000, repeating_timer_callback, NULL, &timer);
 
-  printf(controller.graph.to_string().c_str());
-  printf("\n");
+  PRINT(controller.graph.to_string().c_str());
+  PRINT("\n");
+
+  PRINT(controller.graph.node_to_coords().c_str());
+  PRINT("\n");
 
   while (true) {
     if (check) {
@@ -123,10 +123,7 @@ int main() {
       check = false;
     }
 
-    if (uint8_t cmd = controller.command_handler->read_command()) {
-      printf("Handel packet\n");
-      controller.handel_packet((m_commands)cmd);
-    }
+    if (uint8_t cmd = controller.command_handler->read_command()) controller.handel_packet((m_commands)cmd);
   }
 }
 

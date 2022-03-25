@@ -22,7 +22,7 @@ install packages
 
 then
 
-- git cline the repo
+- git clone the repo
 - cd into software/lannoo_leave
 - docker compose up
 
@@ -30,4 +30,3 @@ done :)
 
 ## sources
 
-https://github.com/noble/noble

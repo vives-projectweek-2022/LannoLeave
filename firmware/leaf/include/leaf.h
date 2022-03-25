@@ -16,9 +16,6 @@
 
 #include <PicoLed.hpp>
 
-#define LED_PIN 15
-#define LED_LENGTH 12
-
 namespace LannoLeaf {
 
   /** \brief Storage struct where master writes to*/

@@ -11,12 +11,10 @@ using namespace LannoLeaf;
 Leaf leaf((uint8_t) UNCONFIGUREDADDRESS, i2c0);
 
 void set_alive_led(void) {
-  #ifdef DEBUG
   const uint led_pin = 25;
   gpio_init(led_pin);
   gpio_set_dir(led_pin, GPIO_OUT);
   gpio_put(led_pin, true);
-  #endif
 }
 
 void add_handlers(void) {
@@ -55,9 +53,12 @@ void add_handlers(void) {
 
   leaf.add_command_handel(slave_is_neighbor, [&](context* contx, msg_buff* msg){
     if (leaf.sel_pin_status()) {
+      PRINT("Is neighbor!\n");
       contx -> mem_address++;
       contx -> mem[contx -> mem_address] = msg -> buffer[0];
       
+      PRINT_A("Neigbor = %02x\n", msg -> buffer[0]);
+
       contx -> mem_address++;
       contx -> mem[contx -> mem_address] = leaf.sel_pin_status();
     } 
@@ -91,7 +92,14 @@ int main() {
       if (leaf.sel_pin_status() && !leaf.slave_initialized()) {
         leaf.slave_init();
       } 
+
+      if (gpio_get(15))  {
+        printf("pin status: 0x%02x\n", gpio_get(15));
+        printf("Sel_pin_status: 0x%02x\n", leaf.sel_pin_status());
+      }
     }
+
+    printf("Initialized\n");
 
     while (leaf.configured()) {
       leaf.update();

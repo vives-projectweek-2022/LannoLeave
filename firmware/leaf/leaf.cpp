@@ -39,17 +39,17 @@ namespace LannoLeaf {
 
   void Leaf::initialize(void) {
     for (select_pins pin : all_select_pins) {
-      gpio_init(pin);
-      gpio_set_dir(pin, GPIO_IN);
+      gpio_init((uint)pin);
+      gpio_set_dir((uint)pin, GPIO_IN);
     }
 
-    gpio_init(PICO_DEFAULT_I2C_SDA_PIN);
-    gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
-    gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
+    gpio_init(8);
+    gpio_set_function(8, GPIO_FUNC_I2C);
+    gpio_pull_up(8);
 
-    gpio_init(PICO_DEFAULT_I2C_SCL_PIN);
-    gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
-    gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+    gpio_init(9);
+    gpio_set_function(9, GPIO_FUNC_I2C);
+    gpio_pull_up(9);
 
     i2c_init(i2c, BAUDRATE);
   }
@@ -66,9 +66,11 @@ namespace LannoLeaf {
 
   void Leaf::update_sel_status(void) {
     _sel_pin_status = 0x00;
+    uint8_t i = 0;
 
-    for (uint8_t i = A, j = 0; i <= E; i++, j++) {
-      if (!gpio_is_dir_out(i) && gpio_get(i)) _sel_pin_status |= 1 << j;
+    for (select_pins pin : all_select_pins) {
+      if (!gpio_is_dir_out((uint)i) && gpio_get((uint)pin)) _sel_pin_status |= 1 << i;
+      i++;
     }
   }
 

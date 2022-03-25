@@ -22,10 +22,8 @@ namespace LannoLeaf {
 
   uint8_t Spi_command_handler::read_command(void) {
     if (spi_is_readable(spi0)) {
-      printf("Readable\n");
       uint8_t cmd;
       spi_read_blocking(spi0, 0xff, &cmd, 1);
-      printf("%02x\n", cmd);
       return cmd;
     } 
     return 0x00;

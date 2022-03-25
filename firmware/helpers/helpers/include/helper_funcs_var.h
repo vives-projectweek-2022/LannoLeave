@@ -6,8 +6,11 @@
 #define I2C_CONTOLLER_PLACEHOLDER_ADDRESS 0xFF
 #define UNCONFIGUREDADDRESS 0x08
 #define GENCALLADR 0x00
+
 #define BAUDRATE 100000
-#define SPIFREQUENCY 1000000
+
+#define LED_PIN 4
+#define LED_LENGTH 12
 
 #ifdef DEBUG
 
@@ -25,19 +28,20 @@
 
 namespace LannoLeaf {
 
-  typedef enum side {
-    invalid, a, b, c, d, e,
-  } side;
+  enum class side {
+    invalid, a, b, c, d, e, f
+  };
 
-  typedef enum select_pins {
-    A=16,
-    B,
-    C,
-    D,
-    E,
-  } select_pins;
+  enum class select_pins {
+    A=6,
+    B=5,
+    C=28,
+    D=18,
+    E=16,
+    F=15
+  };
 
-  static std::initializer_list all_select_pins = { A, B, C, D, E };
+  static std::initializer_list<select_pins> all_select_pins = { select_pins::A, select_pins::B, select_pins::C, select_pins::D, select_pins::E, select_pins::F };
 
   bool reserved_addr(uint8_t addr);
 
@@ -46,5 +50,7 @@ namespace LannoLeaf {
   side sel_pin_state_to_side(uint8_t state);
 
   char side_to_char(side side);
+
+  struct coordinate side_to_addition_coordinate(side side);
 
 }

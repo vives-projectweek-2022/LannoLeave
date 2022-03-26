@@ -2,7 +2,7 @@
 
 namespace LannoLeaf {
 
-  typedef enum commands {
+  enum class slave_commands {
 
     slave_set_i2c_address = 0x01,
     slave_ping,
@@ -15,9 +15,9 @@ namespace LannoLeaf {
     slave_set_led,
     slave_set_all_led,
 
-  } commands;
+  };
 
-  typedef enum m_commands {
+  enum class controller_commands {
 
     send_adj_list = 0x01,
 
@@ -33,10 +33,6 @@ namespace LannoLeaf {
 
     set_random
 
-  } m_commands;
-
-  struct packet {
-    
   };
 
 }

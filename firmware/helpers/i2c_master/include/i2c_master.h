@@ -1,9 +1,13 @@
 #pragma once
 
+#include <stdio.h>
 #include <stdint.h>
-#include <hardware/i2c.h>
-#include <helper_funcs_var.h>
+
 #include <commands.h>
+#include <helper_funcs_var.h>
+
+#include <pico/stdlib.h>
+#include <hardware/i2c.h>
 
 namespace LannoLeaf {
 
@@ -16,7 +20,7 @@ namespace LannoLeaf {
   class I2CMaster {
 
     public:
-      I2CMaster();
+      I2CMaster(i2c_inst_t* i2c, uint8_t sda_pin, uint scl_pin);
       ~I2CMaster();
 
     public:
@@ -33,11 +37,6 @@ namespace LannoLeaf {
 
       /** \brief Same as get_slave_data but does not send slave_mem_reset message*/
       void get_slave_data_no_mem_reset(uint8_t slave_address, size_t lenght);
-
-    public:
-      /** \brief Sets the i2c_instance for master to use
-       * \param i2c i2c_instance */
-      inline void set_i2c_inst(i2c_inst_t* i2c) { this -> i2c = i2c; }
 
       /** \brief Resets all readonly memory to 0x00 */
       inline void reset_mem(void) { for (int i = 0; i < 5; i++) _memory[i] = 0x00; }

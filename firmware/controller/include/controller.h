@@ -5,25 +5,24 @@
 #include <stdint.h>
 #include <functional>
 
-#include <pico/stdlib.h>
-#include <hardware/i2c.h>
-#include <hardware/gpio.h>
-
-#include <i2c_fifo.h>
-#include <i2c_master.h>
-#include <spi_command_handler.h>
+#include <PicoLed.hpp>
 
 #include <graph.h>
 #include <commands.h>
+#include <spi_slave.h>
+#include <i2c_master.h>
+#include <command_handler.h>
 
-#include <PicoLed.hpp>
+#include <pico/stdlib.h>
+#include <hardware/i2c.h>
+#include <hardware/gpio.h>
 
 namespace LannoLeaf {
 
   class Controller {
 
     public:
-      Controller(i2c_inst_t * i2c_leaf_inst);
+      Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin, uint mosi, uint miso, uint clk, uint cs);
       ~Controller();
 
     public:
@@ -35,13 +34,6 @@ namespace LannoLeaf {
 
       /** \brief Resets all slaves and reruns discovery/topology discovery algorithm*/
       void reset(void);
-      
-      void handel_packet(m_commands pkt);
-      
-      void add_packet_handel(m_commands cmd, std::function<void(void)> func);
-
-    private:
-      void initialize(void);
 
     private:  
       /** \returns Next unused i2c address*/
@@ -51,20 +43,14 @@ namespace LannoLeaf {
        * \returns Assigned address on succes, UNCONFIGUREDADDRESS on fail*/
       uint8_t assign_new_address(void);
 
-
     public:
       Graph graph;
+      I2CMaster leaf_master;
+      Spi_slave c_spi_slave;
+      CommandHandler c_command_handler;
 
     public:
       PicoLed::PicoLedController ledstrip = PicoLed::addLeds<PicoLed::WS2812B>(pio0, 0, LED_PIN, LED_LENGTH, PicoLed::FORMAT_GRB);
-
-    public:
-      I2CMaster leaf_master;
-      Spi_command_handler *command_handler;
-
-    private:
-      std::vector<uint8_t> visited;
-      std::map<m_commands, std::function<void(void)>> packet_handlers;
   
   };
   

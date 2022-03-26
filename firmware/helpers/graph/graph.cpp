@@ -2,7 +2,7 @@
 
 namespace LannoLeaf {
 
-  Graph::Graph() {}
+  Graph::Graph() { }
 
   Graph::~Graph() {
     std::map < uint8_t, Node * > ::iterator i;
@@ -62,7 +62,6 @@ namespace LannoLeaf {
     std::map<uint8_t, Node*>::iterator i;
     for (i = map.begin(); i != map.end(); i++) {
       stream << "Node: " << std::to_string(i -> second -> i2c_address) << " ";
-
       stream << "Coordinate: " << i -> second -> pos.to_string() << "\n\r\n\r";
     }
 

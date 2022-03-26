@@ -9,14 +9,22 @@
 
 #include <PicoLed.hpp>
 
+#define SDA 8
+#define SCL 9
+#define MOSI 0
+#define MISO 3
+#define CLK 2
+#define CS 1
+
 using namespace LannoLeaf;
 
-Controller controller(i2c0);
+volatile bool timer_triggered = false;
 
-volatile bool check = false;
+Controller controller(i2c0, SDA, SCL, MOSI, MISO, CLK, CS);
 
 bool repeating_timer_callback(struct repeating_timer *t) {
-  check = true;
+  PRINT("TIMER\n");
+  if (!timer_triggered) timer_triggered = true;
   return true;
 }
 
@@ -27,34 +35,34 @@ void set_alive_led(void) {
   gpio_put(led_pin, true);
 }
 
-void add_packet_handlers(void) {
-  controller.add_packet_handel(send_adj_list, [&](){
+void add_handlers(void) {
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::send_adj_list, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.add_packet_handel(set_leaf_led, [&](){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_leaf_led, [&](context* ctx){
     // TODO: Implement  
   });
 
-  controller.add_packet_handel(set_leaf_all, [&](){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_leaf_all, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.add_packet_handel(set_unit_all, [&](){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_unit_all, [&](context* ctx){
     // TODO: handel addressing
 
     uint8_t buffer[6];
-    controller.command_handler->read_data(buffer, 6);
+    controller.c_spi_slave.read_data(buffer, 6);
     controller.ledstrip.fill(PicoLed::RGB(buffer[2], buffer[3], buffer[4]));
     controller.ledstrip.show();
   });
 
-  controller.add_packet_handel(set_all_all, [&](){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_all_all, [&](context* ctx){
     uint8_t buffer[4];
-    controller.command_handler->read_data(buffer, 4);
+    controller.c_spi_slave.read_data(buffer, 4);
 
     controller.leaf_master.send_slave_message(GENCALLADR, {
-      slave_set_all_led,
+      (uint8_t)slave_commands::slave_set_all_led,
       4,
       { buffer[0], buffer[1], buffer[2], buffer[3] }
     });
@@ -63,22 +71,42 @@ void add_packet_handlers(void) {
     controller.ledstrip.show();
   });
 
-  controller.add_packet_handel(clear_leaf, [&](){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_leaf, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.add_packet_handel(clear_unit, [&](){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_unit, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.add_packet_handel(clear_all, [&](){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_all, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.add_packet_handel(set_random, [&](){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_random, [&](context* ctx){
     // TODO: Implement
   });
 
+}
+
+void scan_devices(void) {
+  for (std::map <uint8_t, Node*>::iterator itr = controller.graph.map.begin(); itr != controller.graph.map.end(); itr++) {
+    if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) continue;
+    controller.leaf_master.send_slave_message(itr -> second -> i2c_address, {
+      (uint8_t)slave_commands::slave_ping,
+      0,
+      { }
+    });
+
+    controller.leaf_master.get_slave_data(itr -> second -> i2c_address, 2);
+
+    if (controller.leaf_master.memory[0] != 0xA5 && controller.leaf_master.memory[1] != 0x5A) {
+      PRINT("Resetting!\n");
+      controller.reset();
+    }
+  }
+
+  timer_triggered = false;
 }
 
 int main() {
@@ -90,7 +118,7 @@ int main() {
   controller.device_discovery();
   controller.topology_discovery();
 
-  add_packet_handlers();
+  add_handlers();
 
   struct repeating_timer timer;
 
@@ -103,27 +131,8 @@ int main() {
   PRINT("\n");
 
   while (true) {
-    if (check) {
-      for (std::map <uint8_t, Node*>::iterator itr = controller.graph.map.begin(); itr != controller.graph.map.end(); itr++) {
-        if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) continue;
-        controller.leaf_master.send_slave_message(itr -> second -> i2c_address, {
-          slave_ping,
-          0,
-          { }
-        });
-
-        controller.leaf_master.get_slave_data(itr -> second -> i2c_address, 2);
-
-        if (controller.leaf_master.memory[0] != 0xA5 && controller.leaf_master.memory[1] != 0x5A) {
-          printf("Resetting \r\n");
-          controller.reset();
-        }
-      }
-
-      check = false;
-    }
-
-    if (uint8_t cmd = controller.command_handler->read_command()) controller.handel_packet((m_commands)cmd);
+    if (timer_triggered) scan_devices();
+    if (uint8_t cmd = controller.c_spi_slave.read_command()) controller.c_command_handler.handel_command(cmd);
   }
 }
 

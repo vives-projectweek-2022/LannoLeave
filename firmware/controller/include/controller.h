@@ -22,7 +22,7 @@ namespace LannoLeaf {
   class Controller {
 
     public:
-      Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin);
+      Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin, uint mosi, uint miso, uint clk, uint cs);
       ~Controller();
 
     public:

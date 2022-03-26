@@ -1,16 +1,17 @@
 #pragma once
 
-#include <stdint.h>
 #include <stdio.h>
-#include <hardware/spi.h>
+#include <stdint.h>
+
 #include <pico/stdlib.h>
+#include <hardware/spi.h>
 
 namespace LannoLeaf {
 
   class Spi_slave {
 
     public:
-      Spi_slave(uint8_t mosi, uint8_t miso, uint8_t clk, uint8_t cs);
+      Spi_slave(uint mosi, uint miso, uint clk, uint cs);
       Spi_slave();
 
     public:

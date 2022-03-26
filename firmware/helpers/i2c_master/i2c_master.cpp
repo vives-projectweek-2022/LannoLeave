@@ -41,7 +41,7 @@ namespace LannoLeaf {
     sleep_ms(SLEEP_TIME);
 
     send_slave_message(slave_address, {
-      slave_reset_mem_counter,
+      (uint8_t)slave_commands::slave_reset_mem_counter,
       0,
       { }
     });

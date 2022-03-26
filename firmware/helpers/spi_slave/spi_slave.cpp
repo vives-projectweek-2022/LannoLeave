@@ -2,7 +2,7 @@
 
 namespace LannoLeaf {
 
-  Spi_slave::Spi_slave(uint8_t mosi, uint8_t miso, uint8_t clk, uint8_t cs) {
+  Spi_slave::Spi_slave(uint mosi, uint miso, uint clk, uint cs) {
 
     spi_init(spi0, 1000 * 1000);
     spi_set_slave(spi0, true);

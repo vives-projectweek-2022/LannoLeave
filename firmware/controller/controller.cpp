@@ -2,9 +2,9 @@
 
 namespace LannoLeaf {
 
-  Controller::Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin):
+  Controller::Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin, uint mosi, uint miso, uint clk, uint cs):
   leaf_master(i2c_leaf_inst, sda_pin, scl_pin),
-  c_spi_slave(0, 3, 2, 1), // TODO: make controller ask for spi pins in constructor
+  c_spi_slave(mosi, miso, clk, cs),
   c_command_handler(nullptr) { 
     
     for (select_pins pin : all_select_pins) {
@@ -26,7 +26,7 @@ namespace LannoLeaf {
       for (select_pins pin : all_select_pins) {
         if (node -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put((uint)pin, true);
         else this -> leaf_master.send_slave_message(node -> i2c_address, {
-          slave_set_sel_pin,
+          (uint8_t)slave_commands::slave_set_sel_pin,
           2,
           { (uint8_t)pin, 1 }
         });
@@ -43,7 +43,7 @@ namespace LannoLeaf {
             graph.map.find(next_assigned_address) -> second -> pos = node -> pos + side_to_addition_coordinate(sel_pin_to_side(pin));
           }
         } else this -> leaf_master.send_slave_message(node -> i2c_address, {
-          slave_set_sel_pin,
+          (uint8_t)slave_commands::slave_set_sel_pin,
           2,
           { (uint8_t)pin, 0 }
         });
@@ -67,20 +67,20 @@ namespace LannoLeaf {
 
         if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put((uint)pin, true);
         else leaf_master.send_slave_message(itr -> second -> i2c_address, {
-          slave_set_sel_pin,
+          (uint8_t)slave_commands::slave_set_sel_pin,
           2,
           { (uint8_t)pin, 1 }
         });
       
         leaf_master.send_slave_message(GENCALLADR, {
-          slave_is_neighbor,
+          (uint8_t)slave_commands::slave_is_neighbor,
           1,
           { itr -> second -> i2c_address }
         });
 
         if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put((uint)pin, false);
         else leaf_master.send_slave_message(itr -> second -> i2c_address, {
-          slave_set_sel_pin,
+          (uint8_t)slave_commands::slave_set_sel_pin,
           2,
           { (uint8_t)pin, 0 }
         });
@@ -91,7 +91,7 @@ namespace LannoLeaf {
       if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) continue;
 
       leaf_master.send_slave_message(itr -> second -> i2c_address, {
-        slave_neighbor_size,
+        (uint8_t)slave_commands::slave_neighbor_size,
         0,
         { }
       });
@@ -109,7 +109,7 @@ namespace LannoLeaf {
 
   void Controller::reset(void) {
     leaf_master.send_slave_message(GENCALLADR, {
-      slave_reset,
+      (uint8_t)slave_commands::slave_reset,
       0,
       { }
     });
@@ -125,13 +125,13 @@ namespace LannoLeaf {
     uint8_t next_address = get_next_available_address();
 
     leaf_master.send_slave_message(GENCALLADR, {
-      slave_set_i2c_address,
+      (uint8_t)slave_commands::slave_set_i2c_address,
       1,
       { next_address }
     });
 
     leaf_master.send_slave_message(next_address, {
-      slave_ping,
+      (uint8_t)slave_commands::slave_ping,
       1,
       { 2 }
     });

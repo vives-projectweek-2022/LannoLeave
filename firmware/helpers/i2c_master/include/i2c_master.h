@@ -1,11 +1,13 @@
 #pragma once
 
-#include <stdint.h>
-#include <hardware/i2c.h>
-#include <pico/stdlib.h>
-#include <helper_funcs_var.h>
-#include <commands.h>
 #include <stdio.h>
+#include <stdint.h>
+
+#include <commands.h>
+#include <helper_funcs_var.h>
+
+#include <pico/stdlib.h>
+#include <hardware/i2c.h>
 
 namespace LannoLeaf {
 

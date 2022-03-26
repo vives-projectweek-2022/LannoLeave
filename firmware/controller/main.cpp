@@ -9,25 +9,22 @@
 
 #include <PicoLed.hpp>
 
+#define SDA 8
+#define SCL 9
+#define MOSI 0
+#define MISO 3
+#define CLK 2
+#define CS 1
+
 using namespace LannoLeaf;
 
-Controller controller(i2c0, 8, 9);
+volatile bool timer_triggered = false;
+
+Controller controller(i2c0, SDA, SCL, MOSI, MISO, CLK, CS);
 
 bool repeating_timer_callback(struct repeating_timer *t) {
-  for (std::map <uint8_t, Node*>::iterator itr = controller.graph.map.begin(); itr != controller.graph.map.end(); itr++) {
-    if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) continue;
-    controller.leaf_master.send_slave_message(itr -> second -> i2c_address, {
-      slave_ping,
-      0,
-      { }
-    });
-
-    controller.leaf_master.get_slave_data(itr -> second -> i2c_address, 2);
-
-    if (controller.leaf_master.memory[0] != 0xA5 && controller.leaf_master.memory[1] != 0x5A) {
-      controller.reset();
-    }
-  }
+  PRINT("TIMER\n");
+  if (!timer_triggered) timer_triggered = true;
   return true;
 }
 
@@ -39,19 +36,19 @@ void set_alive_led(void) {
 }
 
 void add_handlers(void) {
-  controller.c_command_handler.add_handler(send_adj_list, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::send_adj_list, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.c_command_handler.add_handler(set_leaf_led, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_leaf_led, [&](context* ctx){
     // TODO: Implement  
   });
 
-  controller.c_command_handler.add_handler(set_leaf_all, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_leaf_all, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.c_command_handler.add_handler(set_unit_all, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_unit_all, [&](context* ctx){
     // TODO: handel addressing
 
     uint8_t buffer[6];
@@ -60,12 +57,12 @@ void add_handlers(void) {
     controller.ledstrip.show();
   });
 
-  controller.c_command_handler.add_handler(set_all_all, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_all_all, [&](context* ctx){
     uint8_t buffer[4];
     controller.c_spi_slave.read_data(buffer, 4);
 
     controller.leaf_master.send_slave_message(GENCALLADR, {
-      slave_set_all_led,
+      (uint8_t)slave_commands::slave_set_all_led,
       4,
       { buffer[0], buffer[1], buffer[2], buffer[3] }
     });
@@ -74,22 +71,42 @@ void add_handlers(void) {
     controller.ledstrip.show();
   });
 
-  controller.c_command_handler.add_handler(clear_leaf, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_leaf, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.c_command_handler.add_handler(clear_unit, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_unit, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.c_command_handler.add_handler(clear_all, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_all, [&](context* ctx){
     // TODO: Implement
   });
 
-  controller.c_command_handler.add_handler(set_random, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_random, [&](context* ctx){
     // TODO: Implement
   });
 
+}
+
+void scan_devices(void) {
+  for (std::map <uint8_t, Node*>::iterator itr = controller.graph.map.begin(); itr != controller.graph.map.end(); itr++) {
+    if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) continue;
+    controller.leaf_master.send_slave_message(itr -> second -> i2c_address, {
+      (uint8_t)slave_commands::slave_ping,
+      0,
+      { }
+    });
+
+    controller.leaf_master.get_slave_data(itr -> second -> i2c_address, 2);
+
+    if (controller.leaf_master.memory[0] != 0xA5 && controller.leaf_master.memory[1] != 0x5A) {
+      PRINT("Resetting!\n");
+      controller.reset();
+    }
+  }
+
+  timer_triggered = false;
 }
 
 int main() {
@@ -114,6 +131,7 @@ int main() {
   PRINT("\n");
 
   while (true) {
+    if (timer_triggered) scan_devices();
     if (uint8_t cmd = controller.c_spi_slave.read_command()) controller.c_command_handler.handel_command(cmd);
   }
 }

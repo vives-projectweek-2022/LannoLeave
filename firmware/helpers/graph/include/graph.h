@@ -1,11 +1,11 @@
 #pragma once
 
-#include <stdint.h>
-#include <stdio.h>
-#include <vector>
 #include <map>
 #include <string>
+#include <vector>
+#include <stdio.h>
 #include <sstream>
+#include <stdint.h>
 
 #include <helper_funcs_var.h>
 
@@ -35,11 +35,14 @@ namespace LannoLeaf {
   };
 
   struct Node {
+    Node(uint8_t address): 
+      i2c_address(address) { }
+
     typedef std::pair<side, Node*> node_edge;
     std::vector<node_edge> adj;
+    
     uint8_t i2c_address;
     coordinate pos = {0, 0};
-    Node(uint8_t address) : i2c_address(address) { }
   };
 
   class Graph {

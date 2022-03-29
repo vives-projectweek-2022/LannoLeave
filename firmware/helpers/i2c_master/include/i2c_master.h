@@ -9,7 +9,7 @@
 #include <pico/stdlib.h>
 #include <hardware/i2c.h>
 
-namespace LannoLeaf {
+namespace Lannooleaf {
 
   struct message {
     uint8_t command;

@@ -1,6 +1,6 @@
 #include <leaf.h>
 
-namespace LannoLeaf {
+namespace Lannooleaf {
 
   Leaf::Leaf(uint8_t address, i2c_inst_t * i2c, uint sda_pin, uint scl_pin):
   l_command_handler(&l_context) {
@@ -27,7 +27,10 @@ namespace LannoLeaf {
 
   void Leaf::update(void) { 
     update_sel_status();
-    if (l_read_mem.writen) l_command_handler.handel_command(l_read_mem.command);
+    if (l_read_mem.writen) {
+      printf("0x%02x\n", l_read_mem.command);
+      l_command_handler.handel_command(l_read_mem.command);
+    } 
   } 
 
   void Leaf::slave_init(void) {

@@ -6,7 +6,7 @@
 #include <pico/stdlib.h>
 #include <hardware/spi.h>
 
-namespace LannoLeaf {
+namespace Lannooleaf {
 
   class Spi_slave {
 

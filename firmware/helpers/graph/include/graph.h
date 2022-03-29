@@ -9,7 +9,7 @@
 
 #include <helper_funcs_var.h>
 
-namespace LannoLeaf {
+namespace Lannooleaf {
 
   struct coordinate {
 

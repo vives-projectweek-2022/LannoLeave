@@ -1,6 +1,6 @@
 #include <i2c_master.h>
 
-namespace LannoLeaf {
+namespace Lannooleaf {
 
   I2CMaster::I2CMaster(i2c_inst_t* i2c, uint8_t sda_pin, uint scl_pin) { 
     this->i2c = i2c; 

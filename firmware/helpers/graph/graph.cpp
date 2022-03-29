@@ -1,6 +1,6 @@
 #include "include/graph.h"
 
-namespace LannoLeaf {
+namespace Lannooleaf {
 
   Graph::Graph() { }
 

@@ -1,10 +1,9 @@
 #include <controller.h>
 
-namespace LannoLeaf {
+namespace Lannooleaf {
 
   Controller::Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin, uint mosi, uint miso, uint clk, uint cs):
   leaf_master(i2c_leaf_inst, sda_pin, scl_pin),
-  c_spi_slave(mosi, miso, clk, cs),
   c_command_handler(nullptr) { 
     
     for (select_pins pin : all_select_pins) {

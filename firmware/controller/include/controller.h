@@ -17,7 +17,7 @@
 #include <hardware/i2c.h>
 #include <hardware/gpio.h>
 
-namespace LannoLeaf {
+namespace Lannooleaf {
 
   class Controller {
 
@@ -46,7 +46,6 @@ namespace LannoLeaf {
     public:
       Graph graph;
       I2CMaster leaf_master;
-      Spi_slave c_spi_slave;
       CommandHandler c_command_handler;
 
     public:

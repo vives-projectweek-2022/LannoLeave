@@ -1,6 +1,6 @@
 #pragma once
 
-namespace LannoLeaf {
+namespace Lannooleaf {
 
   enum class slave_commands {
 
@@ -12,26 +12,24 @@ namespace LannoLeaf {
     slave_reset,
     slave_is_neighbor,
     slave_neighbor_size,
-    slave_set_led,
+    slave_set_leds,
     slave_set_all_led,
 
   };
 
   enum class controller_commands {
 
-    send_adj_list = 0x01,
+    get_matrix_size = 0x01,
 
     set_leaf_led,
+    set_all,
 
-    set_leaf_all,
-    set_unit_all,
-    set_all_all,
-
-    clear_leaf,
-    clear_unit,
+    clear_leaf_led,
     clear_all,
 
-    set_random
+    set_random,
+
+    version
 
   };
 

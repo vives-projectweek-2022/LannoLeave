@@ -17,7 +17,7 @@
 #include <hardware/i2c.h>
 #include <hardware/gpio.h>
 
-namespace LannoLeaf {
+namespace Lannooleaf {
 
   static read_memory l_read_mem; 
   static write_memory l_write_mem;

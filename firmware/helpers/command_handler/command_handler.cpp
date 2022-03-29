@@ -1,6 +1,6 @@
 #include <command_handler.h>
 
-namespace LannoLeaf {
+namespace Lannooleaf {
 
   CommandHandler::CommandHandler(context* contx) { this->contx = contx; }
 

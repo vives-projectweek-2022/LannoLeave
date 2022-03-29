@@ -1,13 +1,15 @@
-#include <spi_slave.h>
+#include "spi_slave.h"
 
-namespace LannoLeaf {
+static uint8_t dummy_data[5] = { 'D', 'U', 'M', 'M', 'Y' };
+static uint8_t trash[5];
+
+namespace Lannooleaf {
 
   Spi_slave::Spi_slave(uint mosi, uint miso, uint clk, uint cs) {
 
-    spi_init(spi0, 1000 * 1000);
+    spi_init(spi0, 1000 * 4000);
     spi_set_slave(spi0, true);
 
-    // PI4_MOSI -> PICO_RX, PI4_MISO -> PICO_TX, PI4_CLK -> PICO_CLK
     gpio_set_function(mosi, GPIO_FUNC_SPI);
     gpio_set_function(miso, GPIO_FUNC_SPI);
     gpio_set_function(clk, GPIO_FUNC_SPI);
@@ -21,25 +23,17 @@ namespace LannoLeaf {
   }
 
   uint8_t Spi_slave::read_command(void) {
-    if (spi_is_readable(spi0)) {
-      uint8_t cmd;
-      spi_read_blocking(spi0, 0xff, &cmd, 1);
-      return cmd;
-    } 
-    return 0x00;
+    uint8_t cmd = 0x00;
+    read_data(&cmd, 1);
+    return cmd;
   }
 
   void Spi_slave::read_data(uint8_t *data_buffer, size_t len) {
-    if (spi_is_readable(spi0)) {
-      spi_read_blocking(spi0, 0xff, data_buffer, len);
-    }
+    if (spi_is_readable(spi0)) spi_read_blocking(spi0, 0xff, data_buffer, len);
   }
 
   void Spi_slave::write_data(uint8_t *data_buffer, size_t len) {
-    if (spi_is_writable(spi0)){
-      spi_write_blocking(spi0, (uint8_t *) &len, 1);
-      spi_write_blocking(spi0, data_buffer, len);
-    }
+    spi_write_read_blocking(spi0, data_buffer, trash, len);
   }
 
 }

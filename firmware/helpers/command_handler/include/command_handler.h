@@ -1,10 +1,11 @@
 #pragma once
 
 #include <map>
+#include <iostream>
 #include <stdint.h>
 #include <functional>
 
-namespace LannoLeaf {
+namespace Lannooleaf {
 
   struct read_memory {
     bool writen = false;

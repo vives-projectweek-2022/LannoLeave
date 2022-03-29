@@ -1,7 +1,7 @@
 #include "include/helper_funcs_var.h"
 #include <graph.h>
 
-namespace LannoLeaf {
+namespace Lannooleaf {
 
   bool reserved_addr(uint8_t addr) {
     return (addr & 0x78) == 0 || (addr & 0x78) == 0x78 || addr == 0x08;
@@ -85,22 +85,22 @@ namespace LannoLeaf {
   coordinate side_to_addition_coordinate(side side) {
     switch (side){
     case side::a:
-      return coordinate(0, 2);
+      return coordinate(-3, 1);
 
     case side::b:
-      return coordinate(1, 1);
+      return coordinate(-4, -2);
     
     case side::c:
-      return coordinate(1, -1);
+      return coordinate(-1, -3);
 
     case side::d:
-      return coordinate(0, -2);
+      return coordinate(3, -1);
 
     case side::e:
-      return coordinate(-1, -1);
+      return coordinate(4, 2);
 
     case side::f:
-      return coordinate(-1, 1);
+      return coordinate(1, 3);
 
     default:
       return coordinate(0, 0);

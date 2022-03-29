@@ -7,7 +7,7 @@
 
 #include <pico/stdlib.h>
 
-using namespace LannoLeaf;
+using namespace Lannooleaf;
 
 Leaf leaf((uint8_t) UNCONFIGUREDADDRESS, i2c0, 8, 9);
 
@@ -66,13 +66,17 @@ void add_handlers(void) {
     ctx -> write_mem -> memory_address = 0;
   });
 
-  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_set_led, [&](context* ctx){
-    leaf.ledstrip.setPixelColor(ctx -> read_mem ->  memory[0], PicoLed::RGBW(ctx -> read_mem ->  memory[1], ctx -> read_mem ->  memory[2], ctx -> read_mem ->  memory[3], ctx -> read_mem ->  memory[4]));
+  // LED commando's
+  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_set_leds, [&](context* ctx){
+    printf("Setleds!\n");
+    leaf.ledstrip.setPixelColor(ctx->read_mem->memory[0], PicoLed::RGB(ctx->read_mem->memory[2], ctx->read_mem->memory[3], ctx->read_mem->memory[4]));
+    leaf.ledstrip.setPixelColor(ctx->read_mem->memory[1], PicoLed::RGB(ctx->read_mem->memory[2], ctx->read_mem->memory[3], ctx->read_mem->memory[4]));
     leaf.ledstrip.show();
   });
 
   leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_set_all_led, [&](context* ctx){
-    leaf.ledstrip.fill(PicoLed::RGBW(ctx -> read_mem ->  memory[0], ctx -> read_mem ->  memory[1], ctx -> read_mem ->  memory[2], ctx -> read_mem ->  memory[3]));
+    printf("Setting all led count: %i to %i, %i, %i\n", LED_LENGTH, ctx->read_mem->memory[0], ctx->read_mem->memory[1], ctx->read_mem->memory[2]);
+    leaf.ledstrip.fill(PicoLed::RGB(ctx->read_mem->memory[0], ctx->read_mem->memory[1], ctx->read_mem->memory[2]));
     leaf.ledstrip.show();
   });
 }

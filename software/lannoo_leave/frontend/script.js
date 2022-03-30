@@ -1,6 +1,5 @@
 var backend = "http://172.16.240.30:3000"
 
-
 var color_input = document.getElementById("RGB");
 
 color_input.addEventListener("input", function(){
@@ -10,18 +9,27 @@ color_input.addEventListener("input", function(){
     post(JsonData, ""); 
   }, false);
 
-
-function selector(selected) {
-//   alert(this.id)
-var JsonData = JSON.stringify({"select": this.id});
+function select_mode(selected) {
+//   JSON format: effect: 1; mode: on; etc
+var JsonData = JSON.stringify({"mode": this.id});
 post(JsonData, ""); 
+}
 
+function select_effect(selected) {
+var JsonData = JSON.stringify({"effect": this.id});
+post(JsonData, ""); 
 }
 
 function onload() {
-    var selectors = document.getElementsByClassName("selector");
-    for (let index = 0; index < selectors.length; index++) {
-        selectors[index].onclick = selector;
+    var mode = document.getElementsByClassName("select_mode");
+    var effects = document.getElementsByClassName("select_effect");
+    
+    for (let index = 0; index < mode.length; index++) {
+        mode[index].onclick = select_mode;
+    }
+
+    for (let index = 0; index < effects.length; index++) {
+        effects[index].onclick = select_effect;
     }
 }
 

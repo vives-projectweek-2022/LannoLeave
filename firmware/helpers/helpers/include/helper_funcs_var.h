@@ -51,6 +51,4 @@ namespace Lannooleaf {
 
   char side_to_char(side side);
 
-  struct coordinate side_to_addition_coordinate(side side);
-
 }

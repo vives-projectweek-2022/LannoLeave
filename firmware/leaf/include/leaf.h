@@ -50,17 +50,17 @@ namespace Lannooleaf {
 
     public:
       /** \returns Slave i²c address */
-      uint8_t& address(void) { return _address; }
+      uint8_t address(void) { return _address; }
 
       /** \returns Slave select pin status as uint8_t */
-      uint8_t& sel_pin_status(void) { return _sel_pin_status; }
+      uint8_t sel_pin_status(void) { return _sel_pin_status; }
 
     public:
       /** \returns true if slave is initialized, fase is not*/
-      bool& slave_initialized(void) { return _slave_initialized; }
+      bool slave_initialized(void) { return _slave_initialized; }
 
       /** \returns true if slave has been configured with a new i²c address, fase if not */
-      bool& configured(void) { return _configured; }
+      bool configured(void) { return _configured; }
 
     public:
       CommandHandler l_command_handler;

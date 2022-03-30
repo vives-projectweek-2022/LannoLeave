@@ -2,6 +2,7 @@
 
 static uint8_t dummy_data[5] = { 'D', 'U', 'M', 'M', 'Y' };
 static uint8_t trash[5];
+static uint8_t next = 0x00;
 
 namespace Lannooleaf {
 
@@ -29,10 +30,12 @@ namespace Lannooleaf {
   }
 
   void Spi_slave::read_data(uint8_t *data_buffer, size_t len) {
-    if (spi_is_readable(spi0)) spi_read_blocking(spi0, 0xff, data_buffer, len);
+    // !DO NOT PRINTF NO TIME!
+    if (spi_is_readable(spi0)) spi_read_blocking(spi0, next, data_buffer, len);
   }
 
   void Spi_slave::write_data(uint8_t *data_buffer, size_t len) {
+    // !DO NOT PRINTF NO TIME!
     spi_write_read_blocking(spi0, data_buffer, trash, len);
   }
 

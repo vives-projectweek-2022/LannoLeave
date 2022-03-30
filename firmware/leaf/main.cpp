@@ -54,11 +54,12 @@ void add_handlers(void) {
 
   leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_is_neighbor, [&](context* ctx){
     if (leaf.sel_pin_status()) {
+      printf("Adding neighbor 0x%02x at side %c\n", ctx->read_mem->memory[0], side_to_char(sel_pin_state_to_side(leaf.sel_pin_status())));
       ctx -> write_mem -> memory_address++;
       ctx -> write_mem -> memory[ctx -> write_mem -> memory_address] = ctx -> read_mem ->  memory[0];
       ctx -> write_mem -> memory_address++;
       ctx -> write_mem -> memory[ctx -> write_mem -> memory_address] = leaf.sel_pin_status();
-    } 
+    }
   });
 
   leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_neighbor_size, [&](context* ctx){

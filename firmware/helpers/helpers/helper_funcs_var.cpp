@@ -1,5 +1,4 @@
 #include "include/helper_funcs_var.h"
-#include <graph.h>
 
 namespace Lannooleaf {
 
@@ -34,22 +33,22 @@ namespace Lannooleaf {
 
   side sel_pin_state_to_side(uint8_t state) {
     switch (state) {
-    case 0b00000001:
+    case 0x01:
       return side::a;
 
-    case 0b00000010:
+    case 0x02:
       return side::b;
 
-    case 0b00000100:
+    case 0x04:
       return side::c;
 
-    case 0b00001000:
+    case 0x08:
       return side::d;
 
-    case 0b00010000:
+    case 0x10:
       return side::e;
 
-    case 0b00100000:
+    case 0x20:
       return side::f;
 
     default:
@@ -79,31 +78,6 @@ namespace Lannooleaf {
 
     default:
       return 'X';
-    }
-  }
-
-  coordinate side_to_addition_coordinate(side side) {
-    switch (side){
-    case side::a:
-      return coordinate(-3, 1);
-
-    case side::b:
-      return coordinate(-4, -2);
-    
-    case side::c:
-      return coordinate(-1, -3);
-
-    case side::d:
-      return coordinate(3, -1);
-
-    case side::e:
-      return coordinate(4, 2);
-
-    case side::f:
-      return coordinate(1, 3);
-
-    default:
-      return coordinate(0, 0);
     }
   }
 

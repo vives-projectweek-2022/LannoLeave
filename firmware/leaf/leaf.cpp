@@ -28,7 +28,7 @@ namespace Lannooleaf {
   void Leaf::update(void) { 
     update_sel_status();
     if (l_read_mem.writen) {
-      printf("0x%02x\n", l_read_mem.command);
+      l_read_mem.writen = false;
       l_command_handler.handel_command(l_read_mem.command);
     } 
   } 
@@ -57,7 +57,7 @@ namespace Lannooleaf {
     uint8_t i = 0;
 
     for (select_pins pin : all_select_pins) {
-      if (!gpio_is_dir_out((uint)i) && gpio_get((uint)pin)) _sel_pin_status |= 1 << i;
+      if (!gpio_is_dir_out((uint)pin) && gpio_get((uint)pin)) _sel_pin_status |= 1 << i;
       i++;
     }
   }

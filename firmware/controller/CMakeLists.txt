@@ -25,7 +25,6 @@ target_link_libraries(controller
   helper
   Pico_led
   spi_slave
-  pixel_mapping
   command_handler
 )
 

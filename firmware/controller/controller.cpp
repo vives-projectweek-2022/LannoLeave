@@ -12,7 +12,6 @@ namespace Lannooleaf {
     }
 
     graph.add_node(I2C_CONTOLLER_PLACEHOLDER_ADDRESS);
-    graph.map.find(UNCONFIGUREDADDRESS) -> second -> pos = {0, 0};
   }
 
   Controller::~Controller() { }
@@ -37,9 +36,10 @@ namespace Lannooleaf {
         if (node -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
           gpio_put((uint)pin, false);
 
+          printf("Checking assinged address\n");
           if (next_assigned_address != UNCONFIGUREDADDRESS) {
+            printf("adding edge from controller\n");
             graph.add_edge(I2C_CONTOLLER_PLACEHOLDER_ADDRESS, sel_pin_to_side(pin), next_assigned_address);
-            graph.map.find(next_assigned_address) -> second -> pos = node -> pos + side_to_addition_coordinate(sel_pin_to_side(pin));
           }
         } else this -> leaf_master.send_slave_message(node -> i2c_address, {
           (uint8_t)slave_commands::slave_set_sel_pin,
@@ -64,6 +64,7 @@ namespace Lannooleaf {
     for (itr = this -> graph.map.begin(); itr != this -> graph.map.end(); itr++) {
       for (select_pins pin : all_select_pins) {
 
+        // Set select pin high
         if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put((uint)pin, true);
         else leaf_master.send_slave_message(itr -> second -> i2c_address, {
           (uint8_t)slave_commands::slave_set_sel_pin,
@@ -71,12 +72,14 @@ namespace Lannooleaf {
           { (uint8_t)pin, 1 }
         });
       
+        // Send message to all slaves to save neighbor when one of select pins is high
         leaf_master.send_slave_message(GENCALLADR, {
           (uint8_t)slave_commands::slave_is_neighbor,
           1,
           { itr -> second -> i2c_address }
         });
 
+        // Set select pin low
         if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put((uint)pin, false);
         else leaf_master.send_slave_message(itr -> second -> i2c_address, {
           (uint8_t)slave_commands::slave_set_sel_pin,
@@ -87,14 +90,17 @@ namespace Lannooleaf {
     }
 
     for (itr = this -> graph.map.begin(); itr != this -> graph.map.end(); itr++ ) {
+      // Skip controller
       if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) continue;
 
+      // Tell slave to add neighbor count at begining of memory
       leaf_master.send_slave_message(itr -> second -> i2c_address, {
         (uint8_t)slave_commands::slave_neighbor_size,
         0,
         { }
       });
 
+      // Get the neighbor size from slave
       leaf_master.get_slave_data_no_mem_reset(itr -> second -> i2c_address, 1);
 
       uint8_t neigbor_count = leaf_master.memory[0];

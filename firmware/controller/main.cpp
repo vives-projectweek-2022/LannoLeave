@@ -2,138 +2,152 @@
 #include <stdint.h>
 
 #include <pico/stdlib.h>
+#include <pico/multicore.h>
 
 #include <commands.h>
 #include <controller.h>
 #include <helper_funcs_var.h>
+#include <pixel_mapping.h>
 
 #include <PicoLed.hpp>
 
-using namespace LannoLeaf;
+#define VERSION 1
 
-Controller controller(i2c0);
+#define SDA 8
+#define SCL 9
+#define MOSI 0
+#define MISO 3
+#define CLK 2
+#define CS 1
 
-volatile bool check = false;
+using namespace Lannooleaf;
 
-bool repeating_timer_callback(struct repeating_timer *t) {
-  printf("Timer\r\n");
-  check = true;
-  return true;
-}
+volatile bool timer_triggered = false;
+
+Controller controller(i2c0, SDA, SCL, MOSI, MISO, CLK, CS);
+PixelMapping mapping(&controller.graph);
 
 void set_alive_led(void) {
-  #ifdef DEBUG
   const uint led_pin = 25;
   gpio_init(led_pin);
   gpio_set_dir(led_pin, GPIO_OUT);
   gpio_put(led_pin, true);
-  #endif
 }
 
-void add_packet_handlers(void) {
+void spi_core(void) {
+  Spi_slave spi_slave(0, 2, 3, 1);
 
-  controller.add_packet_handel(send_adj_list, [&](){
-    uart_write_blocking(uart0, (const uint8_t *) controller.graph.to_string().c_str(), controller.graph.to_string().size());
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::get_matrix_size, [&](context* ctx){
+    uint8_t buffer[2];
+    buffer[0] = (uint8_t)mapping.get_matrix_size().first;
+    buffer[1] = (uint8_t)mapping.get_matrix_size().second;
+
+    spi_slave.write_data(buffer, 2);
   });
 
-  controller.add_packet_handel(set_leaf_led, [&](){
-    uint8_t buffer[6];
-    uart_read_blocking(uart0, buffer, 6);
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_leaf_led, [&](context* ctx) {
+    uint8_t buffer[4];
+    spi_slave.read_data(buffer, 4);
 
-    if (buffer[0] == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
-      controller.ledstrip.setPixelColor(buffer[1], PicoLed::RGBW(buffer[2], buffer[3], buffer[4], buffer[5]));
+    Pixel pixel = mapping.get_pixel(buffer[0]);
+    PicoLed::Color color = PicoLed::RGB(buffer[1], buffer[2], buffer[3]);
+
+    if (pixel.i2c_address == UNCONFIGUREDADDRESS) return;
+
+    if (pixel.i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
+      controller.ledstrip.setPixelColor(pixel.led.first, color);
+      controller.ledstrip.setPixelColor(pixel.led.second, color);
+      controller.ledstrip.show();
     } else {
-      controller.leaf_master.send_slave_message(buffer[0], {
-        slave_set_led,
+      controller.leaf_master.send_slave_message(pixel.i2c_address, {
+        (uint8_t)slave_commands::slave_set_leds,
         5,
-        { buffer[1], buffer[2], buffer[3], buffer[4], buffer[5] }
+        { (uint8_t)pixel.led.first, (uint8_t)pixel.led.second, color.red, color.green, color.blue }
       });
     }
   });
 
-  controller.add_packet_handel(set_leaf_all, [&](){
-    // TODO: Implement
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_all, [&](context* ctx){
+    uint8_t buffer[3];
+    spi_slave.read_data(buffer, 3);
+    
+    printf("Sending slave message with color: %02x, %02x, %02x\n", buffer[0], buffer[1], buffer[2]);
+    controller.leaf_master.send_slave_message(GENCALLADR, {
+      (uint8_t)slave_commands::slave_set_all_led,
+      3,
+      { buffer[0], buffer[1], buffer[2] }
+    });
+
+    printf("Setting own led to %i, %i, %i\n", buffer[0], buffer[1], buffer[2]);
+    controller.ledstrip.fill(PicoLed::RGB(buffer[0], buffer[1], buffer[2]));
+    controller.ledstrip.show();
   });
 
-  controller.add_packet_handel(set_unit_all, [&](){
-    uint8_t buffer[5];
-    uart_read_blocking(uart0, buffer, 5);
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_leaf_led, [&](context* ctx){
+    uint8_t buffer;
+    spi_slave.read_data(&buffer, 1);
 
-    if (buffer[0] == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
-      controller.ledstrip.fill(PicoLed::RGBW(buffer[1], buffer[2], buffer[3], buffer[4]));
+    Pixel pixel = mapping.get_pixel(buffer);
+
+    if (pixel.i2c_address == UNCONFIGUREDADDRESS) return;
+
+    if (pixel.i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
+      controller.ledstrip.setPixelColor(pixel.led.first, PicoLed::RGB(0, 0, 0));
+      controller.ledstrip.setPixelColor(pixel.led.second, PicoLed::RGB(0, 0, 0));
+      controller.ledstrip.show();
     } else {
-      controller.leaf_master.send_slave_message(buffer[0], {
-        slave_set_all_led,
-        4,
-        { buffer[1], buffer[2], buffer[3], buffer[4] }
+      controller.leaf_master.send_slave_message(pixel.i2c_address, {
+        (uint8_t)slave_commands::slave_set_leds,
+        5,
+        { (uint8_t)pixel.led.first, (uint8_t)pixel.led.second, 0, 0, 0 }
       });
     }
   });
 
-  controller.add_packet_handel(set_all_all, [&](){
-    // TODO: Implement
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_all, [&](context* ctx){
+    controller.ledstrip.clear();
+    controller.ledstrip.show();
+
+    controller.leaf_master.send_slave_message(GENCALLADR, {
+      (uint8_t)slave_commands::slave_set_all_led,
+      3,
+      { 0, 0, 0 }
+    });
   });
 
-  controller.add_packet_handel(clear_leaf, [&](){
-    // TODO: Implement
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_random, [&](context* ctx){
+    // TODO: implement
   });
 
-  controller.add_packet_handel(clear_unit, [&](){
-    // TODO: Implement
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::version, [&](context* ctx){
+    uint8_t version = VERSION;
+    spi_slave.write_data(&version, 1);
   });
 
-  controller.add_packet_handel(clear_all, [&](){
-    // TODO: Implement
-  });
-
-  controller.add_packet_handel(set_random, [&](){
-    // TODO: Implement
-  });
-
+  while (true) {
+    controller.c_command_handler.handel_command(spi_slave.read_command());
+  }
 }
 
 int main() {
   stdio_init_all();
   set_alive_led();
 
-  sleep_ms(500);
-
   controller.device_discovery();
   controller.topology_discovery();
+  mapping.generate_mapping();
 
-  add_packet_handlers();
+  multicore_launch_core1(spi_core);
 
-  struct repeating_timer timer;
+  PRINT(controller.graph.to_string().c_str());
+  PRINT("\n");
 
-  add_repeating_timer_ms(1000, repeating_timer_callback, NULL, &timer);
+  PRINT(controller.graph.node_to_coords().c_str());
+  PRINT("\n");
 
+  // I think i²c will run on this core and spi on the other core
   while (true) {
-    if (check) {
-      for (std::map <uint8_t, Node*>::iterator itr = controller.graph.map.begin(); itr != controller.graph.map.end(); itr++) {
-        if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) continue;
-        controller.leaf_master.send_slave_message(itr -> second -> i2c_address, {
-          slave_ping,
-          0,
-          { }
-        });
-
-        controller.leaf_master.get_slave_data(itr -> second -> i2c_address, 2);
-
-        if (controller.leaf_master.memory[0] != 0xA5 && controller.leaf_master.memory[1] != 0x5A) {
-          printf("Resetting \r\n");
-          controller.reset();
-        }
-      }
-
-      check = false;
-    }
-
-    if (uart_is_readable(uart0)) {
-      printf("Reading message \r\n");
-      uint8_t cmd;
-      uart_read_blocking(uart0, &cmd, 1);
-
-      controller.handel_packet((bl_commands) cmd);
-    }
+    tight_loop_contents();
   }
 }
+

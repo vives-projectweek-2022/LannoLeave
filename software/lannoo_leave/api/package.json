@@ -1,0 +1,34 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "api for lannoo leaf project",
+  "main": "scr/server.js",
+  "scripts": {
+    "dev": "nodemon ./src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vives-projectweek-2022/LannoLeave.git"
+  },
+  "keywords": [
+    "iot",
+    "nanoleaf",
+    "vives"
+  ],
+  "author": "Arno Schoutteten",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vives-projectweek-2022/LannoLeave/issues"
+  },
+  "homepage": "https://github.com/vives-projectweek-2022/LannoLeave#readme",
+  "dependencies": {
+    "body-parser": "^1.19.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "pi-spi": "^1.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}

@@ -3,6 +3,7 @@ __pycache__
 BUILD
 mbed-os
 
-build
+node_modules
 
+build
 firmware/docs/doxy

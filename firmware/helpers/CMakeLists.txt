@@ -1,3 +1,6 @@
 add_subdirectory(graph)
 add_subdirectory(helpers)
 add_subdirectory(i2c_master)
+add_subdirectory(spi_slave)
+add_subdirectory(command_handler)
+add_subdirectory(pixel_mapping)

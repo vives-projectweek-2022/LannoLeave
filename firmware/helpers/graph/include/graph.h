@@ -1,21 +1,48 @@
 #pragma once
 
-#include <stdint.h>
-#include <stdio.h>
-#include <vector>
 #include <map>
 #include <string>
+#include <vector>
+#include <stdio.h>
 #include <sstream>
+#include <stdint.h>
 
 #include <helper_funcs_var.h>
 
-namespace LannoLeaf {
+namespace Lannooleaf {
+
+  struct coordinate {
+
+    int16_t x;
+    int16_t y;
+
+    coordinate(int16_t x, int16_t y) : x(x), y(y) { }
+
+    coordinate& operator=(coordinate a) {
+      x = a.x;
+      y = a.y;
+      return *this;
+    }
+
+    coordinate operator+(coordinate a) const {
+      return coordinate(a.x + x, a.y + y);
+    }
+
+    std::string to_string(void) {
+      return "[" + std::to_string(x) + ", " + std::to_string(y) + "]"; 
+    }
+
+  };
 
   struct Node {
+    Node(uint8_t address): 
+      i2c_address(address) { }
+
     typedef std::pair<side, Node*> node_edge;
     std::vector<node_edge> adj;
+    
     uint8_t i2c_address;
-    Node(uint8_t address) : i2c_address(address) { }
+    coordinate pos = {0, 0};
   };
 
   class Graph {
@@ -37,6 +64,7 @@ namespace LannoLeaf {
       
     public:
       std::string to_string(void);
+      std::string node_to_coords(void);
 
   };
 

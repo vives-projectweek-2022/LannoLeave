@@ -1,6 +1,8 @@
 # raspberry pi with docker
 
-Raspi Arno IP-Addr: 172.16.240.30
+Raspi Arno IP-Addr: `172.16.240.30`
+
+API port  : `:3000`
 
 ## installation:
 
@@ -20,8 +22,11 @@ install packages
 
 then
 
-- git cline the repo
+- git clone the repo
 - cd into software/lannoo_leave
 - docker compose up
 
 done :)
+
+## sources
+

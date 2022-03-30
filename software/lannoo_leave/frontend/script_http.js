@@ -1,37 +1,22 @@
 var backend = "http://172.16.240.30:3000"
 
-var color_input = document.getElementById("RGB");
-
-color_input.addEventListener("input", function(){
-    var color_value = color_input.value;
-    
-    var JsonData = JSON.stringify({"color": color_value});
+$("#RGB").on('propertychange input', function(){
+    var JsonData = JSON.stringify({"color": $(this).val()});
     post(JsonData, ""); 
-  }, false);
+  });
 
-function select_mode(selected) {
-//   JSON format: effect: 1; mode: on; etc
-var JsonData = JSON.stringify({"mode": this.id});
-post(JsonData, ""); 
-}
+$(".select_mode").click(function() {
+    //   JSON format: effect: 1; mode: on; etc
+    var JsonData = JSON.stringify({"mode": this.id});
+    post(JsonData, ""); 
+});
 
-function select_effect(selected) {
-var JsonData = JSON.stringify({"effect": this.id});
-post(JsonData, ""); 
-}
+$(".select_effect").click(function() {
+    //   JSON format: effect: 1; mode: on; etc
+    var JsonData = JSON.stringify({"effect": this.id});
+    post(JsonData, ""); 
+});
 
-function onload() {
-    var mode = document.getElementsByClassName("select_mode");
-    var effects = document.getElementsByClassName("select_effect");
-    
-    for (let index = 0; index < mode.length; index++) {
-        mode[index].onclick = select_mode;
-    }
-
-    for (let index = 0; index < effects.length; index++) {
-        effects[index].onclick = select_effect;
-    }
-}
 
 function post(data, url) {
 

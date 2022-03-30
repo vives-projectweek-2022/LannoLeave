@@ -4,11 +4,17 @@
 
 ![Schematic](img/schematic.png)
 
-## PCB
+## PCB (leaf)
 
 | Front | Back |
 |---|---|
-| ![Front](img/front.png) | ![Back](img/back.png) |
+| ![Front](img/front_leaf.png) | ![Back](img/back_leaf.png) |
+
+## PCB (verbindingsstuk)
+
+| Front | Back |
+|---|---|
+| ![Front](img/front_tussen.png) | ![Back](img/back_tussen.png) |
 
 ## BOM (Bill of Materials)
 
@@ -48,10 +54,17 @@ Totale prijs componenten controller: `14,1956 €`
 
 Totale prijs componenten verbindingsstuk: `0,10508 €`
 
-## BOM (Bill of Materials) Aliexpress
+## BOM (Bill of Materials) AliExpress
 
-| Designator | Quantity | Description | Footprint | Distributor | Ordercode | Price |
+## BOM (Bill of Materials)
+
+| Designator | Quantity | Description | Footprint | Distributor | Link | Price |
 |---|---|---|---|---|---|---|
+| D1 - D16 | 16 | WS2812B addressable LEDS | 5050 | AliExpress | [link](https://nl.aliexpress.com/item/1005002653014067.html) | 0,04324 € (1000+) |
+
+
+https://nl.aliexpress.com/item/1005002653014067.html
+
 
 * https://nl.aliexpress.com/item/4000262366205.html?gatewayAdapt=glo2nld&spm=a2g0o.cart.0.0.5f573c00WdXbel&mp=1
     * variant: 5p

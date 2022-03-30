@@ -1,5 +1,5 @@
-# LannoLeave
-> Project Week 2022 Lannoo Leave
+# Lannooleaf
+> Project Week 2022 Lannooleaf
 
 ![logo](/img/logoNew.png)
 

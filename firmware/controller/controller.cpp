@@ -19,6 +19,8 @@ namespace Lannooleaf {
   void Controller::device_discovery(void) {
     std::vector<uint8_t> visited;
 
+    bool controller_done = false;
+
     std::function <void(Node*)> search = [&](Node* node) {
       visited.push_back(node -> i2c_address);
       for (select_pins pin : all_select_pins) {
@@ -33,12 +35,12 @@ namespace Lannooleaf {
 
         uint8_t next_assigned_address = this -> assign_new_address();
 
+        printf("next address: 0x%02x side %c from 0x%02x\n", next_assigned_address, side_to_char(sel_pin_to_side(pin)), node->i2c_address);
+
         if (node -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
           gpio_put((uint)pin, false);
 
-          printf("Checking assinged address\n");
           if (next_assigned_address != UNCONFIGUREDADDRESS) {
-            printf("adding edge from controller\n");
             graph.add_edge(I2C_CONTOLLER_PLACEHOLDER_ADDRESS, sel_pin_to_side(pin), next_assigned_address);
           }
         } else this -> leaf_master.send_slave_message(node -> i2c_address, {
@@ -49,6 +51,11 @@ namespace Lannooleaf {
 
         std::map <uint8_t, Node*>::iterator itr;
         for (itr = this -> graph.map.begin(); itr != this -> graph.map.end(); itr++) {
+          if (!controller_done) {
+            controller_done = (node->i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS && pin == select_pins::F);
+            continue;
+          }
+
           if (!std::count(visited.begin(), visited.end(), itr -> second -> i2c_address)) {
             search(itr -> second);
           }

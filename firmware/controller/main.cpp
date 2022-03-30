@@ -71,6 +71,8 @@ int main() {
   stdio_init_all();
   set_alive_led();
 
+  sleep_ms(2000);
+
   controller.device_discovery();
   controller.topology_discovery();
 

@@ -54,7 +54,6 @@ void add_handlers(void) {
 
   leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_is_neighbor, [&](context* ctx){
     if (leaf.sel_pin_status()) {
-      printf("Adding neighbor 0x%02x at side %c\n", ctx->read_mem->memory[0], side_to_char(sel_pin_state_to_side(leaf.sel_pin_status())));
       ctx -> write_mem -> memory_address++;
       ctx -> write_mem -> memory[ctx -> write_mem -> memory_address] = ctx -> read_mem ->  memory[0];
       ctx -> write_mem -> memory_address++;
@@ -68,15 +67,12 @@ void add_handlers(void) {
   });
 
   // LED commando's
-  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_set_leds, [&](context* ctx){
-    printf("Setleds!\n");
-    leaf.ledstrip.setPixelColor(ctx->read_mem->memory[0], PicoLed::RGB(ctx->read_mem->memory[2], ctx->read_mem->memory[3], ctx->read_mem->memory[4]));
-    leaf.ledstrip.setPixelColor(ctx->read_mem->memory[1], PicoLed::RGB(ctx->read_mem->memory[2], ctx->read_mem->memory[3], ctx->read_mem->memory[4]));
+  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_set_led, [&](context* ctx){
+    leaf.ledstrip.setPixelColor(ctx->read_mem->memory[0], PicoLed::RGB(ctx->read_mem->memory[1], ctx->read_mem->memory[2], ctx->read_mem->memory[3]));
     leaf.ledstrip.show();
   });
 
   leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_set_all_led, [&](context* ctx){
-    printf("Setting all led count: %i to %i, %i, %i\n", LED_LENGTH, ctx->read_mem->memory[0], ctx->read_mem->memory[1], ctx->read_mem->memory[2]);
     leaf.ledstrip.fill(PicoLed::RGB(ctx->read_mem->memory[0], ctx->read_mem->memory[1], ctx->read_mem->memory[2]));
     leaf.ledstrip.show();
   });

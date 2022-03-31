@@ -7,6 +7,7 @@
 #include <commands.h>
 #include <controller.h>
 #include <helper_funcs_var.h>
+#include <spi_slave.h>
 
 #include <PicoLed.hpp>
 
@@ -33,14 +34,36 @@ void set_alive_led(void) {
 }
 
 void spi_core(void) {
-  Spi_slave spi_slave(0, 3, 2, 1);
+
+  // Initialze spi on core 1 to handel interupts on core 1
+  Spi_slave::Get().initialize(0, 3, 2, 1);
 
   controller.c_command_handler.add_handler((uint8_t)controller_commands::set_leaf_led, [&](context* ctx) {
+    const Packet& pkt = Spi_slave::Get().fifo.front();
 
+    if (pkt.read_buffer[1] == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
+      controller.ledstrip.setPixelColor(pkt.read_buffer[2], PicoLed::RGB(pkt.read_buffer[3], pkt.read_buffer[4], pkt.read_buffer[5]));
+      controller.ledstrip.show();
+    } else {
+      controller.leaf_master.send_slave_message(pkt.read_buffer[1], {
+        (uint8_t)slave_commands::slave_set_led,
+        4,
+        {pkt.read_buffer[2], pkt.read_buffer[3], pkt.read_buffer[4], pkt.read_buffer[5]}
+      });
+    }
   });
 
   controller.c_command_handler.add_handler((uint8_t)controller_commands::set_all, [&](context* ctx){
+    const Packet& pkt = Spi_slave::Get().fifo.front();
+    
+    controller.leaf_master.send_slave_message(GENCALLADR, {
+      (uint8_t)slave_commands::slave_set_all_led,
+      3,
+      { pkt.read_buffer[1], pkt.read_buffer[2], pkt.read_buffer[3] }
+    });
 
+    controller.ledstrip.fill(PicoLed::RGB(pkt.read_buffer[1], pkt.read_buffer[2], pkt.read_buffer[3]));
+    controller.ledstrip.show();
   });
 
   controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_leaf_led, [&](context* ctx){
@@ -57,13 +80,10 @@ void spi_core(void) {
 
   controller.c_command_handler.add_handler((uint8_t)controller_commands::version, [&](context* ctx){
     uint8_t version = VERSION;
-    spi_slave.write_data(&version, 1);
   });
 
-  printf("Handeling commands\n");
-
   while (true) {
-    controller.c_command_handler.handel_command(spi_slave.read_command());
+    tight_loop_contents();
   }
 }
 
@@ -71,19 +91,22 @@ int main() {
   stdio_init_all();
   set_alive_led();
 
-  sleep_ms(2000);
-
   controller.device_discovery();
   controller.topology_discovery();
-
-  multicore_launch_core1(spi_core);
 
   PRINT(controller.graph.to_string().c_str());
   PRINT("\n");
 
-  // I think i²c will run on this core and spi on the other core
+  PRINT("Launcing core 1\n");
+  multicore_launch_core1(spi_core);
+
   while (true) {
-    tight_loop_contents();
+    // Handel incomming commands from core 0
+    if (!Spi_slave::Get().fifo.empty()) {
+      printf("Command to execute: 0x%02x\n", Spi_slave::Get().fifo.front().read_buffer[0]);
+      controller.c_command_handler.handel_command(Spi_slave::Get().fifo.front().read_buffer[0]);
+      Spi_slave::Get().fifo.pop();
+    } 
   }
 }
 

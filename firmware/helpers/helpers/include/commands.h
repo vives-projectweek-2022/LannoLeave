@@ -12,7 +12,8 @@ namespace Lannooleaf {
     slave_reset,
     slave_is_neighbor,
     slave_neighbor_size,
-    slave_set_leds,
+    
+    slave_set_led,
     slave_set_all_led,
 
   };

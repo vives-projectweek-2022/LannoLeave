@@ -35,8 +35,6 @@ namespace Lannooleaf {
 
         uint8_t next_assigned_address = this -> assign_new_address();
 
-        printf("next address: 0x%02x side %c from 0x%02x\n", next_assigned_address, side_to_char(sel_pin_to_side(pin)), node->i2c_address);
-
         if (node -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
           gpio_put((uint)pin, false);
 

@@ -10,4 +10,5 @@ target_sources(spi_slave INTERFACE
 
 target_link_libraries(spi_slave INTERFACE
   hardware_spi
+  controller
 )

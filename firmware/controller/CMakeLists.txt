@@ -15,17 +15,10 @@ target_include_directories(controller
 
 target_link_libraries(controller
   pico_stdlib
-  hardware_i2c
   pico_multicore
-  
-  i2c_slave
-  i2c_master
-  
-  graph
-  helper
   Pico_led
-  spi_slave
-  command_handler
+
+  helpers
 )
 
 target_compile_definitions(controller PRIVATE

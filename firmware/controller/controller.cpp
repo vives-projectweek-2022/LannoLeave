@@ -3,8 +3,7 @@
 namespace Lannooleaf {
 
   Controller::Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin, uint mosi, uint miso, uint clk, uint cs):
-  leaf_master(i2c_leaf_inst, sda_pin, scl_pin),
-  c_command_handler(nullptr) { 
+  leaf_master(i2c_leaf_inst, sda_pin, scl_pin) { 
     
     for (select_pins pin : all_select_pins) {
       gpio_init((uint)pin);
@@ -25,11 +24,10 @@ namespace Lannooleaf {
       visited.push_back(node -> i2c_address);
       for (select_pins pin : all_select_pins) {
         if (node -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put((uint)pin, true);
-        else this -> leaf_master.send_slave_message(node -> i2c_address, {
-          (uint8_t)slave_commands::slave_set_sel_pin,
-          2,
-          { (uint8_t)pin, 1 }
-        });
+        else {
+          uint8_t message[8] = { (uint8_t)slave_commands::set_sel_pin, (uint8_t)pin, 1 };
+          leaf_master.send_data(node->i2c_address, message);
+        }
 
         sleep_ms(10);
 
@@ -38,14 +36,12 @@ namespace Lannooleaf {
         if (node -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
           gpio_put((uint)pin, false);
 
-          if (next_assigned_address != UNCONFIGUREDADDRESS) {
-            graph.add_edge(I2C_CONTOLLER_PLACEHOLDER_ADDRESS, sel_pin_to_side(pin), next_assigned_address);
-          }
-        } else this -> leaf_master.send_slave_message(node -> i2c_address, {
-          (uint8_t)slave_commands::slave_set_sel_pin,
-          2,
-          { (uint8_t)pin, 0 }
-        });
+          if (next_assigned_address != UNCONFIGUREDADDRESS) graph.add_edge(I2C_CONTOLLER_PLACEHOLDER_ADDRESS, sel_pin_to_side(pin), next_assigned_address);
+
+        } else {
+          uint8_t message[8] = { (uint8_t)slave_commands::set_sel_pin, (uint8_t)pin, 0 };
+          leaf_master.send_data(node->i2c_address, message);
+        }
 
         std::map <uint8_t, Node*>::iterator itr;
         for (itr = this -> graph.map.begin(); itr != this -> graph.map.end(); itr++) {
@@ -71,26 +67,21 @@ namespace Lannooleaf {
 
         // Set select pin high
         if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put((uint)pin, true);
-        else leaf_master.send_slave_message(itr -> second -> i2c_address, {
-          (uint8_t)slave_commands::slave_set_sel_pin,
-          2,
-          { (uint8_t)pin, 1 }
-        });
+        else {
+          uint8_t message[8] = { (uint8_t)slave_commands::set_sel_pin, (uint8_t)pin, 1 };
+          leaf_master.send_data(itr->second->i2c_address, message);
+        }
       
         // Send message to all slaves to save neighbor when one of select pins is high
-        leaf_master.send_slave_message(GENCALLADR, {
-          (uint8_t)slave_commands::slave_is_neighbor,
-          1,
-          { itr -> second -> i2c_address }
-        });
+        uint8_t message[8] = { (uint8_t)slave_commands::is_neighbor, itr->second->i2c_address };
+        leaf_master.send_data(GENCALLADR, message);
 
         // Set select pin low
         if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) gpio_put((uint)pin, false);
-        else leaf_master.send_slave_message(itr -> second -> i2c_address, {
-          (uint8_t)slave_commands::slave_set_sel_pin,
-          2,
-          { (uint8_t)pin, 0 }
-        });
+        else {
+          uint8_t message[8] = { (uint8_t)slave_commands::set_sel_pin, (uint8_t)pin, 0 };
+          leaf_master.send_data(itr->second->i2c_address, message);
+        }
       }
     }
 
@@ -98,31 +89,23 @@ namespace Lannooleaf {
       // Skip controller
       if (itr -> second -> i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) continue;
 
-      // Tell slave to add neighbor count at begining of memory
-      leaf_master.send_slave_message(itr -> second -> i2c_address, {
-        (uint8_t)slave_commands::slave_neighbor_size,
-        0,
-        { }
-      });
+      // Ask slave to ready neighbordata
+      uint8_t message[8] = { (uint8_t)slave_commands::get_neighbor_information };
+      leaf_master.send_data(itr->second->i2c_address, message);
 
-      // Get the neighbor size from slave
-      leaf_master.get_slave_data_no_mem_reset(itr -> second -> i2c_address, 1);
+      // Get the data
+      std::array<uint8_t, 8> neighbors = leaf_master.get_data(itr->second->i2c_address);
+      std::array<uint8_t, 8> side = leaf_master.get_data(itr->second->i2c_address);
 
-      uint8_t neigbor_count = leaf_master.memory[0];
-      leaf_master.get_slave_data(itr -> second -> i2c_address, neigbor_count * 2);
-
-      for (uint8_t i = 0; i <= neigbor_count; i += 2) {
-        graph.add_edge(itr -> second -> i2c_address, sel_pin_state_to_side(leaf_master.memory[i + 1]), leaf_master.memory[i]);
+      for (uint8_t i = 0; i < neighbors[7]; i++) {
+        graph.add_edge(itr->second->i2c_address, sel_pin_state_to_side(side[i]), neighbors[i]);
       }
     }
   }
 
   void Controller::reset(void) {
-    leaf_master.send_slave_message(GENCALLADR, {
-      (uint8_t)slave_commands::slave_reset,
-      0,
-      { }
-    });
+    uint8_t message[8] = { (uint8_t)slave_commands::reset };
+    leaf_master.send_data(GENCALLADR, message);
 
     graph.clear();
     graph.add_node(I2C_CONTOLLER_PLACEHOLDER_ADDRESS);
@@ -134,22 +117,13 @@ namespace Lannooleaf {
   uint8_t Controller::assign_new_address(void) {
     uint8_t next_address = get_next_available_address();
 
-    leaf_master.send_slave_message(GENCALLADR, {
-      (uint8_t)slave_commands::slave_set_i2c_address,
-      1,
-      { next_address }
-    });
+    uint8_t set_next_address[8] = { (uint8_t)slave_commands::set_i2c_address, next_address };
+    leaf_master.send_data(GENCALLADR, set_next_address);
 
-    leaf_master.send_slave_message(next_address, {
-      (uint8_t)slave_commands::slave_ping,
-      1,
-      { 2 }
-    });
+    uint8_t ping[8] = { (uint8_t)slave_commands::ping };
+    leaf_master.send_data(next_address, ping);
 
-    leaf_master.get_slave_data(next_address, 2);
-
-    if (leaf_master.memory[0] == 0xA5 && leaf_master.memory[1] == 0x5A) {
-      leaf_master.reset_mem();
+    if (leaf_master.get_data(next_address).at(0) == 'H') {
       graph.add_node(next_address);
       return next_address;
     }

@@ -4,12 +4,14 @@
 #include <leaf.h>
 #include <commands.h>
 #include <helper_funcs_var.h>
+#include <i2c_slave.h>
 
 #include <pico/stdlib.h>
+#include <pico/multicore.h>
 
 using namespace Lannooleaf;
 
-Leaf leaf((uint8_t) UNCONFIGUREDADDRESS, i2c0, 8, 9);
+Leaf leaf;
 
 void set_alive_led(void) {
   const uint led_pin = 25;
@@ -18,82 +20,99 @@ void set_alive_led(void) {
   gpio_put(led_pin, true);
 }
 
-void add_handlers(void) {
-  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_set_i2c_address, [&](context* ctx){
-    if (leaf.address() == 0x08) {
-      leaf.address(ctx -> read_mem -> memory[0]);
+void sel_pin_irq_callback(uint gpio, uint32_t events) {
+  I2c_slave::Get().initialize(UNCONFIGUREDADDRESS, i2c0, 8, 9);
+
+  for (select_pins pin : all_select_pins) {
+    gpio_set_irq_enabled_with_callback((uint)pin, GPIO_IRQ_EDGE_RISE, false, sel_pin_irq_callback);
+  }
+}
+
+void i2c_slave_core(void) {
+
+  for (select_pins pin : all_select_pins) {
+    gpio_init((uint)pin);
+    gpio_set_dir((uint)pin, GPIO_IN);
+    gpio_set_irq_enabled_with_callback((uint)pin, GPIO_IRQ_EDGE_RISE, true, sel_pin_irq_callback);
+  }
+
+  leaf.l_command_handler.add_handler((uint8_t)slave_commands::set_i2c_address, [&](){
+    const std::array<uint8_t, 8>& data = I2c_slave::Get().read_fifo.front();
+    if (I2c_slave::address() == UNCONFIGUREDADDRESS) {
+      I2c_slave::Get().reassign_address(data[1]);
+    } 
+  });
+
+  leaf.l_command_handler.add_handler((uint8_t)slave_commands::ping, [&](){
+    constexpr std::array<uint8_t, 8> data = { 'H', 'E', 'L', 'L', 'O', 'I', '2', 'C' };
+    I2c_slave::Get().write_fifo.push(data);
+  }); 
+
+  leaf.l_command_handler.add_handler((uint8_t)slave_commands::set_sel_pin, [&](){
+    const std::array<uint8_t, 8>& data = I2c_slave::Get().read_fifo.front();
+
+    if (data[2]) { // Set high
+      gpio_set_dir(data[1], GPIO_OUT);
+      gpio_put(data[1], true);
+    } else { // Set low
+      gpio_put(data[1], false);
+      gpio_set_dir(data[1], GPIO_IN);
     }
   });
 
-  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_ping, [&](context* ctx){
-    ctx -> write_mem -> memory[0] = 0xA5;
-    ctx -> write_mem -> memory[1] = 0x5A;
+  leaf.l_command_handler.add_handler((uint8_t)slave_commands::get_sel_pin, [&](){
+    std::array<uint8_t, 8> data = { leaf.sel_pin_status() };
+    I2c_slave::Get().write_fifo.push(data);
   });
 
-  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_reset_mem_counter, [&](context* ctx){
-    ctx -> write_mem -> memory_address = 0;
-  });  
+  leaf.l_command_handler.add_handler((uint8_t)slave_commands::is_neighbor, [&](){
+    const std::array<uint8_t, 8>& data = I2c_slave::Get().read_fifo.front();
+    static uint8_t neighbor_count = 0x00;
 
-  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_set_sel_pin, [&](context* ctx){
-    if (gpio_is_dir_out(ctx -> read_mem -> memory[0]) && !ctx -> read_mem -> memory[1]) {
-      gpio_put(ctx -> read_mem -> memory[0], false);
-      gpio_set_dir(ctx -> read_mem ->  memory[0], GPIO_IN);
-    } else {
-      gpio_set_dir(ctx -> read_mem ->  memory[0], GPIO_OUT);
-      gpio_put(ctx -> read_mem ->  memory[0], true);
-    }
-  });
-
-  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_get_sel_pin, [&](context* ctx){
-    ctx -> write_mem -> memory[0] = leaf.sel_pin_status();
-  });
-
-  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_reset, [&](context* ctx){
-    leaf.reset();
-  });
-
-  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_is_neighbor, [&](context* ctx){
     if (leaf.sel_pin_status()) {
-      ctx -> write_mem -> memory_address++;
-      ctx -> write_mem -> memory[ctx -> write_mem -> memory_address] = ctx -> read_mem ->  memory[0];
-      ctx -> write_mem -> memory_address++;
-      ctx -> write_mem -> memory[ctx -> write_mem -> memory_address] = leaf.sel_pin_status();
+      neighbor_count++;
+
+      leaf.neighbors[neighbor_count - 1] = data[1];
+
+      leaf.side[neighbor_count - 1] = leaf.sel_pin_status();
+
+      leaf.neighbors[7] = neighbor_count;
     }
   });
 
-  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_neighbor_size, [&](context* ctx){
-    ctx -> write_mem -> memory[0] = (ctx -> write_mem -> memory_address / 2);
-    ctx -> write_mem -> memory_address = 0;
+  leaf.l_command_handler.add_handler((uint8_t)slave_commands::get_neighbor_information, [&](){
+    I2c_slave::Get().write_fifo.push(leaf.neighbors);
+    I2c_slave::Get().write_fifo.push(leaf.side); 
   });
 
-  // LED commando's
-  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_set_led, [&](context* ctx){
-    leaf.ledstrip.setPixelColor(ctx->read_mem->memory[0], PicoLed::RGB(ctx->read_mem->memory[1], ctx->read_mem->memory[2], ctx->read_mem->memory[3]));
-    leaf.ledstrip.show();
+  leaf.l_command_handler.add_handler((uint8_t)slave_commands::set_led, [&](){
+    // TODO: Implement
   });
 
-  leaf.l_command_handler.add_handler((uint8_t)slave_commands::slave_set_all_led, [&](context* ctx){
-    leaf.ledstrip.fill(PicoLed::RGB(ctx->read_mem->memory[0], ctx->read_mem->memory[1], ctx->read_mem->memory[2]));
-    leaf.ledstrip.show();
+  leaf.l_command_handler.add_handler((uint8_t)slave_commands::set_all_led, [&](){
+    // TODO: Implement
   });
+
+  leaf.l_command_handler.add_handler((uint8_t)slave_commands::reset, [&](){
+    // TODO: Implement
+  });
+
+  while (true) {
+    tight_loop_contents();
+  }
 }
 
 int main() {
   stdio_init_all();
   set_alive_led();
 
-  add_handlers();
+  multicore_launch_core1(i2c_slave_core);
 
   while (true) {
-    while (!leaf.configured()) {
+    if (!I2c_slave::Get().read_fifo.empty()) {
       leaf.update();
-      if (leaf.sel_pin_status() && !leaf.slave_initialized()) {
-        leaf.slave_init();
-      } 
-    }
-
-    while (leaf.configured()) {
-      leaf.update();
+      leaf.l_command_handler.handel_command(I2c_slave::Get().read_fifo.front()[0]);
+      I2c_slave::Get().read_fifo.pop();
     }
   }
 }

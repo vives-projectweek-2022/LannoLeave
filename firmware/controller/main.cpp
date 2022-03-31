@@ -38,47 +38,31 @@ void spi_core(void) {
   // Initialze spi on core 1 to handel interupts on core 1
   Spi_slave::Get().initialize(0, 3, 2, 1);
 
-  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_leaf_led, [&](context* ctx) {
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_leaf_led, [&]() {
     const Packet& pkt = Spi_slave::Get().fifo.front();
 
-    if (pkt.read_buffer[1] == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
-      controller.ledstrip.setPixelColor(pkt.read_buffer[2], PicoLed::RGB(pkt.read_buffer[3], pkt.read_buffer[4], pkt.read_buffer[5]));
-      controller.ledstrip.show();
-    } else {
-      controller.leaf_master.send_slave_message(pkt.read_buffer[1], {
-        (uint8_t)slave_commands::slave_set_led,
-        4,
-        {pkt.read_buffer[2], pkt.read_buffer[3], pkt.read_buffer[4], pkt.read_buffer[5]}
-      });
-    }
   });
 
-  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_all, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_all, [&](){
     const Packet& pkt = Spi_slave::Get().fifo.front();
-    
-    controller.leaf_master.send_slave_message(GENCALLADR, {
-      (uint8_t)slave_commands::slave_set_all_led,
-      3,
-      { pkt.read_buffer[1], pkt.read_buffer[2], pkt.read_buffer[3] }
-    });
 
     controller.ledstrip.fill(PicoLed::RGB(pkt.read_buffer[1], pkt.read_buffer[2], pkt.read_buffer[3]));
     controller.ledstrip.show();
   });
 
-  controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_leaf_led, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_leaf_led, [&](){
 
   });
 
-  controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_all, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_all, [&](){
 
   });
 
-  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_random, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::set_random, [&](){
     // TODO: implement
   });
 
-  controller.c_command_handler.add_handler((uint8_t)controller_commands::version, [&](context* ctx){
+  controller.c_command_handler.add_handler((uint8_t)controller_commands::version, [&](){
     uint8_t version = VERSION;
   });
 
@@ -91,19 +75,19 @@ int main() {
   stdio_init_all();
   set_alive_led();
 
+  sleep_ms(2000);
+
   controller.device_discovery();
   controller.topology_discovery();
 
   PRINT(controller.graph.to_string().c_str());
   PRINT("\n");
 
-  PRINT("Launcing core 1\n");
   multicore_launch_core1(spi_core);
 
   while (true) {
     // Handel incomming commands from core 0
     if (!Spi_slave::Get().fifo.empty()) {
-      printf("Command to execute: 0x%02x\n", Spi_slave::Get().fifo.front().read_buffer[0]);
       controller.c_command_handler.handel_command(Spi_slave::Get().fifo.front().read_buffer[0]);
       Spi_slave::Get().fifo.pop();
     } 

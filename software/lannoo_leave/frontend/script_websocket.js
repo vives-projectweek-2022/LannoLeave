@@ -1,3 +1,5 @@
+// WEBSOCKET DEMO
+
 let socket = new WebSocket("wss:127.0.0.1:5500/software/lannoo_leave/backend/index.html");
 
 socket.onopen = function(e) {

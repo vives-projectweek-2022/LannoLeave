@@ -1,4 +1,5 @@
 var backend = "http://172.16.240.30:3000"
+var url = "https://api.myjson.com/bins/7xq2x";
 
 $("#RGB").on('propertychange input', function(){
     var JsonData = JSON.stringify({"color": $(this).val()});
@@ -17,7 +18,6 @@ $(".select_effect").click(function() {
     post(JsonData, ""); 
 });
 
-
 function post(data, url) {
 
     let xhr = new XMLHttpRequest();
@@ -34,3 +34,14 @@ function post(data, url) {
     xhr.send(data);
     
 }
+
+let dropdownleaf = $('#select_leaf');
+let dropdownled = $('#select_led');
+
+dropdownleaf.empty();
+dropdownled.empty();
+
+dropdownleaf.append('<option selected="true" disabled>Select leaf</option>');
+dropdownleaf.prop('selectedIndex', 0)
+dropdownled.append('<option selected="true" disabled>Select led</option>');
+dropdownled.prop('selectedIndex', 0)

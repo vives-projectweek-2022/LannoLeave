@@ -1,5 +1,4 @@
 var backend = "http://172.16.240.30:3000"
-var url = "https://api.myjson.com/bins/7xq2x";
 
 $("#RGB").on('propertychange input', function(){
     var JsonData = JSON.stringify({"color": $(this).val()});

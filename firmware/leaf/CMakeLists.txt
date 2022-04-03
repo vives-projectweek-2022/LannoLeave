@@ -10,12 +10,11 @@ pico_add_extra_outputs(leaf)
 
 target_link_libraries(leaf
   pico_stdlib
-  hardware_i2c
-  hardware_irq
-  i2c_slave
-  helper
+  pico_multicore
+
   Pico_led
-  command_handler
+
+  helpers
 )
 
 target_include_directories(leaf

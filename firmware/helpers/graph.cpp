@@ -57,15 +57,4 @@ namespace Lannooleaf {
     return stream.str();
   }
 
-  std::string Graph::node_to_coords(void) {
-    std::stringstream stream;
-    std::map<uint8_t, Node*>::iterator i;
-    for (i = map.begin(); i != map.end(); i++) {
-      stream << "Node: " << std::to_string(i -> second -> i2c_address) << " ";
-      stream << "Coordinate: " << i -> second -> pos.to_string() << "\n\r\n\r";
-    }
-
-    return stream.str();
-  }
-
 }

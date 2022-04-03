@@ -148,7 +148,7 @@ body {
   #RGB {
       -webkit-appearance: none;
       -moz-appearance: none;
-      cursor:crosshair;
+      cursor: cell;
       border-radius: 5px;
       width: 75px;
       height: 75px;

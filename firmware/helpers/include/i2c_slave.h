@@ -11,10 +11,6 @@
 
 namespace Lannooleaf {
 
-  struct Packet {
-    uint8_t read_buffer[8];
-  };
-
   class I2c_slave {
 
     private:

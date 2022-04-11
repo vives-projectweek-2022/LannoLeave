@@ -1,3 +1,4 @@
+#include <array>
 #include <stdio.h>
 #include <stdint.h>
 
@@ -11,7 +12,7 @@
 
 #include <PicoLed.hpp>
 
-#define VERSION 1
+#define VERSION 2
 
 #define SDA 8
 #define SCL 9
@@ -36,18 +37,20 @@ void set_alive_led(void) {
 void spi_core(void) {
 
   // Initialze spi on core 1 to handel interupts on core 1
-  Spi_slave::Get().initialize(0, 3, 2, 1);
+  Spi_slave::initialize(0, 3, 2, 1);
 
   controller.c_command_handler.add_handler((uint8_t)controller_commands::set_leaf_led, [&]() {
-    const Packet& pkt = Spi_slave::Get().fifo.front();
 
   });
 
   controller.c_command_handler.add_handler((uint8_t)controller_commands::set_all, [&](){
-    const Packet& pkt = Spi_slave::Get().fifo.front();
+    PicoLed::Color color = PicoLed::RGB(Spi_slave::pop(), Spi_slave::pop(), Spi_slave::pop());    
 
-    controller.ledstrip.fill(PicoLed::RGB(pkt.read_buffer[1], pkt.read_buffer[2], pkt.read_buffer[3]));
+    controller.ledstrip.fill(color);
     controller.ledstrip.show();
+
+    uint8_t message[8] = {(uint8_t)slave_commands::set_all_led, color.red, color.green, color.blue};
+    controller.leaf_master.send_data(GENCALLADR, message);
   });
 
   controller.c_command_handler.add_handler((uint8_t)controller_commands::clear_leaf_led, [&](){
@@ -63,7 +66,7 @@ void spi_core(void) {
   });
 
   controller.c_command_handler.add_handler((uint8_t)controller_commands::version, [&](){
-    uint8_t version = VERSION;
+    
   });
 
   while (true) {
@@ -75,7 +78,7 @@ int main() {
   stdio_init_all();
   set_alive_led();
 
-  sleep_ms(2000);
+  sleep_ms(20000);
 
   controller.device_discovery();
   controller.topology_discovery();
@@ -85,12 +88,14 @@ int main() {
 
   multicore_launch_core1(spi_core);
 
+
   while (true) {
     // Handel incomming commands from core 0
-    if (!Spi_slave::Get().fifo.empty()) {
-      controller.c_command_handler.handel_command(Spi_slave::Get().fifo.front().read_buffer[0]);
-      Spi_slave::Get().fifo.pop();
-    } 
+    if (!Spi_slave::empty()) {
+      uint8_t cmd = Spi_slave::pop();
+      if (cmd == 0xa5) continue;
+      controller.c_command_handler.handel_command(cmd);
+    }
   }
 }
 

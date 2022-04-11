@@ -1,71 +1,71 @@
-#include "spi_slave.h"
+#include <spi_slave.h>
 
 namespace Lannooleaf {
-
-  Spi_slave& Spi_slave::Get(void) {
-    static Spi_slave instance;
-    return instance;
-  }
 
   void Spi_slave::initialize(uint mosi, uint miso, uint clk, uint cs) {
     static bool initialized = false;
     
     if (!initialized) {
-      spi_init(spi0, 1000 * 1000);
-      spi_set_slave(spi0, true);
-
       gpio_set_function(mosi, GPIO_FUNC_SPI);
       gpio_set_function(miso, GPIO_FUNC_SPI);
       gpio_set_function(clk, GPIO_FUNC_SPI);
       gpio_set_function(cs, GPIO_FUNC_SPI);
 
-      spi_set_format(spi0,
+      reset_block(RESETS_RESET_SPI0_BITS);
+      unreset_block_wait(RESETS_RESET_SPI0_BITS);  
+
+      spi_set_baudrate(spi0, 2000000);
+
+      spi_set_format(spi0, 
+                    8, 
+                    SPI_CPOL_0, 
+                    SPI_CPHA_0, 
+                    SPI_MSB_FIRST);
+    
+      hw_set_bits(&spi_get_hw(spi0)->dmacr, SPI_SSPDMACR_TXDMAE_BITS | SPI_SSPDMACR_RXDMAE_BITS);
+
+      spi_set_slave(spi0, true);
+      spi_set_format(spi0, 
       8,
       SPI_CPOL_1,
       SPI_CPHA_1,
       SPI_MSB_FIRST);
 
-      gpio_set_irq_enabled_with_callback(cs, GPIO_IRQ_EDGE_FALL, true, &cs_callback);
+      hw_set_bits(&spi_get_hw(spi0)->imsc, SPI_SSPIMSC_TXIM_BITS | SPI_SSPIMSC_RXIM_BITS);
+      irq_set_exclusive_handler(SPI0_IRQ, spi_irq_handler);
+      irq_set_enabled(SPI0_IRQ, true);
+
+      // Enable spi
+      hw_set_bits(&spi_get_hw(spi0)->cr1, SPI_SSPCR1_SSE_BITS);
 
       initialized = true;
     }
   }
 
-  void Spi_slave::add_write_data(uint8_t data[], size_t len) {
-    assert(len <= 8);
-
-    for (size_t i = 0; i < len; i++) {
-      Spi_slave::Get().write_buffer[i] = data[i];
-    }
-  }
-
-  void Spi_slave::cs_callback(uint ce, uint32_t events) {
-    uint8_t len;
-    spi_read_blocking(spi0, 0xff, &len, 1);
-    spi_write_read_blocking(spi0, Spi_slave::Get().write_buffer, Spi_slave::Get().read_buffer, len);
+  void Spi_slave::spi_irq_handler(void) {
     
-    // Push packet on fifo 
-    Spi_slave::Get().fifo.push({
-      {
-        Spi_slave::Get().read_buffer[0],
-        Spi_slave::Get().read_buffer[1],
-        Spi_slave::Get().read_buffer[2],
-        Spi_slave::Get().read_buffer[3],
-        Spi_slave::Get().read_buffer[4],
-        Spi_slave::Get().read_buffer[5],
-        Spi_slave::Get().read_buffer[6],
-        Spi_slave::Get().read_buffer[7]
-      }, {
-        Spi_slave::Get().write_buffer[0],
-        Spi_slave::Get().write_buffer[1],
-        Spi_slave::Get().write_buffer[2],
-        Spi_slave::Get().write_buffer[3],
-        Spi_slave::Get().write_buffer[4],
-        Spi_slave::Get().write_buffer[5],
-        Spi_slave::Get().write_buffer[6],
-        Spi_slave::Get().write_buffer[7]
+    uint32_t status = spi_get_hw(spi0)->mis;
+
+    while (status & SPI_SSPMIS_RXMIS_BITS || status & SPI_SSPMIS_TXMIS_BITS) {
+
+      // Rx fifo is half full or less
+      if (status & SPI_SSPMIS_RXMIS_BITS) {
+        // Push all to read_fifo until rx fifo is empty
+        while (spi_get_hw(spi0)->sr & 0x04) {
+          uint8_t value = spi_get_hw(spi0)->dr;
+          Spi_slave::Get()._read_fifo.push(value);
+        }
       }
-    });
+
+      // Tx fifo half empty or less
+      if (status & SPI_SSPMIS_TXMIS_BITS) {
+        // Adding 0xff if writefifo is empty
+        spi_get_hw(spi0)->dr = Spi_slave::Get()._write_fifo.empty() ? 0xff : Spi_slave::Get()._write_fifo.front();
+        if (!Spi_slave::Get()._write_fifo.empty()) Spi_slave::Get()._write_fifo.pop();
+      }
+
+      status = spi_get_hw(spi0)->mis;
+    }
   }
 
 }

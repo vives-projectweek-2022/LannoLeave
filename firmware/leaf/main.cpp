@@ -82,15 +82,19 @@ void i2c_slave_core(void) {
 
   leaf.l_command_handler.add_handler((uint8_t)slave_commands::get_neighbor_information, [&](){
     I2c_slave::Get().write_fifo.push(leaf.neighbors);
-    I2c_slave::Get().write_fifo.push(leaf.side); 
+    I2c_slave::Get().write_fifo.push(leaf.side);
   });
 
   leaf.l_command_handler.add_handler((uint8_t)slave_commands::set_led, [&](){
-    // TODO: Implement
+    const std::array<uint8_t, 8>& pkt = I2c_slave::Get().read_fifo.front();
+    leaf.ledstrip.setPixelColor(pkt[1], PicoLed::RGB(pkt[2], pkt[3], pkt[4]));
+    leaf.ledstrip.show();
   });
 
   leaf.l_command_handler.add_handler((uint8_t)slave_commands::set_all_led, [&](){
-    // TODO: Implement
+    const std::array<uint8_t, 8>& pkt = I2c_slave::Get().read_fifo.front();
+    leaf.ledstrip.fill(PicoLed::RGB(pkt[1], pkt[2], pkt[3]));
+    leaf.ledstrip.show();
   });
 
   leaf.l_command_handler.add_handler((uint8_t)slave_commands::reset, [&](){

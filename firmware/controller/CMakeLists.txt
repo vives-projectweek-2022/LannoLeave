@@ -4,7 +4,6 @@ add_executable(controller
 )
 
 pico_enable_stdio_usb(controller 1)
-pico_enable_stdio_uart(controller 0)
 
 pico_add_extra_outputs(controller)
 
@@ -19,6 +18,7 @@ target_link_libraries(controller
   Pico_led
 
   helpers
+  leaf
 )
 
 target_compile_definitions(controller PRIVATE

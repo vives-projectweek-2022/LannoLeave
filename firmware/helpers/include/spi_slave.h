@@ -1,46 +1,57 @@
 #pragma once
 
 #include <queue>
+#include <array>
 #include <stdio.h>
 #include <stdint.h>
 
 #include <pico/stdlib.h>
 #include <hardware/spi.h>
-#include <hardware/gpio.h>
+#include <hardware/irq.h>
+#include <hardware/resets.h>
 
 namespace Lannooleaf {
 
-  struct Packet {
-    uint8_t read_buffer[8];
-    uint8_t write_buffer[8];  
-  };
-
   class Spi_slave {
 
-    private:
-      Spi_slave(){};
-      ~Spi_slave(){};
-
     public:
-      Spi_slave(Spi_slave const&) = delete;
+      static void initialize(uint mosi, uint miso, uint clk, uint cs);
+
+      static uint8_t pop(void) {
+        uint8_t value = Get()._read_fifo.front();
+        Get()._read_fifo.pop();
+        return value;
+      }
+
+      static void push(uint8_t value) {
+        Get()._write_fifo.push(value);
+      }
+
+      static bool empty(void) {
+        return Get()._read_fifo.empty();
+      }
+
+
+    private:
+      static Spi_slave& Get(void) {
+        static Spi_slave instance;
+        return instance;
+      }
+    
+    private:
+      static void spi_irq_handler(void);
+    
+    private:
+      std::queue<uint8_t> _read_fifo;
+      std::queue<uint8_t> _write_fifo;
+      
+    private:
+      Spi_slave() {}
+      ~Spi_slave(){}
+    
+    private:
+      Spi_slave(Spi_slave const&)      = delete;
       void operator=(Spi_slave const&) = delete;
-
-    public:
-      static Spi_slave& Get(void);
-
-    public:
-      std::queue<Packet> fifo;
-
-    public:
-      void initialize(uint mosi, uint miso, uint clk, uint cs);
-      void add_write_data(uint8_t data[], size_t len);
-
-    private:
-      static void cs_callback(uint ce, uint32_t events);
-
-    private:
-      uint8_t read_buffer[8]  = {0};
-      uint8_t write_buffer[8] = {0};
 
   };
 

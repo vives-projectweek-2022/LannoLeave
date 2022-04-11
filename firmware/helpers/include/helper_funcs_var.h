@@ -10,7 +10,7 @@
 #define BAUDRATE 100000
 
 #define LED_PIN 4
-#define LED_LENGTH 8
+#define LED_LENGTH 16
 
 #ifdef DEBUG
 

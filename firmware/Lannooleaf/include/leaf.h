@@ -8,6 +8,7 @@
 #include <PicoLed.hpp>
 
 #include <commands.h>
+#include <i2c_slave.h>
 #include <command_handler.h>
 #include <helper_funcs_var.h>
 
@@ -26,15 +27,13 @@ namespace Lannooleaf {
     public:
       /** \brief Updates the select pin status and handels received commands */
       void update(void);
+      void add_leaf_handlers(CommandHandler* handler);
 
     public:
       /** \returns Slave select pin status as uint8_t */
       uint8_t sel_pin_status(void) { return _sel_pin_status; }
 
     public:
-      CommandHandler l_command_handler;
-      std::array<uint8_t, 8> side = {0x00};
-      std::array<uint8_t, 8> neighbors = {0x00};
       PicoLed::PicoLedController ledstrip = PicoLed::addLeds<PicoLed::WS2812B>(pio0, 0, LED_PIN, LED_LENGTH, PicoLed::FORMAT_GRB);
 
     private:
@@ -43,6 +42,9 @@ namespace Lannooleaf {
     private:
       uint8_t _sel_pin_status = 0x00;
 
+    private:
+      std::vector<std::pair<uint8_t, side>> neighbors;
+ 
   };
 
 }

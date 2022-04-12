@@ -19,8 +19,8 @@ namespace Lannooleaf {
       ~I2CMaster();
 
     public:
-      void send_data(uint8_t slave_address, uint8_t data[8]);
-      std::array<uint8_t, 8> get_data(uint8_t slave_address);
+      void send_data(uint8_t slave_address, const uint8_t* src, size_t len);
+      void get_data(uint8_t slave_address, uint8_t* dest, size_t len);
 
     private:
       i2c_inst_t* i2c;

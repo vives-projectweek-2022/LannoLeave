@@ -22,7 +22,7 @@ namespace Lannooleaf {
   class Controller {
 
     public:
-      Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin, uint mosi, uint miso, uint clk, uint cs);
+      Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin);
       ~Controller();
 
     public:
@@ -35,6 +35,9 @@ namespace Lannooleaf {
       /** \brief Resets all slaves and reruns discovery/topology discovery algorithm*/
       void reset(void);
 
+      /** \brief Adds handles to commandhandler */
+      void add_controller_handlers(CommandHandler* handler);
+
     private:  
       /** \returns Next unused i2c address*/
       uint8_t get_next_available_address(void);
@@ -46,7 +49,6 @@ namespace Lannooleaf {
     public:
       Graph graph;
       I2CMaster leaf_master;
-      CommandHandler c_command_handler;
 
     public:
       PicoLed::PicoLedController ledstrip = PicoLed::addLeds<PicoLed::WS2812B>(pio0, 0, LED_PIN, LED_LENGTH, PicoLed::FORMAT_GRB);

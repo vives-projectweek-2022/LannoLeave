@@ -18,16 +18,14 @@ namespace Lannooleaf {
 
   I2CMaster::~I2CMaster() { }
 
-  void I2CMaster::send_data(uint8_t slave_address, uint8_t data[8]) {
-    i2c_write_blocking(i2c, slave_address, data, 8, false);
+  void I2CMaster::send_data(uint8_t slave_address, const uint8_t* src, size_t len) {
+    i2c_write_blocking(i2c, slave_address, src, len, false);
     sleep_ms(SLEEP_TIME);
   }
 
-  std::array<uint8_t, 8> I2CMaster::get_data(uint8_t slave_address) {
-    std::array<uint8_t, 8> data;
-    i2c_read_blocking(i2c, slave_address, data.data(), data.size(), false);
+  void I2CMaster::get_data(uint8_t slave_address, uint8_t* dest, size_t len) {
+    i2c_read_blocking(i2c, slave_address, dest, len, false);
     sleep_ms(SLEEP_TIME);
-    return data;
   }
 
 }

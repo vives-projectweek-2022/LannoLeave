@@ -11,6 +11,7 @@ namespace Lannooleaf {
     get_sel_pin,
     
     is_neighbor,
+    get_neigbor_size,
     get_neighbor_information,
     
     set_led,
@@ -21,7 +22,9 @@ namespace Lannooleaf {
 
   enum class controller_commands {
 
-    get_matrix_size = 0x01,
+    hello_message = 0x01,
+
+    get_matrix_size,
 
     set_leaf_led,
     set_all,
@@ -30,8 +33,6 @@ namespace Lannooleaf {
     clear_all,
 
     set_random,
-
-    version
 
   };
 

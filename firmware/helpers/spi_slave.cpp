@@ -42,7 +42,7 @@ namespace Lannooleaf {
     }
   }
 
-  void Spi_slave::spi_irq_handler(void) {
+  void __not_in_flash_func(Spi_slave::spi_irq_handler)(void) {
     
     uint32_t status = spi_get_hw(spi0)->mis;
 

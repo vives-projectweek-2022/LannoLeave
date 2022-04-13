@@ -7,16 +7,25 @@
 #define UNCONFIGUREDADDRESS 0x08
 #define GENCALLADR 0x00
 
-#define BAUDRATE 100000
+#define BAUDRATE 1000000
 
-#define LED_PIN 4
-#define LED_LENGTH 16
+#define LED_PIN 4u
+#define LED_LENGTH 16u
+
+#define VERSION 3
+
+#define SDA 8u
+#define SCL 9u
+#define MOSI 0u
+#define MISO 3u
+#define CLK 2u
+#define CS 1u
 
 #ifdef DEBUG
 
 #define PRINT(x) printf(x)
 #define PRINT_A(x, a) printf(x, a)
-#define SLEEP_TIME 20
+#define SLEEP_TIME 10
 
 #else
 

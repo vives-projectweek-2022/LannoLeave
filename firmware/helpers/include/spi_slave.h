@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include <helper_funcs_var.h>
+
 #include <pico/stdlib.h>
 #include <hardware/spi.h>
 #include <hardware/irq.h>
@@ -13,20 +15,24 @@
 namespace Lannooleaf {
 
   class Spi_slave {
-
     public:
+      /** \brief Initialize spi slave*/
       static void initialize(uint mosi, uint miso, uint clk, uint cs);
 
+      /** \returns First value in internal read_fifo, will block when fifo is empty*/
       static uint8_t pop(void) {
+        while(Spi_slave::empty()) tight_loop_contents();
         uint8_t value = Get()._read_fifo.front();
         Get()._read_fifo.pop();
         return value;
       }
 
+      /** \brief Add a value to internal write_fifo*/
       static void push(uint8_t value) {
         Get()._write_fifo.push(value);
       }
 
+      /** \returns boolean true if internal read_fifo is empty, false if not*/
       static bool empty(void) {
         return Get()._read_fifo.empty();
       }
@@ -40,6 +46,7 @@ namespace Lannooleaf {
     
     private:
       static void spi_irq_handler(void);
+      static void cs_callback(uint gpio, uint32_t events);
     
     private:
       std::queue<uint8_t> _read_fifo;

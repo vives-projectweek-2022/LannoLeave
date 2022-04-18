@@ -32,9 +32,6 @@ namespace Lannooleaf {
       /** \brief Starts topology discovery algorithm*/
       void topology_discovery(void);
 
-      /** \brief Resets all slaves and reruns discovery/topology discovery algorithm*/
-      void reset(void);
-
       /** \brief Adds handles to commandhandler */
       void add_controller_handlers(CommandHandler* handler);
 
@@ -42,9 +39,12 @@ namespace Lannooleaf {
       /** \returns Next unused i2c address*/
       uint8_t get_next_available_address(void);
 
-      /** \brief Assings new address to device if present
-       * \returns Assigned address on succes, UNCONFIGUREDADDRESS on fail*/
-      uint8_t assign_new_address(void);
+    private:
+      void set_select_pin(uint pin, bool value, uint8_t address);
+
+    private:
+      std::vector<uint8_t> visited;
+      auto prepare_data(void);
 
     public:
       Graph graph;

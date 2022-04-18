@@ -2,6 +2,28 @@
 
 namespace Lannooleaf {
 
+  void set_alive_led(void) {
+    const uint led_pin = 25;
+    gpio_init(led_pin);
+    gpio_set_dir(led_pin, GPIO_OUT);
+    gpio_put(led_pin, true);
+  }
+
+  void discover_animation(PicoLed::PicoLedController* ledstrip, Color color) {
+    for (int i = 0; i < LED_LENGTH; i++) {
+      ledstrip->setPixelColor(i, PicoLed::RGB(color.red, color.green, color.blue));
+      if (i > 0) ledstrip->setPixelColor(i-1, PicoLed::RGB(0, 0, 0));
+      ledstrip->show();
+      sleep_ms(250);
+    }
+
+    for (int i = LED_LENGTH; i >= 0; i--) {
+      ledstrip->setPixelColor(i, PicoLed::RGB(color.red, color.green, color.blue));
+      ledstrip->show();
+      sleep_ms(25);
+    }
+  }
+
   bool reserved_addr(uint8_t addr) {
     return (addr & 0x78) == 0 || (addr & 0x78) == 0x78 || addr == 0x08;
   }

@@ -23,18 +23,22 @@ namespace Lannooleaf {
     }
   }
 
-  void I2c_slave::i2c_irq_callback(i2c_inst_t* i2c, i2c_slave_event_t event) {
+  void __not_in_flash_func(I2c_slave::i2c_irq_callback)(i2c_inst_t* i2c, i2c_slave_event_t event) {
     switch (event) {
       case I2C_SLAVE_RECEIVE: { 
-        uint8_t byte;
-        i2c_read_raw_blocking(i2c, &byte, 1);
-        Get().read_fifo.push(byte);
+        while (i2c_get_read_available(i2c)) {
+          uint8_t byte;
+          byte = i2c_get_hw(i2c)->data_cmd;
+          printf("0x%02x\n", byte);
+          // i2c_read_raw_blocking(i2c, &byte, 1);
+          Get().read_fifo.push(byte);
+        }
         break;
       }
 
       case I2C_SLAVE_REQUEST: {
         const uint8_t& byte = Get().write_fifo.front();
-        i2c_write_raw_blocking(i2c, &byte, 8);
+        i2c_write_raw_blocking(i2c, &byte, 1);
         Get().write_fifo.pop();
         break;
       }

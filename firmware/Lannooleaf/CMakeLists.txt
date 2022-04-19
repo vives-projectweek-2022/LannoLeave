@@ -5,6 +5,7 @@ add_executable(lannooleaf
 )
 
 pico_enable_stdio_usb(lannooleaf 1)
+pico_enable_stdio_uart(lannooleaf 0)
 
 pico_add_extra_outputs(lannooleaf)
 

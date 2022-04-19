@@ -26,12 +26,14 @@ namespace Lannooleaf {
   
     public:
       /** \brief Updates the select pin status and handels received commands */
-      void update(void);
       void add_leaf_handlers(CommandHandler* handler);
 
     public:
       /** \returns Slave select pin status as uint8_t */
       uint8_t sel_pin_status(void) { return _sel_pin_status; }
+
+      void update(void) { update_sel_status(); }
+
 
     public:
       PicoLed::PicoLedController ledstrip = PicoLed::addLeds<PicoLed::WS2812B>(pio0, 0, LED_PIN, LED_LENGTH, PicoLed::FORMAT_GRB);
@@ -40,10 +42,10 @@ namespace Lannooleaf {
       void update_sel_status(void);
 
     private:
-      uint8_t _sel_pin_status = 0x00;
+      uint8_t _sel_pin_status;
 
-    private:
-      std::vector<std::pair<uint8_t, side>> neighbors;
+    public:
+      std::vector<std::pair<uint8_t, uint8_t>> neighbors;
  
   };
 

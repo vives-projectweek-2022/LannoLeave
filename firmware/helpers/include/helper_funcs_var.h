@@ -1,7 +1,11 @@
 #pragma once
 
-#include <stdint.h>
 #include <initializer_list>
+
+#include <stdint.h>
+#include <pico/stdlib.h>
+
+#include <PicoLed.hpp>
 
 #define I2C_CONTOLLER_PLACEHOLDER_ADDRESS 0xFF
 #define UNCONFIGUREDADDRESS 0x08
@@ -37,6 +41,12 @@
 
 namespace Lannooleaf {
 
+  struct Color {
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+  };
+
   enum class side {
     invalid, a, b, c, d, e, f
   };
@@ -51,6 +61,10 @@ namespace Lannooleaf {
   };
 
   static std::initializer_list<select_pins> all_select_pins = { select_pins::A, select_pins::B, select_pins::C, select_pins::D, select_pins::E, select_pins::F };
+
+  void set_alive_led(void);
+
+  void discover_animation(PicoLed::PicoLedController* ledstrip, Color color);
 
   bool reserved_addr(uint8_t addr);
 

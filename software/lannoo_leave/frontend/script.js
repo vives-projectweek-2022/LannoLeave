@@ -50,6 +50,5 @@ var sample = '{"leaf1": "0","leaf2": "1","leaf3": "2","leaf4": "3"}';
 array = $.parseJSON(sample);
 
 $.each(array, function(key, value) {
-    // dropdownleaf.append('<option></option>').attr('value', entry.leaf)
-    console.log(value)
+    dropdownleaf.append('<option>' + value + '</option>')
 })

@@ -51,7 +51,7 @@ var leaves = 5;
         dropdownleaf.append('<option>' + i + '</option>')
     }
 
-// Led list
+// Led list (pre-set as every leaf has 16 leds)
     for(let i = 0; i < 16; i++) {
         dropdownled.append('<option>' + i + '</option>')
     }

@@ -1,7 +1,7 @@
 var backend = "http://172.16.240.30:3000"
 
 $("#RGB").on('propertychange input', function(){
-    var JsonData = JSON.stringify({"mode": "color", "leaf": $('#select_leaf').val() , "led": $('#select_led').val() ,"color": $(this).val()});
+    var JsonData = JSON.stringify({"color": $(this).val()});
     post(JsonData, ""); 
   });
 
@@ -13,7 +13,7 @@ $(".select_mode").click(function() {
 
 $(".select_effect").click(function() {
     //   JSON format: effect: 1; mode: on; etc
-    var JsonData = JSON.stringify({"mode": "effect", "effect": this.id});
+    var JsonData = JSON.stringify({"effect": this.id});
     post(JsonData, ""); 
 });
 
@@ -40,19 +40,15 @@ let dropdownled = $('#select_led');
 dropdownleaf.empty();
 dropdownled.empty();
 
-dropdownleaf.append('<option selected="true">all</option>');
+dropdownleaf.append('<option selected="true" disabled>Select leaf</option>');
 dropdownleaf.prop('selectedIndex', 0)
-dropdownled.append('<option selected="true">all</option>');
+dropdownled.append('<option selected="true" disabled>Select led</option>');
 dropdownled.prop('selectedIndex', 0)
 
-var leaves = 5;
- // Count leaves
-    for(let i = 0; i < leaves; i++) {
-        dropdownleaf.append('<option>' + i + '</option>')
-    }
+var sample = '{"leaf1": "0","leaf2": "1","leaf3": "2","leaf4": "3"}';
 
-// Led list
-    for(let i = 0; i < 16; i++) {
-        dropdownled.append('<option>' + i + '</option>')
-    }
+array = $.parseJSON(sample);
 
+$.each(array, function(key, value) {
+    dropdownleaf.append('<option>' + value '</option>')
+})

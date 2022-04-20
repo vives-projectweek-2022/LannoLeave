@@ -1,32 +1,13 @@
-const LannooLeaf = require('./LannooLeaf.js')
-const Color = require('./Color.js')
-const express = require('express')
+import express from 'express';
+// import { Lannooleaf, Color, Graph } from 'lannooleaf_spi_controller';
+import bodyParser from 'body-parser';
+import cors from 'cors'
 const app = express()
 const port = 3000
-const cors = require('cors')
-const bodyParser = require('body-parser')
-// const lannoLeaf = new LannooLeaf();
 
 app.use(cors())
 app.use(bodyParser.json())
 var jsonParser = bodyParser.json()
-
-// async function main() {
-
-//     // lannoLeaf.set_unit_all(0xff, 0x00, new Color(50, 0, 0, 50));
-
-//     lannoLeaf.set_all_all(new Color(50, 0, 0, 50));
-//     await new Promise(r => setTimeout(r, 1000));
-
-//     lannoLeaf.set_all_all(new Color(0, 50, 0, 50));
-//     await new Promise(r => setTimeout(r, 1000));
-
-//     lannoLeaf.set_all_all(new Color(0, 0, 50, 50));
-//     await new Promise(r => setTimeout(r, 1000));
-// };
-
-
-
 
 app.get('/', (req, res) => {
   res.send('Welcome to API for Lannoo leaf')
@@ -46,3 +27,4 @@ app.post('/', jsonParser, function (req, res) {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+

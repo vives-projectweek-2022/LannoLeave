@@ -44,3 +44,11 @@ dropdownleaf.append('<option selected="true" disabled>Select leaf</option>');
 dropdownleaf.prop('selectedIndex', 0)
 dropdownled.append('<option selected="true" disabled>Select led</option>');
 dropdownled.prop('selectedIndex', 0)
+
+var sample = '{"leaf1": "0","leaf2": "1","leaf3": "2","leaf4": "3"}';
+
+array = $.parseJSON(sample);
+
+$.each(array, function(key, value) {
+    dropdownleaf.append('<option>' + value '</option>')
+})

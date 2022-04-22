@@ -29,7 +29,6 @@ namespace Lannooleaf {
         while (i2c_get_read_available(i2c)) {
           uint8_t byte;
           byte = i2c_get_hw(i2c)->data_cmd;
-          printf("0x%02x\n", byte);
           // i2c_read_raw_blocking(i2c, &byte, 1);
           Get().read_fifo.push(byte);
         }

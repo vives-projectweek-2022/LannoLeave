@@ -59,7 +59,7 @@ namespace Lannooleaf {
       // Adding 0xff if writefifo is empty
       spi_get_hw(spi0)->dr = Spi_slave::Get()._write_fifo.empty() ? 0xff : Spi_slave::Get()._write_fifo.front();
       if (!Spi_slave::Get()._write_fifo.empty()) Spi_slave::Get()._write_fifo.pop();
-
+      
       status = spi_get_hw(spi0)->mis;
     }
 

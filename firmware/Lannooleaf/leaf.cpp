@@ -62,6 +62,8 @@ namespace Lannooleaf {
       green = I2c_slave::pop();
       blue = I2c_slave::pop();
 
+      printf("Setting led %i to %i, %i, %i\n", led, red, green, blue);
+
       ledstrip.setPixelColor(led, PicoLed::RGB(red, green, blue));
       ledstrip.show();
     });

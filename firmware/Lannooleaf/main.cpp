@@ -39,13 +39,30 @@ int main() {
   gpio_set_dir(CS, GPIO_IN);
   gpio_pull_up(CS);
 
-  set_irqs(true);
+  gpio_pull_up(SDA);
+  gpio_pull_up(SCL);
+
+  uint32_t gpio_mask = 0;
+  for (auto pin : all_select_pins) {
+    gpio_mask |= 1 << (uint)pin; 
+  }
 
   // Wait untill initialized as controller or leaf
-  while (!controller && !leaf) tight_loop_contents();
+  while (!controller && !leaf) {
+    uint32_t status = gpio_get_all();
+    if (!(status & 1 << 1)) {
+      controller = new Controller(i2c0, SDA, SCL);
+      controller->add_controller_handlers(&commandHandler);
+    } 
+    if (status & gpio_mask) {
+      leaf = new Leaf;
+      leaf->add_leaf_handlers(&commandHandler);
+    }
+  };
 
   // Controller is initialized
   if (controller) {
+    sleep_ms(2000);
     Spi_slave::initialize(MOSI, MISO, CLK, CS);
 
     printf("Device discovery\n");
@@ -54,14 +71,22 @@ int main() {
 
     printf("%s\n", controller->graph.to_string().c_str());
 
-    const uint8_t message = (uint8_t)slave_commands::discovery_done;
-    controller->leaf_master.send_data(GENCALLADR, &message, 1);
+    for (auto [address, node] : controller->graph.map) {
+      const uint8_t message = (uint8_t)slave_commands::discovery_done;
+      controller->leaf_master.send_data(address, &message, 1);
+
+      sleep_ms(500);
+    }
 
     discover_animation(&controller->ledstrip, {0, 50, 100});
 
     while (true) {
-      uint8_t cmd = Spi_slave::pop();
-      if (cmd != 0xa5) commandHandler.handel_command(cmd);
+      if (!Spi_slave::empty()) {
+        uint8_t cmd = Spi_slave::pop();
+        if (cmd == 0xa5) continue; 
+        commandHandler.handel_command(cmd);
+        printf("handeling command: 0x%02x\n", cmd);
+      }
     };
   }
 
@@ -77,27 +102,4 @@ int main() {
       }
     };
   }
-}
-
-void irq_init(uint gpio, uint32_t events) {
-  // Disabling irq no longer needed
-  set_irqs(false);
-
-  printf("IRQ: %s\n", events & GPIO_IRQ_EDGE_FALL ? "FALL CNTRL" : "RISE LEAF");
-
-  // Check where irq came from and intitialze Controller or Leaf
-  if (events & GPIO_IRQ_EDGE_FALL) {
-    controller = new Controller(i2c0, SDA, SCL);
-    controller->add_controller_handlers(&commandHandler);
-  } else {
-    leaf = new Leaf;
-    leaf->add_leaf_handlers(&commandHandler);
-  }
-}
-
-void set_irqs(bool on) {
-  gpio_set_irq_enabled_with_callback(CS, GPIO_IRQ_EDGE_FALL, on, irq_init);
-
-  for (select_pins pin : all_select_pins)
-    gpio_set_irq_enabled_with_callback((uint)pin, GPIO_IRQ_EDGE_RISE, on, irq_init);
 }

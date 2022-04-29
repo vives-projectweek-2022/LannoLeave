@@ -6,6 +6,9 @@ namespace Lannooleaf {
     static bool initialized = false;
     
     if (!initialized) {
+      queue_init_with_spinlock(&Get()._read_fifo, 1, 200, 1);
+      queue_init_with_spinlock(&Get()._write_fifo, 1, 200, 2);
+
       gpio_init(cs);
 
       gpio_set_function(mosi, GPIO_FUNC_SPI);
@@ -16,7 +19,7 @@ namespace Lannooleaf {
       reset_block(RESETS_RESET_SPI0_BITS);
       unreset_block_wait(RESETS_RESET_SPI0_BITS);  
 
-      spi_set_baudrate(spi0, 1000000);
+      spi_set_baudrate(spi0, 2000000);
     
       hw_set_bits(&spi_get_hw(spi0)->dmacr, SPI_SSPDMACR_TXDMAE_BITS | SPI_SSPDMACR_RXDMAE_BITS);
 
@@ -33,7 +36,7 @@ namespace Lannooleaf {
       irq_set_exclusive_handler(SPI0_IRQ, spi_irq_handler);
       irq_set_enabled(SPI0_IRQ, true);
 
-      irq_set_priority(SPI0_IRQ, PICO_DEFAULT_IRQ_PRIORITY - 10);
+      irq_set_priority(SPI0_IRQ, PICO_HIGHEST_IRQ_PRIORITY);
 
       gpio_set_irq_enabled_with_callback(cs, GPIO_IRQ_EDGE_RISE, true, cs_callback);
 
@@ -45,27 +48,30 @@ namespace Lannooleaf {
   }
 
   void __not_in_flash_func(Spi_slave::cs_callback)(uint gpio, uint32_t events) {
-    while (spi_get_hw(spi0)->sr & 0x04) {
+    while (spi_get_hw(spi0)->sr & 0x04) {  
       uint8_t value = spi_get_hw(spi0)->dr;
-      Spi_slave::Get()._read_fifo.push(value);
+      queue_add_blocking(&Spi_slave::Get()._read_fifo, &value);
     }
   }
 
   void __not_in_flash_func(Spi_slave::spi_irq_handler)(void) {
     uint32_t status = spi_get_hw(spi0)->mis;
-
+    
     // Tx fifo half empty or less
     while (status & SPI_SSPMIS_TXMIS_BITS) {
       // Adding 0xff if writefifo is empty
-      spi_get_hw(spi0)->dr = Spi_slave::Get()._write_fifo.empty() ? 0xff : Spi_slave::Get()._write_fifo.front();
-      if (!Spi_slave::Get()._write_fifo.empty()) Spi_slave::Get()._write_fifo.pop();
-      
-      status = spi_get_hw(spi0)->mis;
-    }
+      while (spi_get_hw(spi0)->sr & 0x04) {  
+        uint8_t value = spi_get_hw(spi0)->dr;
+        queue_add_blocking(&Spi_slave::Get()._read_fifo, &value);
+      }
 
-    while (spi_get_hw(spi0)->sr & 0x04) {
-      uint8_t value = spi_get_hw(spi0)->dr;
-      Spi_slave::Get()._read_fifo.push(value);
+      uint8_t value = 0xff;
+
+      queue_try_remove(&Get()._write_fifo, &value);
+
+      spi_get_hw(spi0)->dr = value;
+
+      status = spi_get_hw(spi0)->mis;
     }
   }
 

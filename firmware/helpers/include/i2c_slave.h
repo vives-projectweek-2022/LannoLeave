@@ -7,6 +7,7 @@
 #include <helper_funcs_var.h>
 
 #include <pico/stdlib.h>
+#include <pico/util/queue.h>
 #include <hardware/i2c.h>
 
 #include <i2c_slave_lib.h>
@@ -21,9 +22,8 @@ namespace Lannooleaf {
 
       /** \returns First value in internal read_fifo, will block when fifo is empty*/
       static uint8_t pop(void) {
-        while(I2c_slave::empty()) tight_loop_contents();
-        uint8_t value = Get().read_fifo.front();
-        Get().read_fifo.pop();
+        uint8_t value;
+        queue_remove_blocking(&Get().read_fifo, &value);
         return value;
       }
 
@@ -41,12 +41,14 @@ namespace Lannooleaf {
 
       /** \brief Add a byte to the internal write_fifo*/
       static void push(uint8_t byte) {
-        Get().write_fifo.push(byte);
+        printf("P\n");
+        queue_add_blocking(&Get().write_fifo, &byte);
+        printf("D\n");
       }
 
       /** \returns boolean true if internal read_fifo is empty, false if not*/
       static bool empty(void) {
-        return Get().read_fifo.empty();
+        return queue_is_empty(&Get().read_fifo);
       }
 
     private:
@@ -59,8 +61,8 @@ namespace Lannooleaf {
       static void i2c_irq_callback(i2c_inst_t* i2c, i2c_slave_event_t event);
     
     private:
-      std::queue<uint8_t> read_fifo;
-      std::queue<uint8_t> write_fifo;
+      queue_t read_fifo;
+      queue_t write_fifo;
     
     private:
       i2c_inst_t* i2c;

@@ -11,6 +11,7 @@
 #include <hardware/spi.h>
 #include <hardware/irq.h>
 #include <hardware/resets.h>
+#include <pico/util/queue.h>
 
 namespace Lannooleaf {
 
@@ -21,22 +22,20 @@ namespace Lannooleaf {
 
       /** \returns First value in internal read_fifo, will block when fifo is empty*/
       static uint8_t pop(void) {
-        while(Spi_slave::empty()) tight_loop_contents();
-        uint8_t value = Get()._read_fifo.front();
-        Get()._read_fifo.pop();
+        uint8_t value;
+        queue_remove_blocking(&Get()._read_fifo, &value);
         return value;
       }
 
       /** \brief Add a value to internal write_fifo*/
       static void push(uint8_t value) {
-        Get()._write_fifo.push(value);
+        queue_add_blocking(&Get()._write_fifo, &value);
       }
 
       /** \returns boolean true if internal read_fifo is empty, false if not*/
       static bool empty(void) {
-        return Get()._read_fifo.empty();
+        return queue_is_empty(&Get()._read_fifo);
       }
-
 
     private:
       static Spi_slave& Get(void) {
@@ -49,8 +48,8 @@ namespace Lannooleaf {
       static void cs_callback(uint gpio, uint32_t events);
     
     private:
-      std::queue<uint8_t> _read_fifo;
-      std::queue<uint8_t> _write_fifo;
+      queue_t _read_fifo;
+      queue_t _write_fifo;
       
     private:
       Spi_slave() {}

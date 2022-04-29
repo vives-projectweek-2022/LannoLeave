@@ -30,6 +30,7 @@ namespace Lannooleaf {
                               set_next_address.size());
         sleep_ms(SLEEP_TIME);
 
+        printf("Sending ping\n");
         const uint8_t ping = (uint8_t)slave_commands::ping;
         leaf_master.send_data(next_address, 
                               &ping, 
@@ -42,7 +43,10 @@ namespace Lannooleaf {
                               pong.size());
 
         // If response add node to graph
-        if (pong.at(0) == 0xa5) graph.add_node(next_address);
+        if (pong.at(0) == 0xa5) {
+          graph.add_node(next_address); 
+          printf("received pong\n");
+        }
         else next_address = UNCONFIGUREDADDRESS;
 
         // If current node is controller an it found another device add edge from controller to that device

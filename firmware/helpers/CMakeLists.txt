@@ -15,6 +15,7 @@ target_sources(helpers INTERFACE
 
 target_link_libraries(helpers INTERFACE
   pico_stdlib
+  pico_util
   hardware_i2c
   hardware_spi
 

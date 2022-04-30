@@ -59,7 +59,7 @@ namespace Lannooleaf {
         if (!controller_done) continue;
 
         for (auto [i2c_address, node] : graph.map) {
-          // Call search function on next avaiable node if it har not been visited yet
+          // Call search function on next avaiable node if it has not been visited yet
           if (std::find(visited.begin(), visited.end(), i2c_address) == visited.end()) search(node);
         }
       };
@@ -73,7 +73,7 @@ namespace Lannooleaf {
       for (select_pins pin : all_select_pins) {
         set_select_pin((uint)pin, true, i2c_address);
       
-        // Send message to all slaves to save to take note of neighbor when one of select pins is low
+        // Send message to all slaves to take note of neighbor when one of select pins is high
         std::array<uint8_t, 2> message = { (uint8_t)slave_commands::is_neighbor, i2c_address };
         leaf_master.send_data(GENCALLADR, 
                               message.data(), 
@@ -100,7 +100,7 @@ namespace Lannooleaf {
                             1);
       sleep_ms(SLEEP_TIME);
 
-      constexpr u_int8_t info_msg = (uint8_t) slave_commands::get_neighbor_information;
+      const u_int8_t info_msg = (uint8_t) slave_commands::get_neighbor_information;
       leaf_master.send_data(i2c_address, 
                             &info_msg, 
                             1);

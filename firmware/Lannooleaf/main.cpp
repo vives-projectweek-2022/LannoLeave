@@ -84,6 +84,8 @@ int main() {
     controller->device_discovery();
     controller->topology_discovery();
 
+    printf("%s\n", controller->graph.to_string().c_str());
+
     for (auto [address, node] : controller->graph.map) {
       const uint8_t message = (uint8_t)slave_commands::discovery_done;
       controller->leaf_master.send_data(address, &message, 1);

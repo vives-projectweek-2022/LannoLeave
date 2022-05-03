@@ -1,4 +1,5 @@
 var backend = "http://172.16.240.30:3000"
+var units = 0; // MOET VIA GET REQUEST (of iets anders) MEEGEDEELD WORDEN 
 
 $("#RGB").on('propertychange input', function(){
     var JsonData = JSON.stringify({"mode": "color", "unit": $('#select_unit').val(), "leaf": $('#select_leaf').val() , "led": $('#select_led').val() ,"color": $(this).val()});
@@ -48,25 +49,18 @@ dropdownleaf.prop('selectedIndex', 0)
 dropdownled.append('<option selected="true">all</option>');
 dropdownled.prop('selectedIndex', 0)
 
-var units = 5;
  // Count units
-    for(let i = 0; i < units; i++) {
-        dropdownunit.append('<option>' + i + '</option>')
-    }
+for(let i = 0; i < units; i++) {
+    dropdownunit.append('<option>' + i + '</option>')
+}
 
-    // leaf list
-    for(let i = 0; i < 8; i++) {
-        dropdownleaf.append('<option>' + i + '</option>')
-    }
-
-<<<<<<< HEAD:software/LannooLeaf/frontend/script.js
+// leaf list
+for(let i = 0; i < 8; i++) {
+    dropdownleaf.append('<option>' + i + '</option>')
+}
 
 // Led list
-    for(let i = 0; i < 2; i++) {
-=======
-// Led list (pre-set as every leaf has 16 leds)
-    for(let i = 0; i < 16; i++) {
->>>>>>> 02beca69bad8a2cd7e939d620cba91e7bb697bd4:software/frontend/script.js
-        dropdownled.append('<option>' + i + '</option>')
-    }
+for(let i = 0; i < 2; i++) {
+    dropdownled.append('<option>' + i + '</option>')
+}
 

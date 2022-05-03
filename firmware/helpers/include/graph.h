@@ -33,12 +33,19 @@ namespace Lannooleaf {
     public:
       void add_node(const uint8_t& i2c_address);
       void add_edge(const uint8_t& from, const side& from_side, const uint8_t& to);
+      void prepare_data(void);
+
+    public:
+      std::vector<uint8_t>& to_vector(void) { return vector; };
 
     public:
       void clear(void);
       
     public:
       std::string to_string(void);
+
+    private:
+      std::vector<uint8_t> vector;
 
   };
 

@@ -12,6 +12,8 @@ namespace Lannooleaf {
   Controller::~Controller() { }
 
   void Controller::device_discovery(void) {
+    bool controller_done = false;
+    
     std::function <void(Node*)> search = [&](Node* node) {
       // Take note of which nodes have been visited
       visited.push_back(node -> i2c_address);
@@ -28,6 +30,7 @@ namespace Lannooleaf {
                               set_next_address.size());
         sleep_ms(SLEEP_TIME);
 
+        printf("Sending ping\n");
         const uint8_t ping = (uint8_t)slave_commands::ping;
         leaf_master.send_data(next_address, 
                               &ping, 
@@ -40,7 +43,10 @@ namespace Lannooleaf {
                               pong.size());
 
         // If response add node to graph
-        if (pong.at(0) == 0xa5) graph.add_node(next_address);
+        if (pong.at(0) == 0xa5) {
+          graph.add_node(next_address); 
+          printf("received pong\n");
+        }
         else next_address = UNCONFIGUREDADDRESS;
 
         // If current node is controller an it found another device add edge from controller to that device
@@ -49,8 +55,11 @@ namespace Lannooleaf {
         
         set_select_pin((uint)pin, false, node->i2c_address);
         
+        if (node->i2c_address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS && pin == select_pins::F) controller_done = true;
+        if (!controller_done) continue;
+
         for (auto [i2c_address, node] : graph.map) {
-          // Call search function on next avaiable node if it har not been visited yet
+          // Call search function on next avaiable node if it has not been visited yet
           if (std::find(visited.begin(), visited.end(), i2c_address) == visited.end()) search(node);
         }
       };
@@ -64,7 +73,7 @@ namespace Lannooleaf {
       for (select_pins pin : all_select_pins) {
         set_select_pin((uint)pin, true, i2c_address);
       
-        // Send message to all slaves to save to take note of neighbor when one of select pins is low
+        // Send message to all slaves to take note of neighbor when one of select pins is high
         std::array<uint8_t, 2> message = { (uint8_t)slave_commands::is_neighbor, i2c_address };
         leaf_master.send_data(GENCALLADR, 
                               message.data(), 
@@ -91,7 +100,7 @@ namespace Lannooleaf {
                             1);
       sleep_ms(SLEEP_TIME);
 
-      constexpr u_int8_t info_msg = (uint8_t) slave_commands::get_neighbor_information;
+      const u_int8_t info_msg = (uint8_t) slave_commands::get_neighbor_information;
       leaf_master.send_data(i2c_address, 
                             &info_msg, 
                             1);
@@ -121,30 +130,9 @@ namespace Lannooleaf {
                         neighbor);
       }
     }
+
+    graph.prepare_data();
   }
-
-  //! ------------------------------ REMOVE ----------------------------------------
-  // TODO: Add this to graph class
-  auto Controller::prepare_data(void) {
-    std::vector<uint8_t> data_buffer;
-
-    for (uint address : visited) {
-      data_buffer.push_back(address);
-    }
-
-    data_buffer.push_back(0x00); // Indicate start of edge declaration
-
-    for (auto [address, node] : graph.map) {
-      for (auto [side, node] : node->adj) {
-        data_buffer.push_back(address);
-        data_buffer.push_back((uint8_t)side);
-        data_buffer.push_back(node->i2c_address);
-      }
-    }  
-
-    return data_buffer;
-  }
-  //! ----------------------------------------------------------------------------
 
   //* ------------------------------ Controller_helper_functions ------------------------------ *//
 
@@ -182,7 +170,7 @@ namespace Lannooleaf {
     
     handler->add_handler((uint8_t)controller_commands::get_adj_list_size, [&](){
       Spi_slave::push(0x00);
-      uint16_t size = prepare_data().size();
+      uint16_t size = graph.to_vector().size();
 
       // Split unit16_t into 2 unit8_t
       uint8_t size_0 = size >> 8;
@@ -194,8 +182,7 @@ namespace Lannooleaf {
 
     handler->add_handler((uint8_t)controller_commands::get_adj_list, [&](){
       Spi_slave::push(0x00);
-
-      for (auto byte : prepare_data()) {
+      for (auto byte : graph.to_vector()) {
         Spi_slave::push(byte);
       }
     });

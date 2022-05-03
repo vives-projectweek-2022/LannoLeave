@@ -6,6 +6,9 @@ namespace Lannooleaf {
     static bool initialized = false;
 
     if (!initialized) {
+      queue_init(&Get().read_fifo, 1, 200);
+      queue_init(&Get().write_fifo, 1, 200);
+
       initialized = true;
       Get().i2c = i2c;
       Get()._address = slave_address;
@@ -29,17 +32,15 @@ namespace Lannooleaf {
         while (i2c_get_read_available(i2c)) {
           uint8_t byte;
           byte = i2c_get_hw(i2c)->data_cmd;
-          printf("0x%02x\n", byte);
-          // i2c_read_raw_blocking(i2c, &byte, 1);
-          Get().read_fifo.push(byte);
+          queue_add_blocking(&Get().read_fifo, &byte);
         }
         break;
       }
 
       case I2C_SLAVE_REQUEST: {
-        const uint8_t& byte = Get().write_fifo.front();
+        uint8_t byte;
+        queue_remove_blocking(&Get().write_fifo, &byte);
         i2c_write_raw_blocking(i2c, &byte, 1);
-        Get().write_fifo.pop();
         break;
       }
 

@@ -92,14 +92,15 @@ function readURL(input) {
 
 //POST image
 $(document).ready(function(){    
-    $("#submit_img").click(function(){        var fd = new FormData();
+    $("#submit_img").click(function(){        
+        var fd = new FormData();
     var files = $('#upload')[0].files[0];
     if (files.size > 20971520) {
         $("#uploadStatus").text("max upload size is 20MB");
       } else {
         fd.append('file',files);        
         $.ajax({
-            url: 'upload.php',
+            url: backend + '/upload.php',
             type: 'post',
             data: fd,
             contentType: false,

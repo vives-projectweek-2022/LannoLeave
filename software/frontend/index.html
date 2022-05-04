@@ -76,12 +76,13 @@
   <h2>Upload image:</h2>
   
   <p>Upload an image here!</p>
+
   <p><input type="file"
     id="upload" name="image"
-    accept="image/png, image/gif" onchange="readURL(this);"></p>
+    accept="image/png, image/gif" onchange="readURL(this);" required></p>
   <img id="image" src="#" alt="" />
   <p><input type="submit" id="submit_img" value="Apply"> <p id="uploadStatus"></p> </p>
-  
+
   </div>
 
 </div>

@@ -31,11 +31,14 @@ var receiver=dmxnet.newReceiver({
         }
       }
     }
-    // console.log(dataArray);
+
+
+
+    dataArray = data;
     if(ClearToSend) {
       // ClearToSend = false
       axios
-        .post('http://172.16.109.185:3000/matrix', dataArray)
+        .post('http://172.16.109.194:3000/matrix', dataArray)
         .then(res => {
           // console.log(`statusCode: ${res.status}`);
           console.log(data[0]);
@@ -47,6 +50,10 @@ var receiver=dmxnet.newReceiver({
         await new Promise(resolve => {setTimeout(resolve, 40)})
         ClearToSend = true;
     }
+
+
+
+
     // console.log('DMX data:', data);
   });
 

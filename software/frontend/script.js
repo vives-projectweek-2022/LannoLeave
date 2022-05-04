@@ -91,6 +91,7 @@ function readURL(input) {
 //   https://medium.com/@stiffmanadam/how-to-upload-image-file-using-ajax-and-jquery-758a45f67e97
 
 //POST image
+var uploadURL = backend + '/upload'
 $(document).ready(function(){    
     $("#submit_img").click(function(){        
         var fd = new FormData();

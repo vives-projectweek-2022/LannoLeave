@@ -24,20 +24,21 @@ var receiver=dmxnet.newReceiver({
       dataArray[i] = new Array(13);
       for (let ii = 0; ii < 13; ii++) {
         if (i%2 == 1) {
-          dataArray[i][ii] = [data[addressCounter++],data[addressCounter++],data[addressCounter++]];
+          dataArray[i][12-ii] = [data[addressCounter++],data[addressCounter++],data[addressCounter++]];
         }
         else {
-          dataArray[i][12-ii] = [data[addressCounter++],data[addressCounter++],data[addressCounter++]];
+          dataArray[i][ii] = [data[addressCounter++],data[addressCounter++],data[addressCounter++]];
         }
       }
     }
     // console.log(dataArray);
     if(ClearToSend) {
-      ClearToSend = false
+      // ClearToSend = false
       axios
-        .post('http://10.5.8.2:3000/matrix', dataArray)
+        .post('http://172.16.109.185:3000/matrix', dataArray)
         .then(res => {
-          console.log(`statusCode: ${res.status}`);
+          // console.log(`statusCode: ${res.status}`);
+          console.log(data[0]);
         })
         .catch(error => {
           // console.error(error);
@@ -46,7 +47,6 @@ var receiver=dmxnet.newReceiver({
         await new Promise(resolve => {setTimeout(resolve, 40)})
         ClearToSend = true;
     }
-    // console.log(data[0]);
     // console.log('DMX data:', data);
   });
 

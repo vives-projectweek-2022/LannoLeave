@@ -64,3 +64,56 @@ for(let i = 0; i < 2; i++) {
     dropdownled.append('<option>' + i + '</option>')
 }
 
+//Display image
+function readURL(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+  
+      reader.onload = function (e) {
+        $('#image').attr('src', e.target.result).width(120)     ;
+      };
+  
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  // Validate file size
+  $('#upload').on('change', function () {
+    var file = this.files[0];
+  
+    if (file.size > 20971520) {
+      alert('Max upload size is 20MB');
+    }
+  
+    // Also see .name, .type
+  });
+
+//   https://medium.com/@stiffmanadam/how-to-upload-image-file-using-ajax-and-jquery-758a45f67e97
+
+//POST image
+var uploadURL = backend + '/upload'
+$(document).ready(function(){    
+    $("#submit_img").click(function(){        
+        var fd = new FormData();
+    var files = $('#upload')[0].files[0];
+    if (files.size > 20971520) {
+        $("#uploadStatus").text("max upload size is 20MB");
+      } else {
+        fd.append('file',files);        
+        $.ajax({
+            url: backend + '/upload.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            success: function(response){
+                if(response != 0){
+                    $("#uploadStatus").text("Image uploaded!");
+                }else{
+                    alert('file not uploaded');
+                }
+            },
+        });
+    }
+});
+});

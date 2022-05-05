@@ -47,13 +47,27 @@ namespace Lannooleaf {
       ~Leaf();
   
     public:
-      /** \brief Updates the select pin status and handels received commands */
+      /**
+       * @brief Add handles to commandHandler
+       * 
+       * @param handler 
+       * Pointer to the instantiated CommandHandler clas
+       */
       void add_leaf_handlers(CommandHandler* handler);
 
     public:
-      /** \returns Slave select pin status as uint8_t */
+      /**
+       * @brief Status of select pins
+       * 
+       * @return
+       * Status of selectpins as uint8_t
+       */
       uint8_t sel_pin_status(void) { return _sel_pin_status; }
 
+      /**
+       * @brief Updates the select pin status
+       * 
+       */
       void update(void) { update_sel_status(); }
 
 

@@ -41,9 +41,28 @@ namespace Lannooleaf {
       ~I2CMaster();
 
     public:
-      /** \brief Send data to i2c slave*/
+      /**
+       * @brief Send a message to a i2c slave device
+       * 
+       * @param slave_address 
+       * address to send message to
+       * @param src 
+       * pointer to uint8_t data
+       * @param len 
+       * lenght of the data
+       */
       void send_data(uint8_t slave_address, const uint8_t* src, size_t len);
-      /** \brief Receive data from i2c slave*/
+      
+      /**
+       * @brief Get data if i2c slave
+       * 
+       * @param slave_address 
+       * address to get data from
+       * @param dest 
+       * pointer to destination
+       * @param len 
+       * lenght of data to receive
+       */
       void get_data(uint8_t slave_address, uint8_t* dest, size_t len);
 
     private:

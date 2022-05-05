@@ -165,12 +165,12 @@ Files
 .. toctree::
    :maxdepth: 5
 
-   file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_docs_README.md.rst
+   file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_Lannooleaf_README.md.rst
 
 .. toctree::
    :maxdepth: 5
 
-   file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_Lannooleaf_README.md.rst
+   file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_README.md.rst
 
 .. toctree::
    :maxdepth: 5
@@ -189,14 +189,14 @@ Pages
 .. toctree::
    :maxdepth: 5
 
-   page_md__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_docs_README.rst
-
-.. toctree::
-   :maxdepth: 5
-
    page_md__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_docs_Sphinx_build_html__static_collapsible_lists_LICENSE.rst
 
 .. toctree::
    :maxdepth: 5
 
    page_md__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_Lannooleaf_README.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   page_md__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_README.rst

@@ -39,36 +39,72 @@ namespace Lannooleaf {
   class I2c_slave {
     
     public:
-      /** \brief Initialize i2c slave*/
+      /**
+       * @brief Initialize i2c slave
+       * 
+       * @param slave_address 
+       * address to be initialzed
+       * @param i2c 
+       * i2c_inst_t pointer (i2c0 or i2c1)
+       * @param sda 
+       * sda gpio pin
+       * @param scl 
+       * scl gpio pin
+       */
       static void initialize(uint8_t slave_address, i2c_inst_t* i2c, uint sda, uint scl);
 
-      /** \returns First value in internal read_fifo, will block when fifo is empty*/
+      /**
+       * @brief Get a value from the receive queue
+       * 
+       * @return uint8_t 
+       */
       static uint8_t pop(void) {
         uint8_t value;
         queue_remove_blocking(&Get().read_fifo, &value);
         return value;
       }
 
-      /** \returns Current i2c address*/
+      /**
+       * @brief Get current i2c address
+       * 
+       * @return u_int8_t 
+       */
       static u_int8_t address(void) {
         return Get()._address;
       }
 
-      /** \brief Assign a new i2c address*/
+      /**
+       * @brief Assingn a new i2c address
+       * 
+       * @param address 
+       * address to use
+       */
       static void address(uint8_t address) {
         i2c_slave_deinit(Get().i2c);
         i2c_slave_init(Get().i2c, address, i2c_irq_callback);
         Get()._address = address;
       }
 
-      /** \brief Add a byte to the internal write_fifo*/
+      /**
+       * @brief Add a byte to be push onto the send buffer
+       * 
+       * @param byte 
+       * byte to push
+       */
       static void push(uint8_t byte) {
         printf("P\n");
         queue_add_blocking(&Get().write_fifo, &byte);
         printf("D\n");
       }
 
-      /** \returns boolean true if internal read_fifo is empty, false if not*/
+      /**
+       * @brief Check if receive buffer is empty
+       * 
+       * @return true 
+       * buffer is empty
+       * @return false 
+       * buffer is not empty
+       */
       static bool empty(void) {
         return queue_is_empty(&Get().read_fifo);
       }

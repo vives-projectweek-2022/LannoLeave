@@ -32,6 +32,9 @@
 #include <helper_funcs_var.h>
 
 namespace Lannooleaf {
+  /**
+   * @brief Stuct to hold i2c address and adjecentcies
+   */
   struct Node {
     Node(uint8_t address): 
       i2c_address(address) { }
@@ -53,17 +56,52 @@ namespace Lannooleaf {
       nodemap map;
 
     public:
+      /**
+       * @brief Add a node to the graph
+       * 
+       * @param i2c_address 
+       * i2c address of the node
+       */
       void add_node(const uint8_t& i2c_address);
+
+      /**
+       * @brief Add a edge between two nodes
+       * 
+       * @param from 
+       * i2c address of from node
+       * @param from_side 
+       * side to add to edge
+       * @param to 
+       * i2c address of to node
+       */
       void add_edge(const uint8_t& from, const side& from_side, const uint8_t& to);
+
+      /**
+       * @brief Serialized graph to be send to higher end using spi
+       */
       void prepare_data(void);
 
     public:
+      /**
+       * @brief Get reference to vector of serialized graph representation
+       * 
+       * @return std::vector<uint8_t>& 
+       */
       std::vector<uint8_t>& to_vector(void) { return vector; };
 
     public:
+      /**
+       * @brief Delete all element in graph
+       */
       void clear(void);
       
     public:
+      /**
+       * @brief Creates string representation of grapg
+       * 
+       * @return 
+       * string representation of graph
+       */
       std::string to_string(void);
 
     private:

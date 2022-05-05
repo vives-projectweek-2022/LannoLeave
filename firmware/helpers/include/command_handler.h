@@ -36,10 +36,24 @@ namespace Lannooleaf {
       ~CommandHandler();
 
     public:
-      /** \brief Add a handler for a command (uint8_t) that can then be executed later by referencing the comman */
+      /**
+       * @brief Insert a key value pair to the commandHandler
+       * 
+       * @param cmd 
+       * Key uint8_t
+       * @param handler
+       * Value std::function<void(void)> 
+       */
       void add_handler(uint8_t cmd, std::function<void(void)> handler);
 
-      /** \brief Execute a handler for a command, if no handler is found will just return*/ 
+      /**
+       * @brief Execute the function of the key value pair based on the key given
+       * 
+       * @param cmd
+       * Key to execute pair value
+       * @return true on success 
+       * @return false on fail
+       */
       bool handel_command(uint8_t cmd);
 
     private:

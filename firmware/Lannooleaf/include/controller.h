@@ -48,25 +48,48 @@ namespace Lannooleaf {
       ~Controller();
 
     public:
-      /** \brief Starts device discorvery algorithm*/
+      /**
+       * @brief Start the device discovery algorithm
+       */
       void device_discovery(void);
 
-      /** \brief Starts topology discovery algorithm*/
+      /**
+       * @brief Starts topology discovery algorithm
+       */
       void topology_discovery(void);
 
-      /** \brief Adds handles to commandhandler */
+      /**
+       * @brief Adds handles to commandhandler
+       * 
+       * @param handler 
+       * Pointer to the instantiated CommandHandler class
+       */
       void add_controller_handlers(CommandHandler* handler);
 
     private:  
-      /** \returns Next unused i2c address*/
+      /**
+       * @brief Get the next available i2c address
+       * 
+       * @return 
+       * Next available i2c address or UNCONFIGUREDADDRESS when none is available
+       */
       uint8_t get_next_available_address(void);
 
     private:
+      /**
+       * @brief Send i2c message to set a select pin
+       * 
+       * @param pin 
+       * Select pin to set
+       * @param value 
+       * true for high, false for low
+       * @param address 
+       * i2c address to send message to
+       */
       void set_select_pin(uint pin, bool value, uint8_t address);
 
     private:
       std::vector<uint8_t> visited;
-      auto prepare_data(void);
 
     public:
       Graph graph;

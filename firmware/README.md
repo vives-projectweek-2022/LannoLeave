@@ -36,7 +36,7 @@ Or use Visual Studio Code CMake extention to build project with a single press o
 
 ## Building documentation
 
-This project autmatacly generates API documentation using Doxygen and Sphinx.
+This project automatacly generates API documentation using Doxygen and Sphinx.
 
 If you do not want to use Sphinx, then the doxygen generated html files will be placed in /Lannooleaf/firmware/docs/Doxygen/gen_docs/html folder.
 

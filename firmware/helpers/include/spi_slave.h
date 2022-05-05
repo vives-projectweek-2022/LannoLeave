@@ -44,26 +44,56 @@ namespace Lannooleaf {
 
   class Spi_slave {
     public:
-      /** @brief Initialize spi slave*/
+      /**
+       * @brief Initialize spi slave
+       * 
+       * @param mosi 
+       * mosi gpio pin
+       * @param miso 
+       * miso gpio pin
+       * @param clk 
+       * clk gpio pin
+       * @param cs 
+       * cs gpio pin
+       */
       static void initialize(uint mosi, uint miso, uint clk, uint cs);
 
-      /** @returns First value in internal read_fifo, will block when fifo is empty*/
+      /**
+       * @brief Get a value from receive buffer
+       * 
+       * @return uint8_t 
+       */
       static uint8_t pop(void) {
         uint8_t value;
         queue_remove_blocking(&Get()._read_fifo, &value);
         return value;
       }
 
-      /** @brief Add a value to internal write_fifo*/
+      /**
+       * @brief Push a value to send buffer
+       * 
+       * @param value 
+       * value to push
+       */
       static void push(uint8_t value) {
         queue_add_blocking(&Get()._write_fifo, &value);
       }
 
-      /** \returns boolean true if internal read_fifo is empty, false if not*/
+      /**
+       * @brief Check if receive buffer is empty
+       * 
+       * @return true 
+       * buffer is empty
+       * @return false 
+       * buffer is not empty
+       */
       static bool empty(void) {
         return queue_is_empty(&Get()._read_fifo);
       }
 
+      /**
+       * @brief Clears both receive and sendbuffers
+       */
       static void reset(void) {
         queue_free(&Get()._read_fifo);
         queue_free(&Get()._write_fifo);

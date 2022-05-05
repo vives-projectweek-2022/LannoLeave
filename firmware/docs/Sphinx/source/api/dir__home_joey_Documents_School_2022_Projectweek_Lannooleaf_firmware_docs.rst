@@ -17,9 +17,4 @@ Subdirectories
 - :ref:`dir__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_docs_Sphinx`
 
 
-Files
------
-
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_docs_README.md`
-
 

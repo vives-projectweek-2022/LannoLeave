@@ -1,0 +1,7 @@
+.. _page_md__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_docs_Sphinx_build_html__static_collapsible_lists_LICENSE:
+
+LICENSE
+=======
+
+.. doxygenpage:: md__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_docs_Sphinx_build_html__static_collapsible_lists_LICENSE
+   :project: Lannooleaf firmware

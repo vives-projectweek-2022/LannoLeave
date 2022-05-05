@@ -1,4 +1,2 @@
 docs/
-source/
-make.bat
-Makefile
+build/

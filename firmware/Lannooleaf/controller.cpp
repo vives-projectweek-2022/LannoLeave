@@ -1,3 +1,24 @@
+/**
+ * @file controller.cpp
+ * @author Joey De Smet (Joey@de-smet.org)
+ * @brief Source file to controller.h
+ * @version 0.1
+ * @date 2022-05-04
+ * 
+ * @copyright Copyright 2022 Joey De Smet
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 #include <controller.h>
 
 namespace Lannooleaf {
@@ -11,6 +32,7 @@ namespace Lannooleaf {
 
   Controller::~Controller() { }
 
+  // Good luck ;)
   void Controller::device_discovery(void) {
     bool controller_done = false;
     
@@ -30,7 +52,6 @@ namespace Lannooleaf {
                               set_next_address.size());
         sleep_ms(SLEEP_TIME);
 
-        printf("Sending ping\n");
         const uint8_t ping = (uint8_t)slave_commands::ping;
         leaf_master.send_data(next_address, 
                               &ping, 
@@ -45,7 +66,6 @@ namespace Lannooleaf {
         // If response add node to graph
         if (pong.at(0) == 0xa5) {
           graph.add_node(next_address); 
-          printf("received pong\n");
         }
         else next_address = UNCONFIGUREDADDRESS;
 

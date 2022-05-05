@@ -1,3 +1,25 @@
+/**
+ * @file leaf.cpp
+ * @author Joey De Smet (Joey@de-smet.org)
+ * @brief Source file to leaf.h
+ * @version 0.1
+ * @date 2022-05-04
+ * 
+ * @copyright Copyright 2022 Joey De Smet
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 #include <leaf.h>
 
 namespace Lannooleaf {
@@ -21,8 +43,6 @@ namespace Lannooleaf {
       uint8_t pin   = I2c_slave::pop();
       uint8_t value = I2c_slave::pop();
 
-      printf("Set sel pin: %i to %i\n", pin, value);
-
       if (value) { // Set high
         gpio_set_dir(pin, GPIO_OUT);
         gpio_put(pin, true);
@@ -43,12 +63,10 @@ namespace Lannooleaf {
     });
 
     handler->add_handler((uint8_t)slave_commands::get_neigbor_size, [&](){
-      printf("Neig size: %i\n", this->neighbors.size());
       I2c_slave::push(this->neighbors.size());
     });
 
     handler->add_handler((uint8_t)slave_commands::get_neighbor_information, [&](){
-      printf("Neighbor information\n");
       for (auto [address, side] : neighbors) {
         I2c_slave::push(address);
         I2c_slave::push((uint8_t)side);
@@ -61,8 +79,6 @@ namespace Lannooleaf {
       red = I2c_slave::pop();
       green = I2c_slave::pop();
       blue = I2c_slave::pop();
-
-      printf("Setting led %i to %i, %i, %i\n", led, red, green, blue);
 
       ledstrip.setPixelColor(led, PicoLed::RGB(red, green, blue));
       ledstrip.show();

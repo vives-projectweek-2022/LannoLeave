@@ -1,3 +1,25 @@
+/**
+ * @file spi_slave.h
+ * @author Joey De Smet (Joey@de-smet.org)
+ * @brief Singelton class to use ri pi pico as spi slave
+ * @version 0.1
+ * @date 2022-05-04
+ * 
+ * @copyright Copyright 2022 Joey De Smet
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 #pragma once
 
 #include <queue>
@@ -15,19 +37,24 @@
 
 namespace Lannooleaf {
 
+  template<auto T = 0>
+  class slave {
+    static_assert(T == 0 || T == 1);
+  };
+
   class Spi_slave {
     public:
-      /** \brief Initialize spi slave*/
+      /** @brief Initialize spi slave*/
       static void initialize(uint mosi, uint miso, uint clk, uint cs);
 
-      /** \returns First value in internal read_fifo, will block when fifo is empty*/
+      /** @returns First value in internal read_fifo, will block when fifo is empty*/
       static uint8_t pop(void) {
         uint8_t value;
         queue_remove_blocking(&Get()._read_fifo, &value);
         return value;
       }
 
-      /** \brief Add a value to internal write_fifo*/
+      /** @brief Add a value to internal write_fifo*/
       static void push(uint8_t value) {
         queue_add_blocking(&Get()._write_fifo, &value);
       }
@@ -35,6 +62,11 @@ namespace Lannooleaf {
       /** \returns boolean true if internal read_fifo is empty, false if not*/
       static bool empty(void) {
         return queue_is_empty(&Get()._read_fifo);
+      }
+
+      static void reset(void) {
+        queue_free(&Get()._read_fifo);
+        queue_free(&Get()._write_fifo);
       }
 
     private:

@@ -1,3 +1,25 @@
+/**
+ * @file spi_slave.cpp
+ * @author Joey De Smet (Joey@de-smet.org)
+ * @brief Source file to spi_slave.h
+ * @version 0.1
+ * @date 2022-05-04
+ * 
+ * @copyright Copyright 2022 Joey De Smet
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 #include "spi_slave.h"
 
 namespace Lannooleaf {
@@ -19,7 +41,7 @@ namespace Lannooleaf {
       reset_block(RESETS_RESET_SPI0_BITS);
       unreset_block_wait(RESETS_RESET_SPI0_BITS);  
 
-      spi_set_baudrate(spi0, 2000000);
+      spi_set_baudrate(spi0, 1000000);
     
       hw_set_bits(&spi_get_hw(spi0)->dmacr, SPI_SSPDMACR_TXDMAE_BITS | SPI_SSPDMACR_RXDMAE_BITS);
 
@@ -50,7 +72,7 @@ namespace Lannooleaf {
   void __not_in_flash_func(Spi_slave::cs_callback)(uint gpio, uint32_t events) {
     while (spi_get_hw(spi0)->sr & 0x04) {  
       uint8_t value = spi_get_hw(spi0)->dr;
-      queue_add_blocking(&Spi_slave::Get()._read_fifo, &value);
+      queue_try_add(&Spi_slave::Get()._read_fifo, &value);
     }
   }
 
@@ -62,7 +84,7 @@ namespace Lannooleaf {
       // Adding 0xff if writefifo is empty
       while (spi_get_hw(spi0)->sr & 0x04) {  
         uint8_t value = spi_get_hw(spi0)->dr;
-        queue_add_blocking(&Spi_slave::Get()._read_fifo, &value);
+        queue_try_add(&Spi_slave::Get()._read_fifo, &value);
       }
 
       uint8_t value = 0xff;

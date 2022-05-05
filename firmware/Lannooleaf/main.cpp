@@ -6,6 +6,7 @@
 
 #include <pico/stdlib.h>
 #include <pico/multicore.h>
+#include <hardware/watchdog.h>
 
 #include <leaf.h>
 #include <commands.h>
@@ -35,7 +36,7 @@ void leaf_core(void) {
 }
 
 int main() {
-  set_sys_clock_khz(250000, true);
+  // set_sys_clock_khz(250000, true); // Overclockinggg xD
 
   stdio_init_all();
   set_alive_led();
@@ -62,7 +63,6 @@ int main() {
     uint32_t status = gpio_get_all();
     if (!(status & 1 << 1)) {
       controller = std::unique_ptr<Controller>(new Controller(i2c0, SDA, SCL));
-      // controller = new Controller(i2c0, SDA, SCL);
       uint8_t data[8] = {0xff};
       controller->leaf_master.send_data(GENCALLADR,data, 8);
 
@@ -70,21 +70,17 @@ int main() {
     } 
     if (status & gpio_mask) {
       leaf = std::unique_ptr<Leaf> (new Leaf);
-      // leaf = new Leaf;
       leaf->add_leaf_handlers(&commandHandler);
     }
   };
 
   // Controller is initialized
   if (controller) {
-    multicore_launch_core1(spi_core);
 
-    printf("Starting discovery\n");
+    multicore_launch_core1(spi_core);
 
     controller->device_discovery();
     controller->topology_discovery();
-
-    printf("%s\n", controller->graph.to_string().c_str());
 
     for (auto [address, node] : controller->graph.map) {
       const uint8_t message = (uint8_t)slave_commands::discovery_done;
@@ -97,20 +93,21 @@ int main() {
 
     while (true) {
       uint8_t cmd = Spi_slave::pop();
-      printf("Handeling command 0x%02x\n", cmd);
-      if (cmd != 0xa5) commandHandler.handel_command(cmd);
+      if (cmd != 0xa5 && cmd != 0x00) {
+        if (!commandHandler.handel_command(cmd)){
+          Spi_slave::reset();
+        }
+      }
     };
   }
 
   // Leaf is initialized
   else {
-    printf("Init as slave\n");
     multicore_launch_core1(leaf_core);
 
     while (true) {
       leaf->update();
       uint8_t cmd = I2c_slave::pop();
-      printf("Handling command 0x%02x\n", cmd);
       commandHandler.handel_command(cmd);
     };
   }

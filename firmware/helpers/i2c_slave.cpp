@@ -1,3 +1,26 @@
+/**
+ * @file i2c_slave.cpp
+ * @author Joey De Smet (Joey@de-smet.org)
+ * @brief Sourcefile to i2c_slave.h
+ * @version 0.1
+ * @date 2022-05-04
+ * 
+ * @copyright Copyright 2022 Joey De Smet
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+
 #include <i2c_slave.h>
 
 namespace Lannooleaf {
@@ -32,14 +55,14 @@ namespace Lannooleaf {
         while (i2c_get_read_available(i2c)) {
           uint8_t byte;
           byte = i2c_get_hw(i2c)->data_cmd;
-          queue_add_blocking(&Get().read_fifo, &byte);
+          queue_try_add(&Get().read_fifo, &byte);
         }
         break;
       }
 
       case I2C_SLAVE_REQUEST: {
         uint8_t byte;
-        queue_remove_blocking(&Get().write_fifo, &byte);
+        queue_try_remove(&Get().write_fifo, &byte);
         i2c_write_raw_blocking(i2c, &byte, 1);
         break;
       }

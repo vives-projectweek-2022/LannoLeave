@@ -42,7 +42,7 @@ namespace Lannooleaf {
     static_assert(T == 0 || T == 1);
   };
 
-  class Spi_slave {
+  class SPISlave {
     public:
       /**
        * @brief Initialize spi slave
@@ -100,8 +100,8 @@ namespace Lannooleaf {
       }
 
     private:
-      static Spi_slave& Get(void) {
-        static Spi_slave instance;
+      static SPISlave& Get(void) {
+        static SPISlave instance;
         return instance;
       }
     
@@ -114,12 +114,12 @@ namespace Lannooleaf {
       queue_t _write_fifo;
       
     private:
-      Spi_slave() {}
-      ~Spi_slave(){}
+      SPISlave() {}
+      ~SPISlave(){}
     
     private:
-      Spi_slave(Spi_slave const&)      = delete;
-      void operator=(Spi_slave const&) = delete;
+      SPISlave(SPISlave const&)      = delete;
+      void operator=(SPISlave const&) = delete;
 
   };
 

@@ -30,18 +30,18 @@ namespace Lannooleaf {
 
   void Leaf::add_leaf_handlers(CommandHandler* handler) {
     handler->add_handler((uint8_t)slave_commands::set_i2c_address, [&](){
-      uint8_t new_address = I2c_slave::pop();
+      uint8_t new_address = I2CSlave::pop();
 
-      if (I2c_slave::address() == UNCONFIGUREDADDRESS && this->sel_pin_status()) I2c_slave::address(new_address);
+      if (I2CSlave::address() == UNCONFIGUREDADDRESS && this->sel_pin_status()) I2CSlave::address(new_address);
     });
 
     handler->add_handler((uint8_t)slave_commands::ping, [&](){
-      I2c_slave::push(0xa5);
+      I2CSlave::push(0xa5);
     }); 
 
     handler->add_handler((uint8_t)slave_commands::set_sel_pin, [&](){
-      uint8_t pin   = I2c_slave::pop();
-      uint8_t value = I2c_slave::pop();
+      uint8_t pin   = I2CSlave::pop();
+      uint8_t value = I2CSlave::pop();
 
       if (value) { // Set high
         gpio_set_dir(pin, GPIO_OUT);
@@ -53,32 +53,32 @@ namespace Lannooleaf {
     });
 
     handler->add_handler((uint8_t)slave_commands::get_sel_pin, [&](){
-      I2c_slave::push(this->sel_pin_status());
+      I2CSlave::push(this->sel_pin_status());
     });
 
     handler->add_handler((uint8_t)slave_commands::is_neighbor, [&](){
-      uint8_t neighbor = I2c_slave::pop();     
+      uint8_t neighbor = I2CSlave::pop();     
       if (this->sel_pin_status()) 
         this->neighbors.push_back(std::make_pair(neighbor, this->sel_pin_status())); 
     });
 
     handler->add_handler((uint8_t)slave_commands::get_neigbor_size, [&](){
-      I2c_slave::push(this->neighbors.size());
+      I2CSlave::push(this->neighbors.size());
     });
 
     handler->add_handler((uint8_t)slave_commands::get_neighbor_information, [&](){
       for (auto [address, side] : neighbors) {
-        I2c_slave::push(address);
-        I2c_slave::push((uint8_t)side);
+        I2CSlave::push(address);
+        I2CSlave::push((uint8_t)side);
       }
     });
 
     handler->add_handler((uint8_t)slave_commands::set_led, [&](){
       uint8_t led, red, green, blue;
-      led = I2c_slave::pop();
-      red = I2c_slave::pop();
-      green = I2c_slave::pop();
-      blue = I2c_slave::pop();
+      led = I2CSlave::pop();
+      red = I2CSlave::pop();
+      green = I2CSlave::pop();
+      blue = I2CSlave::pop();
 
       ledstrip.setPixelColor(led, PicoLed::RGB(red, green, blue));
       ledstrip.show();
@@ -86,9 +86,9 @@ namespace Lannooleaf {
 
     handler->add_handler((uint8_t)slave_commands::set_all_led, [&](){
       uint8_t red, green, blue;
-      red = I2c_slave::pop();
-      green = I2c_slave::pop();
-      blue = I2c_slave::pop();
+      red = I2CSlave::pop();
+      green = I2CSlave::pop();
+      blue = I2CSlave::pop();
 
       ledstrip.fill(PicoLed::RGB(red, green, blue));
       ledstrip.show();
@@ -98,9 +98,9 @@ namespace Lannooleaf {
       std::array<Color, 16> color_string;
       int i = 0;
       for (auto [red, green, blue] : color_string) {
-        red = I2c_slave::pop();
-        green = I2c_slave::pop();
-        blue = I2c_slave::pop();
+        red = I2CSlave::pop();
+        green = I2CSlave::pop();
+        blue = I2CSlave::pop();
 
         ledstrip.setPixelColor(i, PicoLed::RGB(red, green, blue));
         i++;

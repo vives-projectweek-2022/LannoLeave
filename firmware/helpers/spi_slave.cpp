@@ -24,7 +24,7 @@
 
 namespace Lannooleaf {
 
-  void Spi_slave::initialize(uint mosi, uint miso, uint clk, uint cs) {
+  void SPISlave::initialize(uint mosi, uint miso, uint clk, uint cs) {
     static bool initialized = false;
     
     if (!initialized) {
@@ -69,14 +69,14 @@ namespace Lannooleaf {
     }
   }
 
-  void __not_in_flash_func(Spi_slave::cs_callback)(uint gpio, uint32_t events) {
+  void __not_in_flash_func(SPISlave::cs_callback)(uint gpio, uint32_t events) {
     while (spi_get_hw(spi0)->sr & 0x04) {  
       uint8_t value = spi_get_hw(spi0)->dr;
-      queue_try_add(&Spi_slave::Get()._read_fifo, &value);
+      queue_try_add(&SPISlave::Get()._read_fifo, &value);
     }
   }
 
-  void __not_in_flash_func(Spi_slave::spi_irq_handler)(void) {
+  void __not_in_flash_func(SPISlave::spi_irq_handler)(void) {
     uint32_t status = spi_get_hw(spi0)->mis;
     
     // Tx fifo half empty or less
@@ -84,7 +84,7 @@ namespace Lannooleaf {
       // Adding 0xff if writefifo is empty
       while (spi_get_hw(spi0)->sr & 0x04) {  
         uint8_t value = spi_get_hw(spi0)->dr;
-        queue_try_add(&Spi_slave::Get()._read_fifo, &value);
+        queue_try_add(&SPISlave::Get()._read_fifo, &value);
       }
 
       uint8_t value = 0xff;

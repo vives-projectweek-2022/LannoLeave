@@ -36,7 +36,7 @@
 
 namespace Lannooleaf {
 
-  class I2c_slave {
+  class I2CSlave {
     
     public:
       /**
@@ -92,9 +92,7 @@ namespace Lannooleaf {
        * byte to push
        */
       static void push(uint8_t byte) {
-        printf("P\n");
         queue_add_blocking(&Get().write_fifo, &byte);
-        printf("D\n");
       }
 
       /**
@@ -110,8 +108,8 @@ namespace Lannooleaf {
       }
 
     private:
-      static I2c_slave& Get(void) {
-        static I2c_slave instance;
+      static I2CSlave& Get(void) {
+        static I2CSlave instance;
         return instance;
       };
 
@@ -127,12 +125,12 @@ namespace Lannooleaf {
       uint8_t _address;
 
     private:
-      I2c_slave() {}
-      ~I2c_slave(){}
+      I2CSlave() {}
+      ~I2CSlave(){}
 
     private:
-      I2c_slave(I2c_slave const&)      = delete;
-      void operator=(I2c_slave const&) = delete;
+      I2CSlave(I2CSlave const&)      = delete;
+      void operator=(I2CSlave const&) = delete;
 
   };
 

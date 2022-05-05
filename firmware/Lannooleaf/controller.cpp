@@ -182,36 +182,36 @@ namespace Lannooleaf {
 
   void Controller::add_controller_handlers(CommandHandler* handler) {
     handler->add_handler((uint8_t)controller_commands::hello_message, [&](){
-      Spi_slave::push(0x00); // 0x00 Indicates start of writen data
+      SPISlave::push(0x00); // 0x00 Indicates start of writen data
 
       const char hello[] = "HelloSpi!";
-      for (char byte : hello) Spi_slave::push(byte);
+      for (char byte : hello) SPISlave::push(byte);
     });
     
     handler->add_handler((uint8_t)controller_commands::get_adj_list_size, [&](){
-      Spi_slave::push(0x00);
+      SPISlave::push(0x00);
       uint16_t size = graph.to_vector().size();
 
       // Split unit16_t into 2 unit8_t
       uint8_t size_0 = size >> 8;
       uint8_t size_1 = size;
 
-      Spi_slave::push(size_0);
-      Spi_slave::push(size_1);
+      SPISlave::push(size_0);
+      SPISlave::push(size_1);
     });
 
     handler->add_handler((uint8_t)controller_commands::get_adj_list, [&](){
-      Spi_slave::push(0x00);
+      SPISlave::push(0x00);
       for (auto byte : graph.to_vector()) {
-        Spi_slave::push(byte);
+        SPISlave::push(byte);
       }
     });
 
     handler->add_handler((uint8_t)controller_commands::set_all, [&]{
       uint8_t red, green, blue;
-      red = Spi_slave::pop();
-      green = Spi_slave::pop();
-      blue = Spi_slave::pop();
+      red = SPISlave::pop();
+      green = SPISlave::pop();
+      blue = SPISlave::pop();
       
       ledstrip.fill(PicoLed::RGB(red, green, blue));
       ledstrip.show();
@@ -224,11 +224,11 @@ namespace Lannooleaf {
 
     handler->add_handler((uint8_t)controller_commands::set_leaf_led, [&](){
       uint8_t address, led, red, green, blue;
-      address = Spi_slave::pop();
-      led = Spi_slave::pop();
-      red = Spi_slave::pop();
-      green = Spi_slave::pop();
-      blue = Spi_slave::pop();
+      address = SPISlave::pop();
+      led = SPISlave::pop();
+      red = SPISlave::pop();
+      green = SPISlave::pop();
+      blue = SPISlave::pop();
 
       if (address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
         ledstrip.setPixelColor(led, PicoLed::RGB(red, green, blue));
@@ -240,13 +240,13 @@ namespace Lannooleaf {
     });
 
     handler->add_handler((uint8_t)controller_commands::set_led_string, [&](){
-      uint8_t address = Spi_slave::pop();
+      uint8_t address = SPISlave::pop();
       std::array<Color, 16> color_string;
       
       for (int i = 0; i < color_string.size(); i++) {
-        uint8_t red = Spi_slave::pop();
-        uint8_t green = Spi_slave::pop();
-        uint8_t blue = Spi_slave::pop();
+        uint8_t red = SPISlave::pop();
+        uint8_t green = SPISlave::pop();
+        uint8_t blue = SPISlave::pop();
         
         color_string[i] = {
           red, green, blue

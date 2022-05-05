@@ -25,7 +25,7 @@
 
 namespace Lannooleaf {
 
-  void I2c_slave::initialize(uint8_t slave_address, i2c_inst_t* i2c, uint sda, uint scl) {
+  void I2CSlave::initialize(uint8_t slave_address, i2c_inst_t* i2c, uint sda, uint scl) {
     static bool initialized = false;
 
     if (!initialized) {
@@ -49,7 +49,7 @@ namespace Lannooleaf {
     }
   }
 
-  void __not_in_flash_func(I2c_slave::i2c_irq_callback)(i2c_inst_t* i2c, i2c_slave_event_t event) {
+  void __not_in_flash_func(I2CSlave::i2c_irq_callback)(i2c_inst_t* i2c, i2c_slave_event_t event) {
     switch (event) {
       case I2C_SLAVE_RECEIVE: { 
         while (i2c_get_read_available(i2c)) {

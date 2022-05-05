@@ -24,13 +24,13 @@ std::unique_ptr<Controller> controller;
 std::unique_ptr<Leaf> leaf;
 
 void spi_core(void) {
-  Spi_slave::initialize(MOSI, MISO, CLK, CS);
+  SPISlave::initialize(MOSI, MISO, CLK, CS);
 
   while (true) tight_loop_contents();
 }
 
 void leaf_core(void) {
-  I2c_slave::initialize(UNCONFIGUREDADDRESS, i2c0, SDA, SCL);
+  I2CSlave::initialize(UNCONFIGUREDADDRESS, i2c0, SDA, SCL);
 
   while (true) tight_loop_contents();
 }
@@ -92,10 +92,10 @@ int main() {
     discover_animation(&controller->ledstrip, {0, 50, 100});
 
     while (true) {
-      uint8_t cmd = Spi_slave::pop();
+      uint8_t cmd = SPISlave::pop();
       if (cmd != 0xa5 && cmd != 0x00) {
         if (!commandHandler.handel_command(cmd)){
-          Spi_slave::reset();
+          SPISlave::reset();
         }
       }
     };
@@ -107,7 +107,7 @@ int main() {
 
     while (true) {
       leaf->update();
-      uint8_t cmd = I2c_slave::pop();
+      uint8_t cmd = I2CSlave::pop();
       commandHandler.handel_command(cmd);
     };
   }

@@ -69,9 +69,7 @@ namespace Lannooleaf {
     private:  
       /**
        * @brief Get the next available i2c address
-       * 
-       * @return 
-       * Next available i2c address or UNCONFIGUREDADDRESS when none is available
+       * ined reference to `Lannooleaf::discover_animation(PicoLed::PicoLedController*, Lannooleaf::Color)'lable
        */
       uint8_t get_next_available_address(void);
 

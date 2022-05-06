@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.27.2",
-    "dmxnet": "^0.8.0"
-  }
+    "dmxnet": "^0.8.0",
+    "ws": "^8.6.0"
+  },
+  "type": "module"
 }

@@ -1,8 +1,13 @@
-const axios = require('axios');
-var dmxlib=require('dmxnet');
+import * as dmxlib from 'dmxnet';
+import WebSocket from 'ws';
+
+const HOST = "10.10.10.110";
+const PORT = 3000;
 
 var matrixSize = 13;
-var apiUrl = 'http://172.16.109.194:3000/matrix';
+var apiUrl = `ws://${HOST}:${PORT}/dmx`;
+
+const websocket = new WebSocket(apiUrl);
 
 var dmxnet = new dmxlib.dmxnet({
   log: { level: 'info' }, // Winston logger options
@@ -11,20 +16,19 @@ var dmxnet = new dmxlib.dmxnet({
   lName: "Long description", // 63 char long node description, default to "dmxnet - OpenSource ArtNet Transceiver"
   hosts: ["127.0.0.1"] // Interfaces to listen to, all by default
 });
-  
-var receiver=dmxnet.newReceiver({
+
+var receiver = dmxnet.newReceiver({
   subnet: 0, //Destination subnet, default 0
   universe: 0, //Destination universe, default 0
   net: 0, //Destination net, default 0
 });
-  
+
 // This calls when an artnet package is reicieved (artnet is broadcast)
-var ClearToSend = true;
 receiver.on('data', async function(data) {
   // Data is an 1d array with intensity values between 0 and 255. this is for each DMX address/channel
   // The code below converts a led matrix in dmx to a 2D array with rgb colors
   
-  // console.log('DMX data:', data); // this prints the full DMX aray
+  console.log('DMX data:', data[0]); // this prints the full DMX aray
 
   let dataArray = new Array(matrixSize);
   let addressCounter = 0;
@@ -41,25 +45,8 @@ receiver.on('data', async function(data) {
     }
   }
 
-  // Code below sends the matrix to the api
-  if(ClearToSend) {
-    // ClearToSend = false
-    axios
-      .post(apiUrl, dataArray)
-      .then(res => {
-        // console.log(`statusCode: ${res.status}`);
-        // console.log(data[0]); // this prints the first DMX channel
-      })
-      .catch(error => {
-        // console.error(error);
-        console.log(`ERROR`);
-      }); 
-      await new Promise(resolve => {setTimeout(resolve, 40)})
-      ClearToSend = true;
-  }
+  websocket.send(JSON.stringify(dataArray), err => {
+    if (err) console.error(err);
+  });
 
 });
-
-
-
-

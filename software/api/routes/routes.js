@@ -1,21 +1,24 @@
-import path from 'path';
+import multer from 'multer';
 import express from 'express';
-import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import child_process from 'child_process';
 import { Color } from 'lannooleaf_spi_controller';
 
-export default async (controller, graph, coorMap) => {
+export default async (controller, graph, coorMap, __dirname) => {
+  const spawn = child_process.spawn;
+
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'uploads/'); 
+    },
+
+    filename: (req, file, cb) => {
+      cb(null, file.originalname);
+    }
+  });
+
   const router     = express.Router();
   const jsonParser = bodyParser.json();
-
-  const spawn = child_process.spawn;
-  var python_running = false;
-
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-
-  await controller.SetAll(new Color(0, 75, 0));
 
   /*------------------------------------ GET ------------------------------------*/
   
@@ -51,41 +54,69 @@ export default async (controller, graph, coorMap) => {
     res.send('Your data: ' + JSON.stringify(req.body));
   });
 
-  router.post('/python', (req, res) => {
+  router.post('/image', (req, res) => {
+    let upload = multer({ storage: storage }).single('image');
 
-    if (python_running) {
-      return res.status(400).send({
-        error: "Python procces already running"
-      });
-    }
+    upload(req, res, err => {
 
-    python_running = true;
-    const python_path = path.join(__dirname, "../python_scripts/")
+      // if (!res.file.originalname.match(/\.(PNG|png|gif|GIF)&/)) {
+      //   return res.status(422).send({
+      //     error: "File type can only be if gif or png type"
+      //   });
+      // }
 
-    let pythonProcces = spawn('python', 
-    [
-      "python_scripts/client.py",
-      "--image", `${python_path}image/test.gif`,
-      "--ip", "127.0.0.1"
-    ]);    
+      if (!req.file) {
+        return res.send('Please select an image to upload');
+      }
 
-    pythonProcces.stdout.on('data', data => {
-      console.log(data.toString());
+      else if (err instanceof multer.MulterError) {
+        return res.send(err);
+      }
+
+      else if (err) {
+        return res.send(err);
+      }
+
+      res.send(`Succesfully uploaded image`);
     });
 
-    pythonProcces.stderr.on('data', data => {
-      console.error(data.toString());
-      return res.status(400).send({
-        error: data.toString()
-      });
-    });
-
-    pythonProcces.on('exit', () => {
-      python_running = false;
-    });
-    
-    res.status(200).send();
   });
+
+  // router.post('/python', (req, res) => {
+
+  //   if (python_running) {
+  //     return res.status(400).send({
+  //       error: "Python procces already running"
+  //     });
+  //   }
+
+  //   python_running = true;
+  //   const python_path = path.join(__dirname, "../python_scripts/")
+
+  //   let pythonProcces = spawn('python', 
+  //   [
+  //     "python_scripts/client.py",
+  //     "--image", `${python_path}image/test.gif`,
+  //     "--ip", "127.0.0.1"
+  //   ]);    
+
+  //   pythonProcces.stdout.on('data', data => {
+  //     console.log(data.toString());
+  //   });
+
+  //   pythonProcces.stderr.on('data', data => {
+  //     console.error(data.toString());
+  //     return res.status(400).send({
+  //       error: data.toString()
+  //     });
+  //   });
+
+  //   pythonProcces.on('exit', () => {
+  //     python_running = false;
+  //   });
+    
+  //   res.status(200).send();
+  // });
 
   return router;
 };

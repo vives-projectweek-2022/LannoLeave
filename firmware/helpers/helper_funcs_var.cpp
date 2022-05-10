@@ -20,7 +20,7 @@
  *  limitations under the License.
  */
 
-#include "include/helper_funcs_var.h"
+#include <helper_funcs_var.hpp>
 
 namespace Lannooleaf {
 
@@ -29,6 +29,13 @@ namespace Lannooleaf {
     gpio_init(led_pin);
     gpio_set_dir(led_pin, GPIO_OUT);
     gpio_put(led_pin, true);
+  }
+
+  void error_blink(void) {
+    gpio_put(25, false);
+    sleep_ms(500);
+    gpio_put(25, true);
+    sleep_ms(250);
   }
 
   void discover_animation(PicoLed::PicoLedController* ledstrip, Color color) {

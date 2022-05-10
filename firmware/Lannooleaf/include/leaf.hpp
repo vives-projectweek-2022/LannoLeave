@@ -1,7 +1,7 @@
 /**
- * @file command_handler.h
+ * @file leaf.h
  * @author Joey De Smet (Joey@de-smet.org)
- * @brief Class to hold a key value mapping of uint8_t and function pointer
+ * @brief Class to receive/handel commands from controller / Set colors of leds
  * @version 0.1
  * @date 2022-05-04
  * 
@@ -23,42 +23,48 @@
 #pragma once
 
 #include <map>
-#include <iostream>
+#include <stdio.h>
 #include <stdint.h>
 #include <functional>
 
+#include <PicoLed.hpp>
+
+#include <commands.hpp>
+#include <i2c_slave.hpp>
+#include <helper_funcs_var.hpp>
+
+#include <command_handler.hpp>
+#include <i2c_slave.hpp>
+
+#include <pico/stdlib.h>
+#include <hardware/i2c.h>
+#include <hardware/gpio.h>
+
 namespace Lannooleaf {
 
-  class CommandHandler {
+  class Leaf : public CommandHandler {
 
     public:
-      CommandHandler();
-      ~CommandHandler();
+      Leaf();
+      ~Leaf();
 
     public:
-      /**
-       * @brief Insert a key value pair to the commandHandler
-       * 
-       * @param cmd 
-       * Key uint8_t
-       * @param handler
-       * Value std::function<void(void)> 
-       */
-      void add_handler(uint8_t cmd, std::function<void(void)> handler);
+      virtual void update(void);
 
-      /**
-       * @brief Execute the function of the key value pair based on the key given
-       * 
-       * @param cmd
-       * Key to execute pair value
-       * @return true on success 
-       * @return false on fail
-       */
-      bool handel_command(uint8_t cmd);
+    public:
+      PicoLed::PicoLedController ledstrip = PicoLed::addLeds<PicoLed::WS2812B>(pio0, 0, LED_PIN, LED_LENGTH, PicoLed::FORMAT_GRB);
 
     private:
-      std::unordered_map<uint8_t, std::function<void(void)>> handler_map;
+      void update_sel_status(void);
+      void add_handlers(void);
 
+    private:
+      I2CSlave slave;
+
+    private:
+      uint8_t _sel_pin_status;
+      std::vector<std::pair<uint8_t, uint8_t>> neighbors;
+ 
   };
 
 }

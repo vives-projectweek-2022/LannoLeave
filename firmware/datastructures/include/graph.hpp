@@ -29,7 +29,7 @@
 #include <sstream>
 #include <stdint.h>
 
-#include <helper_funcs_var.h>
+#include <helper_funcs_var.hpp>
 
 namespace Lannooleaf {
   /**

@@ -5,39 +5,19 @@
 #include <algorithm>
 
 #include <pico/stdlib.h>
-#include <pico/multicore.h>
-#include <hardware/watchdog.h>
 
-#include <leaf.h>
-#include <commands.h>
-#include <spi_slave.h>
-#include <i2c_slave.h>
-#include <controller.h>
-#include <command_handler.h>
-#include <helper_funcs_var.h>
+#include <leaf.hpp>
+#include <commands.hpp>
+#include <controller.hpp>
+#include <helper_funcs_var.hpp>
 
 using namespace Lannooleaf;
 
-CommandHandler commandHandler;
+std::unique_ptr<Controller> controller = nullptr;
+std::unique_ptr<Leaf> leaf = nullptr;
 
-std::unique_ptr<Controller> controller;
-std::unique_ptr<Leaf> leaf;
-
-void spi_core(void) {
-  SPISlave::initialize(MOSI, MISO, CLK, CS);
-
-  while (true) tight_loop_contents();
-}
-
-void leaf_core(void) {
-  I2CSlave::initialize(UNCONFIGUREDADDRESS, i2c0, SDA, SCL);
-
-  while (true) tight_loop_contents();
-}
 
 int main() {
-  // set_sys_clock_khz(250000, true); // Overclockinggg xD
-
   stdio_init_all();
   set_alive_led();
 
@@ -58,57 +38,35 @@ int main() {
     gpio_mask |= 1 << (uint)pin; 
   }
 
-  // Wait untill initialized as controller or leaf
-  while (!controller && !leaf) {
+  // Wait untill unit initialized as controller or leaf
+  while (!leaf && !controller) {
     uint32_t status = gpio_get_all();
-    if (!(status & 1 << 1)) {
-      controller = std::unique_ptr<Controller>(new Controller(i2c0, SDA, SCL));
-      uint8_t data[8] = {0xff};
-      controller->leaf_master.send_data(GENCALLADR,data, 8);
 
-      controller->add_controller_handlers(&commandHandler);
-    } 
-    if (status & gpio_mask) {
-      leaf = std::unique_ptr<Leaf> (new Leaf);
-      leaf->add_leaf_handlers(&commandHandler);
-    }
-  };
-
-  // Controller is initialized
-  if (controller) {
-
-    multicore_launch_core1(spi_core);
-
-    controller->device_discovery();
-    controller->topology_discovery();
-
-    for (auto [address, node] : controller->graph.map) {
-      const uint8_t message = (uint8_t)slave_commands::discovery_done;
-      controller->leaf_master.send_data(address, &message, 1);
-
-      sleep_ms(500);
-    }
-
-    discover_animation(&controller->ledstrip, {0, 50, 100});
-
-    while (true) {
-      uint8_t cmd = SPISlave::pop();
-      if (cmd != 0xa5 && cmd != 0x00) {
-        if (!commandHandler.handel_command(cmd)){
-          SPISlave::reset();
-        }
+    try {
+      if (!(status & 1 << 1)) {
+        controller = std::unique_ptr<Controller>(new Controller(i2c0, SDA, SCL));
+        PRINT("Controller initialized\n");
       }
-    };
+
+      if (status & gpio_mask) {
+        leaf = std::unique_ptr<Leaf> (new Leaf);
+        PRINT("Leaf initialized\n");
+      }
+    } 
+    catch (std::runtime_error& e) {
+      printf(e.what());
+      while (true) error_blink();
+    }
+
   }
 
-  // Leaf is initialized
-  else {
-    multicore_launch_core1(leaf_core);
+  PRINT("Stating update loop\n");
 
-    while (true) {
+  if (controller) {
+    while (true) 
+      controller->update();
+  } else {
+    while (true)
       leaf->update();
-      uint8_t cmd = I2CSlave::pop();
-      commandHandler.handel_command(cmd);
-    };
   }
 }

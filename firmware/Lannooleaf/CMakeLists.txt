@@ -19,6 +19,10 @@ target_link_libraries(lannooleaf
   pico_multicore
   Pico_led
 
+  hardware
+  baseclasses
+  datastructures
+
   helpers
 )
 

@@ -29,11 +29,12 @@
 
 #include <PicoLed.hpp>
 
-#include <graph.h>
-#include <commands.h>
-#include <spi_slave.h>
-#include <i2c_master.h>
-#include <command_handler.h>
+#include <graph.hpp>
+#include <commands.hpp>
+#include <spi_slave.hpp>
+#include <i2c_master.hpp>
+#include <packet_handler.hpp>
+
 
 #include <pico/stdlib.h>
 #include <hardware/i2c.h>
@@ -41,56 +42,31 @@
 
 namespace Lannooleaf {
 
-  class Controller {
+  class Controller : public PacketHandler {
 
     public:
       Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin);
       ~Controller();
 
     public:
-      /**
-       * @brief Start the device discovery algorithm
-       */
-      void device_discovery(void);
-
-      /**
-       * @brief Starts topology discovery algorithm
-       */
-      void topology_discovery(void);
-
-      /**
-       * @brief Adds handles to commandhandler
-       * 
-       * @param handler 
-       * Pointer to the instantiated CommandHandler class
-       */
-      void add_controller_handlers(CommandHandler* handler);
-
-    private:  
-      /**
-       * @brief Get the next available i2c address
-       * ined reference to `Lannooleaf::discover_animation(PicoLed::PicoLedController*, Lannooleaf::Color)'lable
-       */
-      uint8_t get_next_available_address(void);
+      virtual void __not_in_flash_func(update)(void);
 
     private:
-      /**
-       * @brief Send i2c message to set a select pin
-       * 
-       * @param pin 
-       * Select pin to set
-       * @param value 
-       * true for high, false for low
-       * @param address 
-       * i2c address to send message to
-       */
+      void device_discovery(void);
+      void topology_discovery(void);
+      void add_handlers(void);
+
       void set_select_pin(uint pin, bool value, uint8_t address);
+
+      uint8_t get_next_available_address(void);
+
 
     private:
       std::vector<uint8_t> visited;
 
     public:
       Graph graph;
+      SPISlave slave;
       I2CMaster leaf_master;
 
     public:

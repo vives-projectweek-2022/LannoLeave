@@ -19,15 +19,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-#include <controller.h>
+#include <controller.hpp>
 
 namespace Lannooleaf {
 
-  Controller::Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin) : leaf_master(i2c_leaf_inst, sda_pin, scl_pin) {
+  Controller::Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin)
+  : slave(spi0, MOSI, MISO, CLK, CS, BAUDRATE), leaf_master(i2c_leaf_inst, sda_pin, scl_pin, BAUDRATE) {
+    add_handlers();
+
     for (auto pin : all_select_pins)
       gpio_set_dir((uint)pin, GPIO_OUT);
 
     graph.add_node(I2C_CONTOLLER_PLACEHOLDER_ADDRESS);
+
+    device_discovery();
+    topology_discovery();
+
+    discover_animation(&ledstrip, { 0, 50, 100 });
+
+    for (auto [address, node] : graph.map) {
+      const uint8_t message = (uint8_t)slave_commands::discovery_done;
+      leaf_master.send_data(address, &message, 1);
+
+      sleep_ms(500);
+    }
   }
 
   Controller::~Controller() { }
@@ -59,12 +74,15 @@ namespace Lannooleaf {
         sleep_ms(SLEEP_TIME);
 
         std::array<uint8_t, 1> pong = { 0 };
-        leaf_master.get_data( next_address, 
+        leaf_master.receive_data( next_address, 
                               pong.data(), 
                               pong.size());
 
+        printf("Received: 0x%02x\n", pong.at(0));
+
         // If response add node to graph
         if (pong.at(0) == 0xa5) {
+          printf("Pong received\n");
           graph.add_node(next_address); 
         }
         else next_address = UNCONFIGUREDADDRESS;
@@ -115,7 +133,7 @@ namespace Lannooleaf {
       sleep_ms(SLEEP_TIME);
     
       uint8_t neighbor_count = 0;
-      leaf_master.get_data( i2c_address, 
+      leaf_master.receive_data( i2c_address, 
                             &neighbor_count, 
                             1);
       sleep_ms(SLEEP_TIME);
@@ -131,12 +149,12 @@ namespace Lannooleaf {
         uint8_t neighbor;
         uint8_t n_side;
 
-        leaf_master.get_data( i2c_address,
+        leaf_master.receive_data( i2c_address,
                               &neighbor,
                               1);
         sleep_ms(SLEEP_TIME);
 
-        leaf_master.get_data( i2c_address,
+        leaf_master.receive_data( i2c_address,
                               &n_side,
                               1);
         sleep_ms(SLEEP_TIME);
@@ -154,13 +172,59 @@ namespace Lannooleaf {
     graph.prepare_data();
   }
 
+  void Controller::update(void) {
+    if (slave.readable()) {
+      try {
+        uint8_t value_rw = slave.read_byte();
+
+        if (value_rw == 0xa5) {
+          static Packet pkt;
+          pkt.data.clear();
+
+          pkt.command = slave.read_byte();
+          pkt.lenght = slave.read_byte();
+
+          for (uint i = 0; i < pkt.lenght; i++)
+            pkt.data.push_back(slave.read_byte());
+
+          pkt.checksum = slave.read_byte();
+
+          handel_packet(&pkt);
+        }
+
+        if (value_rw == 0x5a) {
+          static Packet pkt;
+          pkt.data.clear();
+
+          pkt.command  = slave.read_byte();
+          pkt.lenght   = slave.read_byte();
+          pkt.checksum = slave.read_byte();
+
+          handel_packet(&pkt);
+
+          slave.write_byte(0xa5);
+          slave.write_byte(pkt.command);
+          slave.write_byte(pkt.lenght);
+
+          for (uint i = 0; i < pkt.lenght; i++)
+            slave.write_byte(pkt.data.at(i));
+
+          slave.write_byte(pkt.checksum);
+        }
+
+      } catch (std::runtime_error& e) {
+        printf(e.what());
+      }
+    }
+  }
+
   //* ------------------------------ Controller_helper_functions ------------------------------ *//
 
   void Controller::set_select_pin(uint pin, bool value, uint8_t address) {
     if (address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS)
       gpio_put(pin, value);
     else {
-      std::array<uint8_t, 3> message = { (uint8_t)slave_commands::set_sel_pin, pin, value };
+      std::array<uint8_t, 3> message = { (uint8_t)slave_commands::set_sel_pin, (uint8_t)pin, value };
       leaf_master.send_data(address, 
                             message.data(), 
                             message.size());
@@ -180,38 +244,54 @@ namespace Lannooleaf {
 
   // * -------------------------------- Spi_command_handeling --------------------------------- *∕∕
 
-  void Controller::add_controller_handlers(CommandHandler* handler) {
-    handler->add_handler((uint8_t)controller_commands::hello_message, [&](){
-      SPISlave::push(0x00); // 0x00 Indicates start of writen data
+  void Controller::add_handlers() {
+    add_handler((uint8_t)controller_commands::hello_message, [&](Packet* pkt){
+      if (pkt->data.size() != 0) throw std::runtime_error("Packed Drop: none empty packet passed to hello message wrong header used maby?\n");
 
       const char hello[] = "HelloSpi!";
-      for (char byte : hello) SPISlave::push(byte);
+      for (char byte : hello) pkt->data.push_back((uint8_t)byte);
+
+      pkt->command  = (uint8_t)controller_commands::hello_message;
+      pkt->lenght   = pkt->data.size();
+      pkt->checksum = this->checksum(pkt->data.data(), pkt->data.size());
     });
     
-    handler->add_handler((uint8_t)controller_commands::get_adj_list_size, [&](){
-      SPISlave::push(0x00);
-      uint16_t size = graph.to_vector().size();
+    //! No longer needed
+    // add_handler((uint8_t)controller_commands::get_adj_list_size, [&](Packet* pkt){
+    //   if (pkt->data.size() != 0) throw std::runtime_error("Packed Drop: none empty packet passed to adj list size wrong header used maby?\n");
+    //   uint16_t size = graph.to_vector().size();
 
-      // Split unit16_t into 2 unit8_t
-      uint8_t size_0 = size >> 8;
-      uint8_t size_1 = size;
+    //   // Split unit16_t into 2 unit8_t
+    //   uint8_t size_0 = size >> 8;
+    //   uint8_t size_1 = size;
 
-      SPISlave::push(size_0);
-      SPISlave::push(size_1);
-    });
+    //   pkt->data.push_back(size_0);
+    //   pkt->data.push_back(size_1);
 
-    handler->add_handler((uint8_t)controller_commands::get_adj_list, [&](){
-      SPISlave::push(0x00);
+    //   pkt->command  = (uint8_t)controller_commands::get_adj_list_size;
+    //   pkt->lenght   = pkt->data.size();
+    //   pkt->checksum = this->checksum(pkt->data.data(), pkt->data.size());
+    // });
+
+    add_handler((uint8_t)controller_commands::get_adj_list, [&](Packet* pkt){
+      if (pkt->data.size() != 0) throw std::runtime_error("Packed Drop: none empty packet passed to get adj list wrong header used maby?\n");
+      
       for (auto byte : graph.to_vector()) {
-        SPISlave::push(byte);
+        pkt->data.push_back(byte);
       }
+
+      pkt->command  = (uint8_t)controller_commands::get_adj_list;
+      pkt->lenght   = pkt->data.size();
+      pkt->checksum = this->checksum(pkt->data.data(), pkt->data.size());
     });
 
-    handler->add_handler((uint8_t)controller_commands::set_all, [&]{
+    add_handler((uint8_t)controller_commands::set_all, [&](Packet* pkt) {
+      if (pkt->data.size() != 3) throw std::runtime_error("Packet Drop: Invalid amount of parameters for set all command!!\n");
+
       uint8_t red, green, blue;
-      red = SPISlave::pop();
-      green = SPISlave::pop();
-      blue = SPISlave::pop();
+      red   = pkt->data.at(0);
+      green = pkt->data.at(1);
+      blue  = pkt->data.at(2);
       
       ledstrip.fill(PicoLed::RGB(red, green, blue));
       ledstrip.show();
@@ -222,13 +302,15 @@ namespace Lannooleaf {
                             message.size());
     });
 
-    handler->add_handler((uint8_t)controller_commands::set_leaf_led, [&](){
+    add_handler((uint8_t)controller_commands::set_leaf_led, [&](Packet* pkt){
+      if (pkt->data.size() != 5) throw std::runtime_error("Packet Drop: Invalid amount parameters for set leaf led command!!\n");
+
       uint8_t address, led, red, green, blue;
-      address = SPISlave::pop();
-      led = SPISlave::pop();
-      red = SPISlave::pop();
-      green = SPISlave::pop();
-      blue = SPISlave::pop();
+      address = pkt->data.at(0);
+      led     = pkt->data.at(1);
+      red     = pkt->data.at(2);
+      green   = pkt->data.at(3);
+      blue    = pkt->data.at(4);
 
       if (address == I2C_CONTOLLER_PLACEHOLDER_ADDRESS) {
         ledstrip.setPixelColor(led, PicoLed::RGB(red, green, blue));
@@ -239,14 +321,17 @@ namespace Lannooleaf {
       }
     });
 
-    handler->add_handler((uint8_t)controller_commands::set_led_string, [&](){
-      uint8_t address = SPISlave::pop();
+    add_handler((uint8_t)controller_commands::set_led_string, [&](Packet* pkt){
+      if (pkt->data.size() != 49) throw std::runtime_error("Packet Drop: Invalid amount parameters for set led string command!!\n");
+
+      uint8_t address = pkt->data.at(0);
       std::array<Color, 16> color_string;
       
+      uint index = 1;
       for (int i = 0; i < color_string.size(); i++) {
-        uint8_t red = SPISlave::pop();
-        uint8_t green = SPISlave::pop();
-        uint8_t blue = SPISlave::pop();
+        uint8_t red   = pkt->data.at(index++);
+        uint8_t green = pkt->data.at(index++);
+        uint8_t blue  = pkt->data.at(index++);
         
         color_string[i] = {
           red, green, blue

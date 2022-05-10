@@ -11,9 +11,12 @@ set(PICO_CXX_ENABLE_RTTI 1)
 
 pico_sdk_init()
 
+add_subdirectory(datastructures)
 add_subdirectory(Lannooleaf)
 add_subdirectory(helpers)
 add_subdirectory(libs)
+add_subdirectory(baseclasses)
+add_subdirectory(hardware)
 
 option(BUILD_DOC "Build documentation" ON)
 

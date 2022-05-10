@@ -20,101 +20,27 @@
  *  limitations under the License.
  */
 
-#include <leaf.h>
+#include <leaf.hpp>
 
 namespace Lannooleaf {
 
-  Leaf::Leaf()  { }
+  Leaf::Leaf() 
+  : CommandHandler(&slave), slave(UNCONFIGUREDADDRESS ,i2c0, SDA, SCL, BAUDRATE) {
+    add_handlers();
+  }
 
   Leaf::~Leaf() { }
 
-  void Leaf::add_leaf_handlers(CommandHandler* handler) {
-    handler->add_handler((uint8_t)slave_commands::set_i2c_address, [&](){
-      uint8_t new_address = I2CSlave::pop();
-
-      if (I2CSlave::address() == UNCONFIGUREDADDRESS && this->sel_pin_status()) I2CSlave::address(new_address);
-    });
-
-    handler->add_handler((uint8_t)slave_commands::ping, [&](){
-      I2CSlave::push(0xa5);
-    }); 
-
-    handler->add_handler((uint8_t)slave_commands::set_sel_pin, [&](){
-      uint8_t pin   = I2CSlave::pop();
-      uint8_t value = I2CSlave::pop();
-
-      if (value) { // Set high
-        gpio_set_dir(pin, GPIO_OUT);
-        gpio_put(pin, true);
-      } else {     // Set low
-        gpio_put(pin, false);
-        gpio_set_dir(pin, GPIO_IN);
+  void Leaf::update() {
+    update_sel_status();
+    
+    if (slave.readable()) {
+      try {
+        handel_command(slave.read_byte());
+      } catch (std::runtime_error& e) {
+        printf(e.what());
       }
-    });
-
-    handler->add_handler((uint8_t)slave_commands::get_sel_pin, [&](){
-      I2CSlave::push(this->sel_pin_status());
-    });
-
-    handler->add_handler((uint8_t)slave_commands::is_neighbor, [&](){
-      uint8_t neighbor = I2CSlave::pop();     
-      if (this->sel_pin_status()) 
-        this->neighbors.push_back(std::make_pair(neighbor, this->sel_pin_status())); 
-    });
-
-    handler->add_handler((uint8_t)slave_commands::get_neigbor_size, [&](){
-      I2CSlave::push(this->neighbors.size());
-    });
-
-    handler->add_handler((uint8_t)slave_commands::get_neighbor_information, [&](){
-      for (auto [address, side] : neighbors) {
-        I2CSlave::push(address);
-        I2CSlave::push((uint8_t)side);
-      }
-    });
-
-    handler->add_handler((uint8_t)slave_commands::set_led, [&](){
-      uint8_t led, red, green, blue;
-      led = I2CSlave::pop();
-      red = I2CSlave::pop();
-      green = I2CSlave::pop();
-      blue = I2CSlave::pop();
-
-      ledstrip.setPixelColor(led, PicoLed::RGB(red, green, blue));
-      ledstrip.show();
-    });
-
-    handler->add_handler((uint8_t)slave_commands::set_all_led, [&](){
-      uint8_t red, green, blue;
-      red = I2CSlave::pop();
-      green = I2CSlave::pop();
-      blue = I2CSlave::pop();
-
-      ledstrip.fill(PicoLed::RGB(red, green, blue));
-      ledstrip.show();
-    });
-
-    handler->add_handler((uint8_t)slave_commands::set_led_string, [&](){
-      std::array<Color, 16> color_string;
-      int i = 0;
-      for (auto [red, green, blue] : color_string) {
-        red = I2CSlave::pop();
-        green = I2CSlave::pop();
-        blue = I2CSlave::pop();
-
-        ledstrip.setPixelColor(i, PicoLed::RGB(red, green, blue));
-        i++;
-      }
-      ledstrip.show();
-    });
-
-    handler->add_handler((uint8_t)slave_commands::discovery_done, [&](){
-      discover_animation(&ledstrip, {100, 50, 0});
-    });
-
-    handler->add_handler((uint8_t)slave_commands::reset, [&](){
-      // TODO: Implement
-    });
+    }
   }
 
   void Leaf::update_sel_status(void) {
@@ -125,6 +51,95 @@ namespace Lannooleaf {
       if (!gpio_is_dir_out((uint)pin) && gpio_get((uint)pin)) _sel_pin_status |= 1 << i;
       i++;
     }
+  }
+
+  void Leaf::add_handlers(void) {
+    add_handler((uint8_t)slave_commands::set_i2c_address, [&](baseclasses::BufferedCommunicator* com){
+      uint8_t new_address = com->read_byte();
+
+      if (slave.address() == UNCONFIGUREDADDRESS && _sel_pin_status) slave.address(new_address);
+    });
+
+    add_handler((uint8_t)slave_commands::ping, [&](baseclasses::BufferedCommunicator* com){
+      com->write_byte(0xa5);
+    }); 
+
+    add_handler((uint8_t)slave_commands::set_sel_pin, [&](baseclasses::BufferedCommunicator* com){
+      uint8_t pin   = com->read_byte();
+      uint8_t value = com->read_byte();
+
+      if (value) { // Set high
+        gpio_set_dir(pin, GPIO_OUT);
+        gpio_put(pin, true);
+      } else {     // Set low
+        gpio_put(pin, false);
+        gpio_set_dir(pin, GPIO_IN);
+      }
+    });
+
+    add_handler((uint8_t)slave_commands::get_sel_pin, [&](baseclasses::BufferedCommunicator* com){
+      com->write_byte(_sel_pin_status);
+    });
+
+    add_handler((uint8_t)slave_commands::is_neighbor, [&](baseclasses::BufferedCommunicator* com){
+      uint8_t neighbor = com->read_byte();     
+      if (_sel_pin_status) 
+        neighbors.push_back(std::make_pair(neighbor, _sel_pin_status)); 
+    });
+
+    add_handler((uint8_t)slave_commands::get_neigbor_size, [&](baseclasses::BufferedCommunicator* com){
+      com->write_byte(neighbors.size());
+    });
+
+    add_handler((uint8_t)slave_commands::get_neighbor_information, [&](baseclasses::BufferedCommunicator* com){
+      for (auto [address, side] : neighbors) {
+        com->write_byte(address);
+        com->write_byte((uint8_t)side);
+      }
+    });
+
+    add_handler((uint8_t)slave_commands::set_led, [&](baseclasses::BufferedCommunicator* com){
+      uint8_t led, red, green, blue;
+      led = com->read_byte();
+      red = com->read_byte();
+      green = com->read_byte();
+      blue = com->read_byte();
+
+      ledstrip.setPixelColor(led, PicoLed::RGB(red, green, blue));
+      ledstrip.show();
+    });
+
+    add_handler((uint8_t)slave_commands::set_all_led, [&](baseclasses::BufferedCommunicator* com){
+      uint8_t red, green, blue;
+      red = com->read_byte();
+      green = com->read_byte();
+      blue = com->read_byte();
+
+      ledstrip.fill(PicoLed::RGB(red, green, blue));
+      ledstrip.show();
+    });
+
+    add_handler((uint8_t)slave_commands::set_led_string, [&](baseclasses::BufferedCommunicator* com){
+      std::array<Color, 16> color_string;
+      int i = 0;
+      for (auto [red, green, blue] : color_string) {
+        red = com->read_byte();
+        green = com->read_byte();
+        blue = com->read_byte();
+
+        ledstrip.setPixelColor(i, PicoLed::RGB(red, green, blue));
+        i++;
+      }
+      ledstrip.show();
+    });
+
+    add_handler((uint8_t)slave_commands::discovery_done, [&](baseclasses::BufferedCommunicator* com){
+      discover_animation(&ledstrip, {100, 50, 0});
+    });
+
+    add_handler((uint8_t)slave_commands::reset, [&](baseclasses::BufferedCommunicator* com){
+      // TODO: Implement
+    });
   }
 
 }

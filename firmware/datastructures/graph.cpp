@@ -20,7 +20,7 @@
  *  limitations under the License.
  */
 
-#include "include/graph.h"
+#include <graph.hpp>
 
 namespace Lannooleaf {
 
@@ -65,7 +65,6 @@ namespace Lannooleaf {
   void Graph::prepare_data(void) {
     vector.clear();
     for (auto [address, node] : map) {
-      printf("Adding node: 0x%02x\n", address);
       vector.push_back(address);
     }
 
@@ -74,7 +73,6 @@ namespace Lannooleaf {
     vector.push_back(0x00);
     for (auto [address, node] : map) {
       for (auto [side, to] : node->adj) {
-        printf("Adding node: 0x%02x -> 0x%02x to: 0x%02x\n", address, side, to->i2c_address);
         vector.push_back(address);
         vector.push_back((uint8_t)side);
         vector.push_back(to->i2c_address);

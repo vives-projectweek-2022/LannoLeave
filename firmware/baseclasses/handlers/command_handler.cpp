@@ -20,29 +20,29 @@
  *  limitations under the License.
  */
 
-#include <command_handler.h>
+#include <command_handler.hpp>
 
 namespace Lannooleaf {
 
-  CommandHandler::CommandHandler() {  }
+  CommandHandler::CommandHandler(baseclasses::BufferedCommunicator* communicator) : communicator(communicator) {  }
 
   CommandHandler::~CommandHandler() { }
 
-  void CommandHandler::add_handler(uint8_t cmd, std::function<void(void)> handler) {
-    std::unordered_map<uint8_t, std::function<void(void)>>::iterator itr = handler_map.find(cmd);
+  void CommandHandler::add_handler(uint8_t cmd, std::function<void(baseclasses::BufferedCommunicator*)> handler) {
+    std::unordered_map<uint8_t, std::function<void(baseclasses::BufferedCommunicator*)>>::iterator itr = handler_map.find(cmd);
 
     if (itr == handler_map.end()) handler_map[cmd] = handler;
   }
 
-  bool CommandHandler::handel_command(uint8_t cmd) {
-    std::unordered_map<uint8_t, std::function<void(void)>>::iterator itr = handler_map.find(cmd);
+  void CommandHandler::handel_command(uint8_t cmd) {
+    std::unordered_map<uint8_t, std::function<void(baseclasses::BufferedCommunicator*)>>::iterator itr = handler_map.find(cmd);
 
     if (itr != handler_map.end()) {
-      handler_map[cmd]();
-      return true;
+      handler_map[cmd](communicator);
+    } else {
+      throw std::runtime_error("ERROR: Command was not in map!!\n");
     }
     
-    return false;
   }
 
 }

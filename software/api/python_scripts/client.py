@@ -5,7 +5,7 @@ import hashlib
 import requests
 import argparse
 
-import numpy as np
+import cupy as np
 # from matplotlib import pyplot as plt
 
 from time import sleep
@@ -51,12 +51,10 @@ if args.interpolate:
   if not os.path.exists(f"./saves/{shape_hash.hexdigest()}/{base}.npy"):
     for frame in range(image.n_frames):
       print(f"Proccessing frame {frame} of {image.n_frames}")
-      sys.stdout.flush()
       image.seek(frame)
       fullGif.append(intrepolate(image.convert("RGB"), x, y))
 
     print("Saveing proccessed images")
-    sys.stdout.flush()
 
     if not os.path.exists("./saves"):
       os.mkdir("saves/")
@@ -69,7 +67,6 @@ if args.interpolate:
 
   else:
     print("Preproccessed images found")
-    sys.stdout.flush()
     with open(f"./saves/{shape_hash.hexdigest()}/{base}.npy", 'rb') as f:
       a = np.load(f)
       fullGif = a.tolist()
@@ -82,38 +79,39 @@ def gamma_correct(gamma, value):
 ws = create_connection(f"ws://{args.ip}:{args.port}/websocket")
 
 if (args.interpolate):
-  for frame in fullGif:
-    m_data = {}
-    i = 0
-    for coordinate, unit in json_data:
-      if (not m_data.get(unit['address'])):
-        m_data[unit['address']] = []
+  while True:
+    for frame in fullGif:
+      m_data = {}
+      i = 0
+      for coordinate, unit in json_data:
+        if (not m_data.get(unit['address'])):
+          m_data[unit['address']] = []
 
-      _color = [int(frame[i][0]), int(frame[i][1]), int(frame[i][2])]
-      color = [gamma_correct(0.5, val) for val in _color]
-      m_data.get(unit['address']).append(color)
-      i+=1
+        _color = [int(frame[i][0]), int(frame[i][1]), int(frame[i][2])]
+        color = [gamma_correct(0.5, val) for val in _color]
+        m_data.get(unit['address']).append(color)
+        i+=1
 
-    ws.send(json.dumps(m_data))
-    sleep(0.033)
+      ws.send(json.dumps(m_data))
+      sleep(0.033)
 else:
-  for frame in range(image.n_frames):
-    image.seek(frame)
-    rgb_im = image.convert('RGB')
-    m_data = {}
-    for coordinate, unit in json_data:
-      print(coordinate)
-      r, g, b = rgb_im.getpixel((coordinate['x'], coordinate['y']))
-      r = gamma_correct(0.5, r)
-      g = gamma_correct(0.5, g)
-      b = gamma_correct(0.5, b)
+  while True:
+    for frame in range(image.n_frames):
+      image.seek(frame)
+      rgb_im = image.convert('RGB')
+      m_data = {}
+      for coordinate, unit in json_data:
+        r, g, b = rgb_im.getpixel((coordinate['x'], coordinate['y']))
+        r = gamma_correct(0.5, r)
+        g = gamma_correct(0.5, g)
+        b = gamma_correct(0.5, b)
 
-      if (not m_data.get(unit['address'])):
-        m_data[unit['address']] = []
+        if (not m_data.get(unit['address'])):
+          m_data[unit['address']] = []
 
-      m_data.get(unit['address']).append([r, g, b])
+        m_data.get(unit['address']).append([r, g, b])
 
-    ws.send(json.dumps(m_data))
-    sleep(0.033)
+      ws.send(json.dumps(m_data))
+      sleep(0.033)
 
 ws.close()

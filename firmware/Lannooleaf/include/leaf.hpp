@@ -33,6 +33,7 @@
 #include <i2c_slave.hpp>
 #include <helper_funcs_var.hpp>
 
+#include <updatable.hpp>
 #include <command_handler.hpp>
 #include <i2c_slave.hpp>
 
@@ -42,7 +43,7 @@
 
 namespace Lannooleaf {
 
-  class Leaf : public CommandHandler {
+  class Leaf : public CommandHandler, public interfaces::IUpdatable  {
 
     public:
       Leaf();

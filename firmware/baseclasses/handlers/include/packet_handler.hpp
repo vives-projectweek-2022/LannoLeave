@@ -60,8 +60,6 @@ namespace Lannooleaf {
 
       unsigned char __attribute__((section("checksum"))) checksum(unsigned char *data, unsigned char lenght);
 
-      virtual void update(void) = 0;
-
     private:
       std::unordered_map<uint8_t, std::function<void(Packet* pkt)>> handler_map;
 

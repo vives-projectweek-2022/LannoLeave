@@ -15,7 +15,7 @@ Directory include
 Files
 -----
 
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_Lannooleaf_include_controller.h`
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_Lannooleaf_include_leaf.h`
+- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_Lannooleaf_include_controller.hpp`
+- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_Lannooleaf_include_leaf.hpp`
 
 

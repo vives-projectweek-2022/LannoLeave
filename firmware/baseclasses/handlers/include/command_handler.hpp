@@ -56,8 +56,6 @@ namespace Lannooleaf {
        */
       void handel_command(uint8_t cmd);
 
-      virtual void update(void) = 0;
-
     private:
       std::unordered_map<uint8_t, std::function<void(baseclasses::BufferedCommunicator*)>> handler_map;
       baseclasses::BufferedCommunicator* communicator;

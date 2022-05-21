@@ -3,3 +3,5 @@
 Raspi Arno IP-Addr: `172.16.240.30`
 
 API port  : `:3000`
+
+Nodejs version: 16.14.2

@@ -23,8 +23,8 @@
 
 namespace Lannooleaf {
 
-  Controller::Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin)
-  : slave(spi0, MOSI, MISO, CLK, CS, BAUDRATE), leaf_master(i2c_leaf_inst, sda_pin, scl_pin, BAUDRATE) {
+  Controller::Controller()
+  : slave(spi0, MOSI, MISO, CLK, CS, BAUDRATE), leaf_master(i2c0, SDA, SCL, BAUDRATE) {
     add_handlers();
 
     for (auto pin : all_select_pins)

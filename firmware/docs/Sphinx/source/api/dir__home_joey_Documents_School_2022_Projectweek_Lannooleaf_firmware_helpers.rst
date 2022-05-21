@@ -20,11 +20,6 @@ Subdirectories
 Files
 -----
 
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_command_handler.cpp`
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_graph.cpp`
 - :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_helper_funcs_var.cpp`
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_i2c_master.cpp`
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_i2c_slave.cpp`
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_spi_slave.cpp`
 
 

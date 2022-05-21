@@ -15,12 +15,7 @@ Directory include
 Files
 -----
 
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_include_command_handler.h`
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_include_commands.h`
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_include_graph.h`
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_include_helper_funcs_var.h`
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_include_i2c_master.h`
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_include_i2c_slave.h`
-- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_include_spi_slave.h`
+- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_include_commands.hpp`
+- :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_include_helper_funcs_var.hpp`
 
 

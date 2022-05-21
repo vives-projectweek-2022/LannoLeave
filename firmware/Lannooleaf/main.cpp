@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include <pico/stdlib.h>
+#include <pico/multicore.h>
 
 #include <leaf.hpp>
 #include <commands.hpp>
@@ -12,18 +13,17 @@
 #include <helper_funcs_var.hpp>
 
 using namespace Lannooleaf;
+using namespace Lannooleaf::interfaces;
 
-std::unique_ptr<Controller> controller = nullptr;
-std::unique_ptr<Leaf> leaf = nullptr;
-
+std::unique_ptr< IUpdatable > unit = nullptr;
 
 int main() {
   stdio_init_all();
   set_alive_led();
 
   for (select_pins pin : all_select_pins) {
-    gpio_init((uint)pin);
-    gpio_set_dir((uint)pin, GPIO_IN);
+    gpio_init(static_cast<uint> (pin));
+    gpio_set_dir(static_cast<uint> (pin), GPIO_IN);
   }
 
   gpio_init(CS);
@@ -39,34 +39,31 @@ int main() {
   }
 
   // Wait untill unit initialized as controller or leaf
-  while (!leaf && !controller) {
+  while (!unit) {
     uint32_t status = gpio_get_all();
 
     try {
+
       if (!(status & 1 << 1)) {
-        controller = std::unique_ptr<Controller>(new Controller(i2c0, SDA, SCL));
+        unit = std::unique_ptr< IUpdatable > (new Controller);
         PRINT("Controller initialized\n");
       }
 
       if (status & gpio_mask) {
-        leaf = std::unique_ptr<Leaf> (new Leaf);
+        unit = std::unique_ptr< IUpdatable > (new Leaf);
         PRINT("Leaf initialized\n");
       }
-    } 
-    catch (std::runtime_error& e) {
+
+    } catch (std::runtime_error& e) {
       printf(e.what());
-      while (true) error_blink();
+      error_blink();
     }
 
   }
 
   PRINT("Stating update loop\n");
 
-  if (controller) {
-    while (true) 
-      controller->update();
-  } else {
-    while (true)
-      leaf->update();
-  }
+  while (true)
+    unit->update();
+  
 }

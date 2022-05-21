@@ -101,7 +101,7 @@ namespace Lannooleaf {
    */
   void set_alive_led(void);
 
-  void error_blink(void);
+  [[noreturn]] void error_blink(void);
 
   /**
    * @brief Plays a discovery animation

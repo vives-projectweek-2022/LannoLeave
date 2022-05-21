@@ -31,10 +31,10 @@
 
 #include <graph.hpp>
 #include <commands.hpp>
+#include <updatable.hpp>
 #include <spi_slave.hpp>
 #include <i2c_master.hpp>
 #include <packet_handler.hpp>
-
 
 #include <pico/stdlib.h>
 #include <hardware/i2c.h>
@@ -42,10 +42,10 @@
 
 namespace Lannooleaf {
 
-  class Controller : public PacketHandler {
+  class Controller : public PacketHandler, public interfaces::IUpdatable {
 
     public:
-      Controller(i2c_inst_t * i2c_leaf_inst, uint sda_pin, uint scl_pin);
+      Controller ();
       ~Controller();
 
     public:
@@ -64,7 +64,7 @@ namespace Lannooleaf {
     private:
       std::vector<uint8_t> visited;
 
-    public:
+    private:
       Graph graph;
       SPISlave slave;
       I2CMaster leaf_master;

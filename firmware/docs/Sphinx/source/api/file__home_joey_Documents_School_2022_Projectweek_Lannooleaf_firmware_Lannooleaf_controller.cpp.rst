@@ -9,7 +9,7 @@ File controller.cpp
 .. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
 
 
-Source file to :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_Lannooleaf_include_controller.h`. 
+Source file to controller.h. 
 
 
 
@@ -44,7 +44,7 @@ Includes
 --------
 
 
-- ``controller.h`` (:ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_Lannooleaf_include_controller.h`)
+- ``controller.hpp`` (:ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_Lannooleaf_include_controller.hpp`)
 
 
 

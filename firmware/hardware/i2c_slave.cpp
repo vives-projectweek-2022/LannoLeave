@@ -29,7 +29,7 @@ namespace Lannooleaf {
 
   void __not_in_flash_func(I2CSlave::i2c0_irq_callback)(i2c_inst_t* i2c, i2c_slave_event_t event) {
     switch (event) {
-      case I2C_SLAVE_RECEIVE: { 
+      [[likely]] case I2C_SLAVE_RECEIVE: { 
         while (i2c_get_read_available(i2c)) {
           uint8_t byte;
           byte = i2c_get_hw(i2c)->data_cmd;

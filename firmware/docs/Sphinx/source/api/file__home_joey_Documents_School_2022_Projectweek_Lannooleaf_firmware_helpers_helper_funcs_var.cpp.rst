@@ -9,7 +9,7 @@ File helper_funcs_var.cpp
 .. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
 
 
-Sourec file to :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_include_helper_funcs_var.h`. 
+Sourec file to helper_funcs_var.h. 
 
 
 
@@ -44,7 +44,7 @@ Includes
 --------
 
 
-- ``include/helper_funcs_var.h`` (:ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_include_helper_funcs_var.h`)
+- ``helper_funcs_var.hpp`` (:ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_include_helper_funcs_var.hpp`)
 
 
 
@@ -62,15 +62,17 @@ Functions
 ---------
 
 
-- :ref:`exhale_function_helper__funcs__var_8cpp_1ac2d95daf8bcc8070ed9c4d098b86800a`
+- :ref:`exhale_function_namespaceLannooleaf_1ac2d95daf8bcc8070ed9c4d098b86800a`
 
-- :ref:`exhale_function_helper__funcs__var_8cpp_1a741bf6b453df2224e677179137345b7c`
+- :ref:`exhale_function_namespaceLannooleaf_1a8e4fed3f8b7481279784ca323b84ada4`
 
-- :ref:`exhale_function_helper__funcs__var_8cpp_1ae453b4f6f6a8b235d7360cea16956aa4`
+- :ref:`exhale_function_namespaceLannooleaf_1a741bf6b453df2224e677179137345b7c`
 
-- :ref:`exhale_function_helper__funcs__var_8cpp_1a7e1dca493fba83fdb31a6d09e16c7dd6`
+- :ref:`exhale_function_namespaceLannooleaf_1ae453b4f6f6a8b235d7360cea16956aa4`
 
-- :ref:`exhale_function_helper__funcs__var_8cpp_1a8adcf0e07f118215cf7b4d7da5ede341`
+- :ref:`exhale_function_namespaceLannooleaf_1a7e1dca493fba83fdb31a6d09e16c7dd6`
 
-- :ref:`exhale_function_helper__funcs__var_8cpp_1a27f8bae09bbf8fed22f7f888d0f2dcf2`
+- :ref:`exhale_function_namespaceLannooleaf_1a8adcf0e07f118215cf7b4d7da5ede341`
+
+- :ref:`exhale_function_namespaceLannooleaf_1a27f8bae09bbf8fed22f7f888d0f2dcf2`
 

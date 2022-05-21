@@ -3,7 +3,7 @@
 Struct Node
 ===========
 
-- Defined in :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_helpers_include_graph.h`
+- Defined in :ref:`file__home_joey_Documents_School_2022_Projectweek_Lannooleaf_firmware_datastructures_include_graph.hpp`
 
 
 Struct Documentation

@@ -16,6 +16,23 @@
 |---|---|
 | ![Front](img/front_tussen.png) | ![Back](img/back_tussen.png) |
 
+## Eigenschappen voedingsschakeling (LM2596)
+
+* Bereik ingangsspanning: 4,5 - 40V (wij gebruiken 24V)
+* Maximale uitgangsstroom: 3A
+
+We hebben 16 RGB LED's die theoretisch maximaal 50mA nodig hebben. Samen met de pico die maximaal 100mA verbruikt komt dit neer op een totale stroom van `900mA` (op 5V) per leaf wat neerkomt op een `vermogen van 4,5W`. De stroom aan de 24V-kant is natuurlijk een stuk minder en bedraagt `190mA`. Het verlagen van de stroom tussen de leafs was de reden van het gebruiken van een spanningsomzetter per leaf.
+
+## Aansluiten leafs
+
+Om de leafs met elkaar te verbinden moeten de verbindingsstukken met hun male headers geklikt worden in de female headers van de leafs (female headers kant van Pico). Op onderstaande afbeelding kan men de functie van iedere pin zien op de leaf.
+
+![Connectoren](img/connectoren.png)
+
+De buitenste 2 pinnen zijn voor het doorkoppelen van de voeding (24V en GND) tussen de leafs. De pinnen in het midden zijn beide dezelfde 'select' pin die dient voor het discovery-protocol. De overige pinnen dienen voor het doorkoppelen van de I²C-bus met SDA aan de binnenkant en SCL aan de buitenkant.
+
+Let op dat je de spanning niet omgekeerd aansluit bij het eventueel rechtstreeks voeden van de leafs aan de headers omdat er `GEEN polariteitsbeveiliging` aanwezig is op deze versie van de PCB. Het is veiliger om de PCB's te voeden door gebruik te maken van de barrel-jack connector die men kan solderen op de voorziene plaats op de PCB.
+
 ## BOM (Bill of Materials)
 
 | Designator | Quantity | Description | Footprint | Distributor | Ordercode | Price |
@@ -53,28 +70,3 @@ Totale prijs componenten leaf: `12,9722 €`
 Totale prijs componenten controller: `14,1956 €`
 
 Totale prijs componenten verbindingsstuk: `0,10508 €`
-
-## BOM (Bill of Materials) AliExpress
-
-## BOM (Bill of Materials)
-
-| Designator | Quantity | Description | Footprint | Distributor | Link | Price |
-|---|---|---|---|---|---|---|
-| D1 - D16 | 16 | WS2812B addressable LEDS | 5050 | AliExpress | [link](https://nl.aliexpress.com/item/1005002653014067.html) | 0,04324 € (1000+) |
-
-
-https://nl.aliexpress.com/item/1005002653014067.html
-
-
-* https://nl.aliexpress.com/item/4000262366205.html?gatewayAdapt=glo2nld&spm=a2g0o.cart.0.0.5f573c00WdXbel&mp=1
-    * variant: 5p
-* https://www.aliexpress.com/item/4000047784474.html?spm=a2g0o.cart.0.0.5f573c00WdXbel&mp=1
-
-* https://www.aliexpress.com/item/32964553793.html?spm=a2g0o.cart.0.0.5f573c00WdXbel&mp=1
-    * variant: 1uF
-    * variant: 1nF
-    * variant: 100nF
-* https://www.aliexpress.com/item/1005002653014067.html?spm=a2g0o.cart.0.0.5f573c00WdXbel&mp=1
-    * variant: 200pcs, white pcb
-* https://www.aliexpress.com/item/4000557721022.html?spm=a2g0o.cart.0.0.5f573c00WdXbel&mp=1
-    * variant: LM2596S-ADJ

@@ -6,6 +6,8 @@
 
 ## Project overview
 
+<!-- bijwerken -->
+
 * Connectable 3D-printed leaves
 * PCB-design with LEDs & communications
 * Use an OTS or own communication protocol
@@ -14,13 +16,27 @@
 
 ## Hardware
 
+### Shape
+
+<!-- afbeelding shape (Fusion 360?) -->
+
+<!-- aanvullen -->
+
+### PCB
+
 <!-- afbeelding hardware -->
 
-Onder hardware verstaat men de PCB's met componenten die de Lannooleafs vormen. Deze bevatten elk 16 RGB LED's en beschikken ieder over een eigen Raspberry Pi Pico en spanningsomzetter. De volledige documentatie over de hardware kan men [hier](./hardware/pcb/README.md) terugvinden.
+Iedere PCB bevat elk 16 RGB LED's en beschikken ieder over een eigen Raspberry Pi Pico en spanningsomzetter. De volledige documentatie over de hardware kan men [hier](./hardware/pcb/README.md) terugvinden.
 
 ## Firmware
 
+<!-- afbeelding Pico? -->
+
+<!-- aanvullen -->
+
 ## Software - backend
+
+<!-- aanvullen -->
 
 ## Credits
 

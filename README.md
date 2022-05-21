@@ -34,7 +34,7 @@ Iedere PCB bevat elk 16 RGB LED's en beschikken ieder over een eigen Raspberry P
 
 <!-- aanvullen -->
 
-De firmware documentatie wordt automatisch gegenereed tijdens het build procces van de firmware. Deze is te vinden in de [firmware](./firmaware) folder waar het build procces word uitgelegd.
+De firmware documentatie wordt automatisch gegenereed tijdens het build procces van de firmware. Deze is te vinden in de [firmware](./firmaware/) folder waar het build procces word uitgelegd.
 
 ## Software - backend
 

@@ -10,7 +10,7 @@
   <InputOutputMap>
    <Universe Name="Universe 1" ID="0">
     <Input Plugin="MIDI" Line="1"/>
-    <Output Plugin="ArtNet" Line="8"/>
+    <Output Plugin="ArtNet" Line="6"/>
     <Feedback Plugin="MIDI" Line="2"/>
    </Universe>
    <Universe Name="Universe 2" ID="1">
@@ -421,21 +421,18 @@
    <MonoColor>4294902003</MonoColor>
    <ControlMode>RGB</ControlMode>
    <FixtureGroup>0</FixtureGroup>
+   <Property Name="presetSize" Value="3"/>
    <Property Name="presetCollision" Value="No"/>
    <Property Name="presetNumber" Value="11"/>
-   <Property Name="presetSize" Value="3"/>
   </Function>
   <Function ID="17" Type="RGBMatrix" Name="green wave down">
    <Speed FadeIn="0" FadeOut="0" Duration="15"/>
    <Direction>Backward</Direction>
-   <RunOrder>SingleShot</RunOrder>
-   <Algorithm Type="Script">Waves</Algorithm>
-   <MonoColor>4278255398</MonoColor>
+   <RunOrder>Loop</RunOrder>
+   <Algorithm Type="Script">Fill Unfill</Algorithm>
+   <MonoColor>4294901760</MonoColor>
    <ControlMode>RGB</ControlMode>
    <FixtureGroup>0</FixtureGroup>
-   <Property Name="tailfade" Value="Yes"/>
-   <Property Name="orientation" Value="Vertical"/>
-   <Property Name="taillength" Value="50"/>
   </Function>
   <Function ID="18" Type="RGBMatrix" Name="green wave up">
    <Speed FadeIn="0" FadeOut="0" Duration="15"/>
@@ -445,10 +442,10 @@
    <MonoColor>4278255398</MonoColor>
    <ControlMode>RGB</ControlMode>
    <FixtureGroup>0</FixtureGroup>
+   <Property Name="taillength" Value="50"/>
    <Property Name="direction" Value="Left"/>
    <Property Name="tailfade" Value="Yes"/>
    <Property Name="orientation" Value="Vertical"/>
-   <Property Name="taillength" Value="50"/>
   </Function>
   <Function ID="19" Type="RGBMatrix" Name="green wave left">
    <Speed FadeIn="0" FadeOut="0" Duration="15"/>
@@ -458,10 +455,10 @@
    <MonoColor>4278255398</MonoColor>
    <ControlMode>RGB</ControlMode>
    <FixtureGroup>0</FixtureGroup>
+   <Property Name="taillength" Value="50"/>
    <Property Name="direction" Value="Left"/>
    <Property Name="tailfade" Value="Yes"/>
    <Property Name="orientation" Value="Horizontal"/>
-   <Property Name="taillength" Value="50"/>
   </Function>
   <Function ID="20" Type="RGBMatrix" Name="green wave right">
    <Speed FadeIn="0" FadeOut="0" Duration="15"/>
@@ -471,9 +468,9 @@
    <MonoColor>4278255398</MonoColor>
    <ControlMode>RGB</ControlMode>
    <FixtureGroup>0</FixtureGroup>
+   <Property Name="taillength" Value="50"/>
    <Property Name="direction" Value="Right"/>
    <Property Name="tailfade" Value="Yes"/>
-   <Property Name="taillength" Value="50"/>
   </Function>
   <Function ID="21" Type="RGBMatrix" Name="strobe blue">
    <Speed FadeIn="0" FadeOut="0" Duration="15"/>

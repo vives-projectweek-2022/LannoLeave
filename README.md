@@ -14,31 +14,35 @@
 * Webpage
 * Control of leds
 
-## Hardware
+## [Hardware](./hardware)
 
-### Shape
+### [Shape](./hardware/shape/)
 
-<!-- afbeelding shape (Fusion 360?) -->
+![shape](./img/shape.png)
 
-<!-- aanvullen -->
+Dit is onze shape. Een primitive unit met 8 leafs.
 
-### PCB
+### [PCB](./hardware/pcb/)
 
 <!-- afbeelding hardware -->
 
 Iedere PCB bevat elk 16 RGB LED's en beschikken ieder over een eigen Raspberry Pi Pico en spanningsomzetter. De volledige documentatie over de hardware kan men [hier](./hardware/pcb/README.md) terugvinden.
 
-## Firmware
+## [Firmware](./firmware)
 
-<!-- afbeelding Pico? -->
+<!-- Joey, afbeelding Pico? -->
 
 <!-- aanvullen -->
 
 De firmware documentatie wordt automatisch gegenereed tijdens het build procces van de firmware. Deze is te vinden in de [firmware](./firmware/) folder waar het build procces word uitgelegd.
 
-## Software - backend
+## [Software](./software/)
 
-<!-- aanvullen -->
+The [API](./software/api) connect with the SPI interface and communicates with the frontend, artnet and has a socket to run python processed gifs.
+
+The [ArtNet](./software/artnet) api reicieves artnet broadcast messages ans sends them trough the websochet of the api to controll all the leds. The api mapps them depending on the coords.
+
+The [Frontend](./software/frontend) from Jay is the webinterface and all of its files.
 
 ## Credits
 

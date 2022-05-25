@@ -1,8 +1,8 @@
 import * as dmxlib from 'dmxnet';
 import WebSocket from 'ws';
 
-const HOST = "10.10.10.110";
-const PORT = 3000;
+const HOST = "10.5.8.2";
+const PORT = 5000;
 
 var matrixSize = 13;
 var apiUrl = `ws://${HOST}:${PORT}/dmx`;
